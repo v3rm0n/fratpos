@@ -1,39 +1,165 @@
 extends layout
 
 block content
+        script
+            $(function(){
+                //Client search functionality
+                $("#inputIcon").typeahead({
+                    source : function(query, process){
+                        console.log(query);
+                        return ["Maido Käära", "Martin Born"];
+                    }
+                });
+                $("#inputIcon").click(function(){
+                    if($(this).val() == "Kliendi nimi"){
+                        $(this).val("");
+                    }
+                });
+                $("#inputIcon").change(function(){
+                    var exists = true;
+                    $(this).closest(".control-group").toggleClass("error",!exists);
+                    $(this).closest(".control-group").toggleClass("success",exists);
+                });
+                //Product table buttons
+                $("#beer-btn").click(function(){
+                    $("#beer").show();
+                    calculateTotal();
+                });
+                $("#nonalc-btn").click(function(){
+                    $("#nonalc").show();
+                    calculateTotal();
+                });
+                $("#foxbeer-btn").click(function(){
+                    $("#foxbeer").show();
+                    calculateTotal();
+                });
+                //Product table total
+                function calculateTotal(){
+                    $("#totalRow").remove();
+                    var total = getTotal();
+                    var totalRow = $("<tr><th></th><th>Kokku</th><th>"+total+" €</th></tr>").attr("id","totalRow");
+                    totalRow.appendTo("#prod-tbody");
+                }
+                function getTotal(){
+                    var total = 0;
+                    $("#prod-tbody tr:visible .price").each(function(i, val){
+                        var qty = Number($(val).parent().siblings("td").children(".qty").html());
+                        console.log(qty);
+                        total += Number($(val).html())*qty;
+                    });
+                    return total;
+                }
+                //Adding and removing products
+                $(".prod-add").click(function(){
+                    var qty = $(this).siblings(".qty");
+                    var newQty = Number(qty.html())+1;
+                    qty.html(" "+newQty+" ");
+                    calculateTotal();
+                });
+                $(".prod-remove").click(function(){
+                    var qty = $(this).siblings(".qty");
+                    var newQty = Number(qty.html())-1;
+                    if(newQty == 0) {
+                        $(this).closest("tr").hide();
+                        return;
+                    }
+                    qty.html(" "+newQty+" ");
+                    calculateTotal();
+                });
+                $("#pay").click(function(){
+                    var total = getTotal();
+                    var transaction = $("<tr class ='success'><td>12.09.2012 22:00</td><td>"+$("#inputIcon").val()+"</td><td>"+total+" €</td><td>Sulas</td></tr>");
+                    transaction.prependTo("#trans-tbody");
+                    setTimeout(function(){
+                        transaction.removeClass("success");
+                    },2000);
+                    $(".qty").html(" 1 ");
+                    $("#prod-tbody tr").hide();
+                });
+            });
         .container-fluid
             .row-fluid
-                .span4.offset4
-                    .input-prepend
-                        span.add-on
-                            i.icon-user
-                        input#inputIcon(type='text') Kliendi nimi
-            .row-fluid
-                .span4.offset4
-                    .btn-group
-                        button.btn.btn-large(type="button") Õlu
-                        button.btn.btn-large(type="button") Kali/Limonaad
-                        button.btn.btn-large(type="button") Rebaseõlu
+                .span6
+                    h2 Leola kassasüsteem
             br
             .row-fluid
-                .span6.offset3
-                    table.table.table-bordered.table-hover
+                .span6
+                    .control-group
+                        .controls
+                            .input-prepend
+                                span.add-on
+                                    i.icon-user
+                                input#inputIcon.span6(type='text', value='Kliendi nimi')
+            br
+            .row-fluid
+                .span4
+                    .btn-group
+                        button#beer-btn.btn.btn-large(type="button") Õlu
+                        button#nonalc-btn.btn.btn-large(type="button") Kali/Limonaad
+                        button#foxbeer-btn.btn.btn-large(type="button") Rebaseõlu
+            br
+            .row-fluid
+                .span6
+                    table.table.table-bordered.table-hover.table-condensed
                         thead
                             tr
-                                th #
                                 th Toode
                                 th Kogus
                                 th Hind
-                        tbody
-                            tr
-                                td 1
+                        tbody#prod-tbody
+                            tr#beer(style='display:none;')
                                 td Õlu
-                                td 1
-                                td 1$
+                                td 
+                                    i.icon-plus-sign.prod-add
+                                    span.qty  1 
+                                    i.icon-minus-sign.prod-remove
+
+                                td 
+                                    span.price 1 
+                                    |€
+                            tr#nonalc(style='display:none;')
+                                td Kali/Limonaad
+                                td 
+                                    i.icon-plus-sign.prod-add
+                                    span.qty  1 
+                                    i.icon-minus-sign.prod-remove
+
+                                td 
+                                    span.price 0.5 
+                                    |€
+                            tr#foxbeer(style='display:none;')
+                                td Rebaseõlu
+                                td 
+                                    i.icon-plus-sign.prod-add
+                                    span.qty  1 
+                                    i.icon-minus-sign.prod-remove
+
+                                td 
+                                    span.price 0 
+                                    |€
             .row-fluid
-                .span4.offset4
+                .span4
                     .btn-group
-                        button.btn.btn-large.btn-primary Sulas
+                        button#pay.btn.btn-large.btn-primary Sulas
                         button.btn.btn-large Mobiiliga
-                        button.btn.btn-large Ettemaks
+                        button.btn.btn-large Ettemaksuga
                         button.btn.btn-large.btn-danger Võlg
+            br
+            .row-fluid
+                .span4
+                    h4 Viimased tehingud
+            .row-fluid
+                .span6
+                    table.table.table-bordered.table-hover
+                        thead
+                            tr
+                                th Aeg
+                                th Nimi
+                                th Summa
+                                th Makseviis
+                        tbody#trans-tbody
+                            tr
+                                td 12.09.2012 22:00
+                                td Maido Käära
+                                td 2 €
+                                td Mobiil
