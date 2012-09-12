@@ -1,0 +1,39 @@
+extends layout
+
+block content
+        .container-fluid
+            .row-fluid
+                .span4.offset4
+                    .input-prepend
+                        span.add-on
+                            i.icon-user
+                        input#inputIcon(type='text') Kliendi nimi
+            .row-fluid
+                .span4.offset4
+                    .btn-group
+                        button.btn.btn-large(type="button") Õlu
+                        button.btn.btn-large(type="button") Kali/Limonaad
+                        button.btn.btn-large(type="button") Rebaseõlu
+            br
+            .row-fluid
+                .span6.offset3
+                    table.table.table-bordered.table-hover
+                        thead
+                            tr
+                                th #
+                                th Toode
+                                th Kogus
+                                th Hind
+                        tbody
+                            tr
+                                td 1
+                                td Õlu
+                                td 1
+                                td 1$
+            .row-fluid
+                .span4.offset4
+                    .btn-group
+                        button.btn.btn-large.btn-primary Sulas
+                        button.btn.btn-large Mobiiliga
+                        button.btn.btn-large Ettemaks
+                        button.btn.btn-large.btn-danger Võlg

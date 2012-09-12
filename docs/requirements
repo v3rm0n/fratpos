@@ -1,0 +1,19 @@
+Kirjeldus
+Vaja läheb väga lihtsat kassasüsteemi, millega oleks võimalik osta korporatsioonides õlut/kalja. Ostud peavad olema seotud konkreetsete kasutajatega, tooted võivad olla üldised või spetsiifilised (õlu vs. Saku Originaal 0.5L klaas).
+Peab olema võimalik võtta mingi ajaperioodi lõikes tehtud oste, kasutaja kohta tema oste ning arvelduskrediidi jääki. Kirja peab saama panna ka mobiili ning pangamaksed (kassasse raha ei laeku).
+
+Nõuded vabas vormis 
+1) Peab saama osta erinevaid tooteid sularahas, mobiilimaksega või arvelduskrediidiga.
+2) Ostud peavad olema seotud kindlate kasutajatega.
+3) Ligipääs läbi avaliku veebi autentimisega, kassasüsteem võiks ligi saada näiteks võtmega.
+
+Kasutamine
+
+    Sularahamakse täpse summaga või raha tagasi
+        Kasutaja valik -> toodete valik -> kogus -> Maksa
+    Mobiilimakse
+        Kasutaja valik -> toodete valik -> kogus -> Mobiilimakse
+    Arvelduskrediidiga
+        Kasutaja valik -> toodete valik -> kogus -> Ettemaks
+    Sularahamakse, jääk ettemaksuks
+        Kasutaja valik -> toodete valik -> kogus -> Maksa jäägiga
