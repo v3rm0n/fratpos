@@ -50,14 +50,19 @@ block content
                     qty.html(" "+newQty+" ");
                     calculateTotal();
                 });
-                $("#pay").click(function(){
-                    var total = getTotal();
+                function addTransaction(total){
                     var transaction = $("<tr class ='success'><td>12.09.2012 22:00</td><td>"+$("#inputIcon").val()+"</td><td>"+total+" €</td><td>Sulas</td></tr>");
                     transaction.prependTo("#trans-tbody");
                     setTimeout(function(){
                         transaction.removeClass("success");
                     },2000);
                     $(".qty").html(" 0 ");
+                }
+                $("#pay").click(function(){
+                    addTransaction(getTotal());
+                });
+                $("#one-beer").click(function(){
+                    addTransaction(1);
                 });
             });
         .container-fluid
@@ -66,67 +71,71 @@ block content
                     h2 Leola kassasüsteem
             br
             .row-fluid
-                .span6
+                .span2
                     .control-group
                         .controls
-                            .input-prepend
+                            .input-prepend.input-append
                                 span.add-on
                                     i.icon-user
-                                input#inputIcon.span6(type='text', value='Kliendi nimi')
+                                input#inputIcon(type='text', value='Kliendi nimi')
+                                button#one-beer.btn.btn-primary Üks õlu
             br
             .row-fluid
                 .span6
-                    table.table.table-bordered.table-hover
-                        thead
-                            tr
-                                th Toode
-                                th Kogus
-                                th Hind
-                        tbody#prod-tbody
-                            tr#beer
-                                td Õlu
-                                td 
-                                    i.icon-plus-sign.prod-add
-                                    span.qty  0 
-                                    i.icon-minus-sign.prod-remove
+                    #accordion.accordion
+                        .accordion-group
+                            .accordion-heading
+                                a.accordion-toggle(data-toggle='collapse', data-parent='#accordion', href='#collapseOne') Täpsemalt
+                            #collapseOne.accordion-body.collapse.input
+                                .accordion-inner 
+                                    table.table.table-bordered.table-hover
+                                        thead
+                                            tr
+                                                th Toode
+                                                th Kogus
+                                                th Hind
+                                        tbody#prod-tbody
+                                            tr#beer
+                                                td Õlu
+                                                td 
+                                                    i.icon-plus-sign.prod-add
+                                                    span.qty  0 
+                                                    i.icon-minus-sign.prod-remove
 
-                                td 
-                                    span.price 1
-                                    |  €
-                            tr#nonalc
-                                td Kali/Limonaad
-                                td 
-                                    i.icon-plus-sign.prod-add
-                                    span.qty  0 
-                                    i.icon-minus-sign.prod-remove
+                                                td 
+                                                    span.price 1
+                                                    |  €
+                                            tr#nonalc
+                                                td Kali/Limonaad
+                                                td 
+                                                    i.icon-plus-sign.prod-add
+                                                    span.qty  0 
+                                                    i.icon-minus-sign.prod-remove
 
-                                td 
-                                    span.price 0.5
-                                    |  €
-                            tr#foxbeer
-                                td Rebaseõlu
-                                td 
-                                    i.icon-plus-sign.prod-add
-                                    span.qty  0 
-                                    i.icon-minus-sign.prod-remove
+                                                td 
+                                                    span.price 0.5
+                                                    |  €
+                                            tr#foxbeer
+                                                td Rebaseõlu
+                                                td 
+                                                    i.icon-plus-sign.prod-add
+                                                    span.qty  0 
+                                                    i.icon-minus-sign.prod-remove
 
-                                td 
-                                    span.price 0
-                                    |  €
-                            tr
-                                th
-                                th Kokku
-                                th
-                                    span#sum 0
-                                    |  €
-            .row-fluid
-                .span4
-                    .btn-group
-                        button#pay.btn.btn-large.btn-primary Sulas
-                        button.btn.btn-large Mobiiliga
-                        button.btn.btn-large Ettemaksuga
-                        button.btn.btn-large.btn-danger Võlg
-            br
+                                                td 
+                                                    span.price 0
+                                                    |  €
+                                            tr
+                                                th
+                                                th Kokku
+                                                th
+                                                    span#sum 0
+                                                    |  €
+                                    .btn-group
+                                        button#pay.btn.btn-large.btn-primary Sulas
+                                        button.btn.btn-large Mobiiliga
+                                        button.btn.btn-large Ettemaksuga
+                                        button.btn.btn-large.btn-danger Võlg
             .row-fluid
                 .span4
                     h4 Viimased tehingud
