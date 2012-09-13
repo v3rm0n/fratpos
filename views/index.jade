@@ -20,25 +20,10 @@ block content
                     $(this).closest(".control-group").toggleClass("error",!exists);
                     $(this).closest(".control-group").toggleClass("success",exists);
                 });
-                //Product table buttons
-                $("#beer-btn").click(function(){
-                    $("#beer").show();
-                    calculateTotal();
-                });
-                $("#nonalc-btn").click(function(){
-                    $("#nonalc").show();
-                    calculateTotal();
-                });
-                $("#foxbeer-btn").click(function(){
-                    $("#foxbeer").show();
-                    calculateTotal();
-                });
                 //Product table total
                 function calculateTotal(){
-                    $("#totalRow").remove();
                     var total = getTotal();
-                    var totalRow = $("<tr><th></th><th>Kokku</th><th>"+total+" €</th></tr>").attr("id","totalRow");
-                    totalRow.appendTo("#prod-tbody");
+                    $("#sum").html(total);
                 }
                 function getTotal(){
                     var total = 0;
@@ -59,8 +44,7 @@ block content
                 $(".prod-remove").click(function(){
                     var qty = $(this).siblings(".qty");
                     var newQty = Number(qty.html())-1;
-                    if(newQty == 0) {
-                        $(this).closest("tr").hide();
+                    if(newQty < 0) {
                         return;
                     }
                     qty.html(" "+newQty+" ");
@@ -73,8 +57,7 @@ block content
                     setTimeout(function(){
                         transaction.removeClass("success");
                     },2000);
-                    $(".qty").html(" 1 ");
-                    $("#prod-tbody tr").hide();
+                    $(".qty").html(" 0 ");
                 });
             });
         .container-fluid
@@ -92,51 +75,50 @@ block content
                                 input#inputIcon.span6(type='text', value='Kliendi nimi')
             br
             .row-fluid
-                .span4
-                    .btn-group
-                        button#beer-btn.btn.btn-large(type="button") Õlu
-                        button#nonalc-btn.btn.btn-large(type="button") Kali/Limonaad
-                        button#foxbeer-btn.btn.btn-large(type="button") Rebaseõlu
-            br
-            .row-fluid
                 .span6
-                    table.table.table-bordered.table-hover.table-condensed
+                    table.table.table-bordered.table-hover
                         thead
                             tr
                                 th Toode
                                 th Kogus
                                 th Hind
                         tbody#prod-tbody
-                            tr#beer(style='display:none;')
+                            tr#beer
                                 td Õlu
                                 td 
                                     i.icon-plus-sign.prod-add
-                                    span.qty  1 
+                                    span.qty  0 
                                     i.icon-minus-sign.prod-remove
 
                                 td 
-                                    span.price 1 
-                                    |€
-                            tr#nonalc(style='display:none;')
+                                    span.price 1
+                                    |  €
+                            tr#nonalc
                                 td Kali/Limonaad
                                 td 
                                     i.icon-plus-sign.prod-add
-                                    span.qty  1 
+                                    span.qty  0 
                                     i.icon-minus-sign.prod-remove
 
                                 td 
-                                    span.price 0.5 
-                                    |€
-                            tr#foxbeer(style='display:none;')
+                                    span.price 0.5
+                                    |  €
+                            tr#foxbeer
                                 td Rebaseõlu
                                 td 
                                     i.icon-plus-sign.prod-add
-                                    span.qty  1 
+                                    span.qty  0 
                                     i.icon-minus-sign.prod-remove
 
                                 td 
-                                    span.price 0 
-                                    |€
+                                    span.price 0
+                                    |  €
+                            tr
+                                th
+                                th Kokku
+                                th
+                                    span#sum 0
+                                    |  €
             .row-fluid
                 .span4
                     .btn-group
