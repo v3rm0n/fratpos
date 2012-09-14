@@ -1,0 +1,141 @@
+extends layout
+
+block content
+    script
+        $(function(){
+            $("#main-nav li a ").click(function(){
+                $(".row-fluid").hide();
+                $($(this).attr("href")).show();
+                $("#main-nav li").removeClass("active");
+                $(this).parent().addClass("active");
+            });
+        });
+    .navbar.navbar-inverse.navbar-fixed-top
+        .navbar-inner
+            .container-fluid
+              a.btn.btn-navbar(data-toggle='collapse', data-target='.nav-collapse')
+                span.icon-bar
+                span.icon-bar
+                span.icon-bar
+              a.brand(href='/') Kassa
+              .nav-collapse.collapse
+                ul#main-nav.nav
+                  li.active
+                    a(href='#users') Kasutajad
+                  li
+                    a(href='#transactions') Tehingud
+                  li
+                    a(href='#warehouse') Laoseis
+    .container-fluid
+        .row-fluid#users
+            .span12
+                h1 Kassasüsteemi kasutajad
+                table.table.table-bordered.table-hover
+                        thead
+                            tr
+                                th Staatus
+                                th Eesnimi
+                                th Perenimi
+                                th Õllenimi
+                                th Saldo
+                        tbody#trans-tbody
+                            tr
+                                td reb!
+                                td Maido
+                                td Käära
+                                td Rätik
+                                td 2 €
+                .pagination
+                    ul
+                        li: a «
+                        li: a 1
+                        li: a 2
+                        li: a 3
+                        li: a 4
+                        li: a »
+                a.btn(href='#newUser', role='button', data-toggle='modal') Lisa kasutaja
+                #newUser.modal(tabindex='-1', role='dialog', aria-labelledby='addUserLabel', aria-hidden='true', style='display: none;')
+                    .modal-header
+                        button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+                        h3#addUserLabel Lisa kasutaja
+                    .modal-body
+                        form.form-horizontal
+                            .control-group
+                                label.control-label(for='inputStatus') Staatus
+                                .controls
+                                    select
+                                        option reb!
+                                        option ksv!
+                                        option vil!
+                                        option kül!
+                            .control-group
+                                label.control-label(for='inputFirstname') Eesnimi
+                                .controls
+                                    input#inputFirstname(type='text', placeholder='Eesnimi')
+                            .control-group
+                                label.control-label(for='inputLastname') Perenimi
+                                .controls
+                                    input#inputLastname(type='text', placeholder='Perenimi')
+                            .control-group
+                                label.control-label(for='inputBeername') Õllenimi
+                                .controls
+                                    input#inputBeername(type='text', placeholder='Õllenimi')
+                    .modal-footer
+                        button.btn(data-dismiss='modal', aria-hidden='true') Sulge
+                        button.btn.btn-primary Salvesta
+        .row-fluid#transactions(style='display:none;')
+            .span12
+                h1 Tehingud
+                table.table.table-bordered.table-hover
+                        thead
+                            tr
+                                th Aeg
+                                th Nimi
+                                th Summa
+                                th Makseviis
+                        tbody#trans-tbody
+                            tr
+                                td 22:00:59
+                                td reb! Maido Käära (Rätik)
+                                td 2 €
+                                td Mobiil
+                .pagination
+                    ul
+                        li: a «
+                        li: a 1
+                        li: a 2
+                        li: a 3
+                        li: a 4
+                        li: a »
+        .row-fluid#warehouse(style='display:none;')
+            .span12
+                h1 Laoseis
+                table.table.table-bordered.table-hover
+                        thead
+                            tr
+                                th Toode
+                                th Kogus
+                        tbody#trans-tbody
+                            tr
+                                td Õlu
+                                td 2
+                a.btn(href='#changeWarehouse', role='button', data-toggle='modal') Muuda laoseisu
+                #changeWarehouse.modal(tabindex='-1', role='dialog', aria-labelledby='changeWarehouseLabel', aria-hidden='true', style='display: none;')
+                    .modal-header
+                        button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+                        h3#changeWarehouseLabel Muuda laoseisu
+                    .modal-body
+                        form.form-horizontal
+                            .control-group
+                                label.control-label(for='inputProduct') Toode
+                                .controls
+                                    select
+                                        option Õlu
+                                        option Kali/Limonaad
+                            .control-group
+                                label.control-label(for='inputQty') Laoseis
+                                .controls
+                                    input#inputQty(type='text', placeholder='2')
+                    .modal-footer
+                        button.btn(data-dismiss='modal', aria-hidden='true') Sulge
+                        button.btn.btn-primary Salvesta

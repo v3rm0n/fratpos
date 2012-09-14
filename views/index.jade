@@ -3,28 +3,29 @@ extends layout
 block content
         script
             $(function(){
-                var source = ["reb! Maido Käära (Rätik)", "reb! Martin Born (Jawoll)","ksv! Marko Mandel (Braun)","Külaline"];
                 //Client search functionality
                 $("#inputIcon").typeahead({
                     source : function(query, process){
-                        return source;
-                    }
-                });
-                $("#inputIcon").click(function(){
-                    if($(this).val() == "Kliendi nimi"){
-                        $(this).val("");
-                    }
+                                $.get("/users",{query: query},function(data){
+                                    process(data);
+                                });
+                            }
                 });
                 $("#inputIcon").change(function(){
-                    var exists = userExists();
-                    $(this).closest(".control-group").toggleClass("error",!exists);
-                    $(this).closest(".control-group").toggleClass("success",exists);
-                    var reb = "reb!";
-                    var showReb = $(this).val().substring(0, reb.length) === reb;
-                    $("#fox-beer").toggle(showReb);
+                    userExists(function(exists){
+                        $("#inputIcon").closest(".control-group").toggleClass("error",!exists);
+                        $("#inputIcon").closest(".control-group").toggleClass("success",exists);
+                        var reb = "reb!";
+                        var showReb = $("#inputIcon").val().substring(0, reb.length) === reb;
+                        $("#fox-beer").toggle(showReb);
+                    });
                 });
-                function userExists(){
-                    return $.inArray($("#inputIcon").val(),source) != -1;
+                function userExists(callback){
+                    $.get("/users", function(data){
+                        var name = $("#inputIcon").val();
+                        var exists = $.inArray(name,data) != -1;
+                        callback(exists);
+                    });
                 }
                 //Product table total
                 function calculateTotal(){
@@ -35,7 +36,6 @@ block content
                     var total = 0;
                     $("#prod-tbody tr:visible .price").each(function(i, val){
                         var qty = Number($(val).parent().siblings("td").children(".qty").html());
-                        console.log(qty);
                         total += Number($(val).html())*qty;
                     });
                     return total;
@@ -68,32 +68,34 @@ block content
                     addTransaction(getTotal());
                 });
                 $("#one-beer").click(function(){
-                    if(userExists()){
-                        addTransaction(1);
-                        $("#success-message").show().delay(2000).slideUp();
-                    }
-                    else{
-                        $("#noname-error").show().delay(2000).slideUp();
-                    }
+                    userExists(function(exists){
+                        if(exists){
+                            addTransaction(1);
+                            $("#success-message").show().delay(2000).slideUp();
+                        }
+                        else{
+                            $("#noname-error").show().delay(2000).slideUp();
+                        }
+                    });
                 });
                 $("#one-beer,#fox-beer,#details-toggle").tooltip();
             });
         .container-fluid
             .row-fluid
-                .span8
-                    h2 Leola kassasüsteem
+                .span12
+                    h2 Kassasüsteem
             br
             .row-fluid
-                .span4
+                .span5
                     .control-group
                         .controls
                             .input-prepend.input-append
                                 span.add-on
                                     i.icon-user
-                                input#inputIcon(type='text', value='Kliendi nimi')
+                                input#inputIcon(type='text', placeholder='Kliendi nimi')
                                 button#fox-beer.btn.btn-success(title='Vajuta siia kui tahad võtta rebaseõlu', style='display:none;') Rebaseõlu
                                 button#one-beer.btn.btn-primary(title='Vajuta siia kui tahad osta ainult ühe õlle') Õlu      
-                .span4
+                .span7
                     #noname-error.alert.alert-error(style='display:none;')
                         strong Viga! 
                         | Sisestatud nime ei eksisteeri, palun sisesta uuesti.
@@ -102,7 +104,7 @@ block content
                         | Kõik on korras, tooted läksid kirja.
             br
             .row-fluid
-                .span8
+                .span12
                     #accordion.accordion
                         .accordion-group
                             .accordion-heading
@@ -158,10 +160,10 @@ block content
                                         button.btn Ettemaksuga
                                         button.btn.btn-danger Võlg
             .row-fluid
-                .span8
+                .span12
                     h4 Viimased tehingud
             .row-fluid
-                .span8
+                .span12
                     table.table.table-bordered.table-hover
                         thead
                             tr
