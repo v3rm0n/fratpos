@@ -3,11 +3,23 @@ extends layout
 block content
     script
         $(function(){
-            $("#main-nav li a ").click(function(){
+            var navigate = function(href){
                 $(".row-fluid").hide();
-                $($(this).attr("href")).show();
+                $(href).show();
                 $("#main-nav li").removeClass("active");
-                $(this).parent().addClass("active");
+                var selector = "#main-nav li a[href="+href+"]";
+                $(selector).parent().addClass("active");
+            }
+            var hash = window.location.hash || "#users";
+            navigate(hash);
+            $("#main-nav li a ").click(function(){
+                navigate($(this).attr("href"));
+            });
+            $("#createUser").click(function(){
+                $("#createUserForm").submit();
+            });
+            $("#saveWarehouse").click(function(){
+                $("#changeWarehouseForm").submit();
             });
         });
     .navbar.navbar-inverse.navbar-fixed-top
@@ -29,7 +41,7 @@ block content
     .container-fluid
         .row-fluid#users
             .span12
-                h1 Kassasüsteemi kasutajad
+                h1 Kassa kasutajad
                 table.table.table-bordered.table-hover
                         thead
                             tr
@@ -39,31 +51,33 @@ block content
                                 th Õllenimi
                                 th Saldo
                         tbody#trans-tbody
-                            tr
-                                td reb!
-                                td Maido
-                                td Käära
-                                td Rätik
-                                td 2 €
-                .pagination
-                    ul
-                        li: a «
-                        li: a 1
-                        li: a 2
-                        li: a 3
-                        li: a 4
-                        li: a »
+                            each user in users
+                                tr
+                                    td= user.status
+                                    td= user.firstname
+                                    td= user.lastname
+                                    td= user.beername
+                                    td #{user.balance} €
+                if users.length > 10
+                    .pagination
+                        ul
+                            li: a «
+                            li: a 1
+                            li: a 2
+                            li: a 3
+                            li: a 4
+                            li: a »
                 a.btn(href='#newUser', role='button', data-toggle='modal') Lisa kasutaja
                 #newUser.modal(tabindex='-1', role='dialog', aria-labelledby='addUserLabel', aria-hidden='true', style='display: none;')
                     .modal-header
                         button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
                         h3#addUserLabel Lisa kasutaja
                     .modal-body
-                        form.form-horizontal
+                        form#createUserForm.form-horizontal(action='/users', method='post')
                             .control-group
                                 label.control-label(for='inputStatus') Staatus
                                 .controls
-                                    select
+                                    select(name='status')
                                         option reb!
                                         option ksv!
                                         option vil!
@@ -71,18 +85,18 @@ block content
                             .control-group
                                 label.control-label(for='inputFirstname') Eesnimi
                                 .controls
-                                    input#inputFirstname(type='text', placeholder='Eesnimi')
+                                    input#inputFirstname(type='text', placeholder='Eesnimi', name='firstname')
                             .control-group
                                 label.control-label(for='inputLastname') Perenimi
                                 .controls
-                                    input#inputLastname(type='text', placeholder='Perenimi')
+                                    input#inputLastname(type='text', placeholder='Perenimi', name='lastname')
                             .control-group
                                 label.control-label(for='inputBeername') Õllenimi
                                 .controls
-                                    input#inputBeername(type='text', placeholder='Õllenimi')
+                                    input#inputBeername(type='text', placeholder='Õllenimi', name='beername')
                     .modal-footer
                         button.btn(data-dismiss='modal', aria-hidden='true') Sulge
-                        button.btn.btn-primary Salvesta
+                        button#createUser.btn.btn-primary Salvesta
         .row-fluid#transactions(style='display:none;')
             .span12
                 h1 Tehingud
@@ -94,19 +108,21 @@ block content
                                 th Summa
                                 th Makseviis
                         tbody#trans-tbody
-                            tr
-                                td 22:00:59
-                                td reb! Maido Käära (Rätik)
-                                td 2 €
-                                td Mobiil
-                .pagination
-                    ul
-                        li: a «
-                        li: a 1
-                        li: a 2
-                        li: a 3
-                        li: a 4
-                        li: a »
+                            each transaction in transactions
+                                tr
+                                    td transaction.time
+                                    td transaction.user
+                                    td transaction.sum €
+                                    td transaction.type
+                if transactions.length > 10
+                    .pagination
+                        ul
+                            li: a «
+                            li: a 1
+                            li: a 2
+                            li: a 3
+                            li: a 4
+                            li: a »
         .row-fluid#warehouse(style='display:none;')
             .span12
                 h1 Laoseis
@@ -114,28 +130,31 @@ block content
                         thead
                             tr
                                 th Toode
+                                th Hind
                                 th Kogus
                         tbody#trans-tbody
-                            tr
-                                td Õlu
-                                td 2
+                            each product in products
+                                tr
+                                    td= product.name
+                                    td #{product.price} €
+                                    td= product.quantity
                 a.btn(href='#changeWarehouse', role='button', data-toggle='modal') Muuda laoseisu
                 #changeWarehouse.modal(tabindex='-1', role='dialog', aria-labelledby='changeWarehouseLabel', aria-hidden='true', style='display: none;')
                     .modal-header
                         button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
                         h3#changeWarehouseLabel Muuda laoseisu
                     .modal-body
-                        form.form-horizontal
+                        form#changeWarehouseForm.form-horizontal(action='/warehouse', method='post')
                             .control-group
                                 label.control-label(for='inputProduct') Toode
                                 .controls
-                                    select
+                                    select(name='name')
                                         option Õlu
                                         option Kali/Limonaad
                             .control-group
                                 label.control-label(for='inputQty') Laoseis
                                 .controls
-                                    input#inputQty(type='text', placeholder='2')
+                                    input#inputQty(type='text', placeholder='10',name='quantity')
                     .modal-footer
                         button.btn(data-dismiss='modal', aria-hidden='true') Sulge
-                        button.btn.btn-primary Salvesta
+                        button#saveWarehouse.btn.btn-primary Salvesta

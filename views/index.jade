@@ -56,21 +56,28 @@ block content
                     qty.html(" "+newQty+" ");
                     calculateTotal();
                 });
-                function addTransaction(total){
-                    var transaction = $("<tr class ='success'><td>12.09.2012 22:00</td><td>"+$("#inputIcon").val()+"</td><td>"+total+" €</td><td>Sulas</td></tr>");
-                    transaction.prependTo("#trans-tbody");
-                    setTimeout(function(){
-                        transaction.removeClass("success");
-                    },2000);
-                    $(".qty").html(" 0 ");
+                function addTransaction(total,method,callback){
+                    userExists(function(exists){
+                        $.post("/transaction",{sum: total, type: method}, function(data){
+                            if(data.status === 'success') {
+                                var d = new Date();
+                                var transaction = $("<tr class ='success'><td>"+d.getHours()+":"+d.getMinutes()+"</td><td>"+$("#inputIcon").val()+"</td><td>"+total+" €</td><td>"+method+"</td></tr>");
+                                transaction.prependTo("#trans-tbody");
+                                setTimeout(function(){
+                                    transaction.removeClass("success");
+                                },2000);
+                                $(".qty").html(" 0 ");
+                            }
+                            callback(exists && data.status === 'success');
+                        });
+                    });
                 }
                 $("#pay").click(function(){
                     addTransaction(getTotal());
                 });
                 $("#one-beer").click(function(){
-                    userExists(function(exists){
-                        if(exists){
-                            addTransaction(1);
+                    addTransaction("1","Sulas",function(success){
+                        if(success){
                             $("#success-message").show().delay(2000).slideUp();
                         }
                         else{
@@ -83,7 +90,7 @@ block content
         .container-fluid
             .row-fluid
                 .span12
-                    h2 Kassasüsteem
+                    h2 Kassa
             br
             .row-fluid
                 .span5
@@ -172,8 +179,9 @@ block content
                                 th Summa
                                 th Makseviis
                         tbody#trans-tbody
-                            tr
-                                td 22:00:59
-                                td reb! Maido Käära (Rätik)
-                                td 2 €
-                                td Mobiil
+                            each transaction in transactions
+                                tr
+                                    td= transaction.time
+                                    td= transaction.user
+                                    td #{transaction.sum} €
+                                    td= transaction.type
