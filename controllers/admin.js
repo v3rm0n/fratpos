@@ -12,7 +12,7 @@ exports.index = function(req,res){
     });
 }
 
-exports.warehouse = function(req,res){
+exports.changeProduct = function(req,res){
     if(req.body.name != ''){
         products.updateQuantity(req.body.name, Number(req.body.quantity), function(err){
             res.redirect('/admin#warehouse');

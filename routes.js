@@ -10,9 +10,10 @@ module.exports = function(app) {
 	app.get('/users', users.index);
     app.post('/users', users.add);
     app.post('/users/remove', users.remove);
-    app.post('/users/balance', users.balance);
+    app.get('/users/balance', users.balance);
+    app.post('/users/balance', users.changeBalance);
 
-    app.post('/warehouse', admin.warehouse);
+    app.post('/warehouse', admin.changeProduct);
     app.post('/warehouse/remove', admin.removeProduct);
 
     app.post('/transaction', index.transaction);

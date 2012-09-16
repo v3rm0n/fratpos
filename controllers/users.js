@@ -26,8 +26,14 @@ exports.remove = function(req,res){
     });
 }
 
-exports.balance = function(req,res){
-    users.changeBalance(req.body.id, req.body.balance, function(err){
+exports.changeBalance = function(req,res){
+    users.changeBalance(req.body.id, Number(req.body.balance), function(err){
         res.redirect('/admin#users');
     });
+}
+
+exports.balance = function(req,res){
+    users.getUser(req.query.fullName,function(err,user){
+        res.send({status: err == null ? 'success' : err, balance: user.balance});
+    })
 }

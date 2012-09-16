@@ -19,11 +19,19 @@ block content
                     userExists(function(exists){
                         $("#inputIcon").closest(".control-group").toggleClass("error",!exists);
                         $("#inputIcon").closest(".control-group").toggleClass("success",exists);
-                        var reb = "reb!";
-                        var showReb = $("#inputIcon").val().substring(0, reb.length) === reb;
-                        $("#fox-beer").toggle(showReb);
+                        showRebButton();
+                        $.get("/users/balance",{fullName: $("#inputIcon").val()},function(data){
+                            var hasBalance = data.status === 'success' && data.balance > 0;
+                             $("#balancePayment").toggle(hasBalance);
+                             $("#debtPayment").toggle(!hasBalance);
+                        })
                     });
                 });
+                function showRebButton(){
+                    var reb = "reb!";
+                    var showReb = $("#inputIcon").val().substring(0, reb.length) === reb;
+                    $("#fox-beer").toggle(showReb);
+                }
                 function userExists(callback){
                     $.get("/users", function(data){
                         var name = $("#inputIcon").val();
@@ -176,9 +184,9 @@ block content
                                                     |  €
                                     .btn-group
                                         button.payButton.btn.btn-primary(data-type='Sula') Sulas
+                                        button#balancePayment.payButton.btn(data-type='Ettemaks', style='display:none;') Ettemaksuga
+                                        button#debtPayment.payButton.btn.btn-danger(data-type='Võlg', style='display:none;') Võlgu
                                         button.payButton.btn(data-type='Mobiil') Mobiiliga
-                                        button.payButton.btn(data-type='Ettemaks') Ettemaksuga
-                                        button.payButton.btn.btn-danger(data-type='Võlg') Võlg
             .row-fluid
                 .span12
                     h4 Viimased tehingud
