@@ -9,23 +9,24 @@ block content
                 });
                 //Otsing
                 $("#inputIcon").typeahead({
-                    source : function(query, process){
+                    source: function(query, process){
                                 $.get("/users",{query: query},function(data){
                                     process(data);
                                 });
-                            }
-                });
-                $("#inputIcon").change(function(){
-                    userExists(function(exists){
-                        $("#inputIcon").closest(".control-group").toggleClass("error",!exists);
-                        $("#inputIcon").closest(".control-group").toggleClass("success",exists);
-                        showRebButton();
-                        $.get("/users/balance",{fullName: $("#inputIcon").val()},function(data){
-                            var hasBalance = data.status === 'success' && data.balance > 0;
-                             $("#balancePayment").toggle(hasBalance);
-                             $("#debtPayment").toggle(!hasBalance);
-                        })
-                    });
+                            },
+                    updater: function(item){
+                        userExists(function(exists){
+                            $("#inputIcon").closest(".control-group").toggleClass("error",!exists);
+                            $("#inputIcon").closest(".control-group").toggleClass("success",exists);
+                            showRebButton();
+                            $.get("/users/balance",{fullName: item},function(data){
+                                var hasBalance = data.status === 'success' && data.balance > 0;
+                                 $("#balancePayment").toggle(hasBalance);
+                                 $("#debtPayment").toggle(!hasBalance);
+                            })
+                        });
+                        return item;
+                    }
                 });
                 function showRebButton(){
                     var reb = "reb!";
@@ -93,6 +94,7 @@ block content
                                         transaction.removeClass("success");
                                     },2000);
                                     $(".qty").html(" 0 ");
+                                    $("#sum").html("0");
                                     $("#success-message").show().delay(2000).slideUp();
                                 }
                                 else{
