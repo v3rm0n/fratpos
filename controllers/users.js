@@ -2,7 +2,7 @@ var users = require('../models/users');
 
 exports.index = function(req,res){
 	users.getAll(function(err, docs) {
-        var names = docs.map(function(item){ return item.status+' '+item.firstname+' '+item.lastname;});
+        var names = docs.map(function(item){ return item.status+' '+item.firstname+' '+item.lastname+' ('+item.beername+')';});
         res.send(names);
     });
 }
