@@ -3,7 +3,11 @@ extends layout
 block content
         script
             $(function(){
-                //Client search functionality
+                //Üldine veateade ajaxi päringutel
+                $(document).ajaxError(function(){
+                    $("#ajax-error").show().delay(2000).slideUp();
+                });
+                //Otsing
                 $("#inputIcon").typeahead({
                     source : function(query, process){
                                 $.get("/users",{query: query},function(data){
@@ -27,20 +31,27 @@ block content
                         callback(exists);
                     });
                 }
-                //Product table total
                 function calculateTotal(){
-                    var total = getTotal();
+                    var products = getProducts();
+                    var total = 0;
+                    for(var i = 0; i < products.length; i++){
+                        total += products[i].price*products[i].quantity;
+                    }
                     $("#sum").html(total);
                 }
-                function getTotal(){
-                    var total = 0;
-                    $("#prod-tbody tr:visible .price").each(function(i, val){
-                        var qty = Number($(val).parent().siblings("td").children(".qty").html());
-                        total += Number($(val).html())*qty;
+                function getProducts(){
+                    var products = [];
+                    $("#prod-tbody tr.product").each(function(i, item){
+                        var product = {
+                            name: $(".prod-name", item).html(),
+                            quantity: Number($(".qty", item).html()),
+                            price: Number($(".price", item).html())
+                        }
+                        products.push(product);
                     });
-                    return total;
+                    return products;
                 }
-                //Adding and removing products
+                //Toodete lisamine ja kustutamine
                 $(".prod-add").click(function(){
                     var qty = $(this).siblings(".qty");
                     var newQty = Number(qty.html())+1;
@@ -56,36 +67,48 @@ block content
                     qty.html(" "+newQty+" ");
                     calculateTotal();
                 });
-                function addTransaction(total,method,callback){
+                function addTransaction(products,type){
+                    var ok = false;
+                    products.map(function(prod){if(prod.quantity > 0){ok=true;}});
+                    if(!ok){
+                        $("#products-error").show().delay(2000).slideUp();
+                        return;
+                    }
                     userExists(function(exists){
-                        $.post("/transaction",{sum: total, type: method}, function(data){
-                            if(data.status === 'success') {
-                                var d = new Date();
-                                var transaction = $("<tr class ='success'><td>"+d.getHours()+":"+d.getMinutes()+"</td><td>"+$("#inputIcon").val()+"</td><td>"+total+" €</td><td>"+method+"</td></tr>");
-                                transaction.prependTo("#trans-tbody");
-                                setTimeout(function(){
-                                    transaction.removeClass("success");
-                                },2000);
-                                $(".qty").html(" 0 ");
-                            }
-                            callback(exists && data.status === 'success');
-                        });
-                    });
-                }
-                $("#pay").click(function(){
-                    addTransaction(getTotal());
-                });
-                $("#one-beer").click(function(){
-                    addTransaction("1","Sulas",function(success){
-                        if(success){
-                            $("#success-message").show().delay(2000).slideUp();
+                        if(exists){
+                            $.post("/transaction",{products: products, type: type, user: $("#inputIcon").val()}, function(data){
+                                if(data.status === 'success'){
+                                    var d = new Date();
+                                    var transaction = $("<tr class ='success'><td>"+d.getHours()+":"+d.getMinutes()+"</td><td>"+$("#inputIcon").val()+"</td><td>"+data.sum+" €</td><td>"+type+"</td></tr>");
+                                    transaction.prependTo("#trans-tbody");
+                                    setTimeout(function(){
+                                        transaction.removeClass("success");
+                                    },2000);
+                                    $(".qty").html(" 0 ");
+                                    $("#success-message").show().delay(2000).slideUp();
+                                }
+                                else{
+                                    $("#transaction-error").show().delay(2000).slideUp();
+                                }
+                            });
                         }
                         else{
                             $("#noname-error").show().delay(2000).slideUp();
                         }
                     });
+                }
+                //Maksmine
+                $(".payButton").click(function(){
+                    addTransaction(getProducts(),$(this).data("type"));
                 });
-                $("#one-beer,#fox-beer,#details-toggle").tooltip();
+                $("#one-beer").click(function(){
+                    addTransaction([{name: "Õlu", quantity: 1, price: 1}],"Sula");
+                });
+                $("#fox-beer").click(function(){
+                    addTransaction([{name: "Õlu", quantity: 1, price: 0}],"Sula");
+                });
+                //Tooltipid
+                $("#one-beer,#fox-beer").tooltip();
             });
         .container-fluid
             .row-fluid
@@ -106,6 +129,15 @@ block content
                     #noname-error.alert.alert-error(style='display:none;')
                         strong Viga! 
                         | Sisestatud nime ei eksisteeri, palun sisesta uuesti.
+                    #transaction-error.alert.alert-error(style='display:none;')
+                        strong Viga! 
+                        | Viga tehingu salvestamisel. Proovi uuesti.
+                    #products-error.alert.alert-error(style='display:none;')
+                        strong Viga! 
+                        | Tooteid pole valitud. Palun vali tooted enne maksmist.
+                    #ajax-error.alert.alert-error(style='display:none;')
+                        strong Viga! 
+                        | Süsteem on katki, võta ühendust adminiga.
                     #success-message.alert.alert-success(style='display:none;')
                         strong Õnnestus! 
                         | Kõik on korras, tooted läksid kirja.
@@ -115,7 +147,7 @@ block content
                     #accordion.accordion
                         .accordion-group
                             .accordion-heading
-                                a#details-toggle.accordion-toggle(data-toggle='collapse', data-parent='#accordion', href='#collapseOne', title='Kui tahad rohkem valikuid siis vajuta siia') Täpsemalt
+                                a.accordion-toggle(data-toggle='collapse', data-parent='#accordion', href='#collapseOne') Täpsemalt
                             #collapseOne.accordion-body.collapse.input
                                 .accordion-inner 
                                     table.table.table-bordered.table-hover
@@ -125,36 +157,17 @@ block content
                                                 th Kogus
                                                 th Hind
                                         tbody#prod-tbody
-                                            tr#beer
-                                                td Õlu
-                                                td 
-                                                    i.gi-circle_plus.prod-add
-                                                    span.qty  0 
-                                                    i.gi-circle_minus.prod-remove
+                                            for product in products
+                                                tr.product
+                                                    td.prod-name= product.name
+                                                    td 
+                                                        i.gi-circle_plus.prod-add
+                                                        span.qty  0 
+                                                        i.gi-circle_minus.prod-remove
 
-                                                td 
-                                                    span.price 1
-                                                    |  €
-                                            tr#nonalc
-                                                td Kali/Limonaad
-                                                td 
-                                                    i.gi-circle_plus.prod-add
-                                                    span.qty  0 
-                                                    i.gi-circle_minus.prod-remove
-
-                                                td 
-                                                    span.price 0.5
-                                                    |  €
-                                            tr#foxbeer
-                                                td Rebaseõlu
-                                                td 
-                                                    i.gi-circle_plus.prod-add
-                                                    span.qty  0 
-                                                    i.gi-circle_minus.prod-remove
-
-                                                td 
-                                                    span.price 0
-                                                    |  €
+                                                    td 
+                                                        span.price= product.price
+                                                        |  €
                                             tr
                                                 th
                                                 th Kokku
@@ -162,10 +175,10 @@ block content
                                                     span#sum 0
                                                     |  €
                                     .btn-group
-                                        button#pay.btn.btn-primary Sulas
-                                        button.btn Mobiiliga
-                                        button.btn Ettemaksuga
-                                        button.btn.btn-danger Võlg
+                                        button.payButton.btn.btn-primary(data-type='Sula') Sulas
+                                        button.payButton.btn(data-type='Mobiil') Mobiiliga
+                                        button.payButton.btn(data-type='Ettemaks') Ettemaksuga
+                                        button.payButton.btn.btn-danger(data-type='Võlg') Võlg
             .row-fluid
                 .span12
                     h4 Viimased tehingud
@@ -181,7 +194,7 @@ block content
                         tbody#trans-tbody
                             each transaction in transactions
                                 tr
-                                    td= transaction.time
+                                    td= transaction.time.getHours()+":"+transaction.time.getMinutes()
                                     td= transaction.user
                                     td #{transaction.sum} €
                                     td= transaction.type

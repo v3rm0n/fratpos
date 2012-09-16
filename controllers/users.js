@@ -8,7 +8,6 @@ exports.index = function(req,res){
 }
 
 exports.add = function(req,res){
-    console.log('Creating user: '+req.query.firstname);
     var user = {
         status: req.body.status,
         firstname: req.body.firstname,

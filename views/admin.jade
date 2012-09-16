@@ -96,19 +96,8 @@ block content
                                                 | Muuda 
                                                 span.caret
                                               ul.dropdown-menu
-                                                li: a.changeUser(data-user='#{user._id}') Muuda kasutajat
                                                 li: a.changeBalance(href='#changeBalanceModal', role='button', data-toggle='modal', data-user='#{user._id}', data-balance='#{user.balance}') Muuda saldot
                                                 li: a.deleteUser(data-user='#{user._id}') Kustuta
-
-                if users.length > 10
-                    .pagination
-                        ul
-                            li: a «
-                            li: a 1
-                            li: a 2
-                            li: a 3
-                            li: a 4
-                            li: a »
                 a.btn.btn-primary(href='#newUser', role='button', data-toggle='modal') Lisa kasutaja
                 #newUser.modal(tabindex='-1', role='dialog', aria-labelledby='addUserLabel', aria-hidden='true', style='display: none;')
                     .modal-header
@@ -166,19 +155,10 @@ block content
                         tbody#trans-tbody
                             each transaction in transactions
                                 tr
-                                    td transaction.time
-                                    td transaction.user
-                                    td transaction.sum €
-                                    td transaction.type
-                if transactions.length > 10
-                    .pagination
-                        ul
-                            li: a «
-                            li: a 1
-                            li: a 2
-                            li: a 3
-                            li: a 4
-                            li: a »
+                                    td= transaction.time.toDateString()+" "+transaction.time.getHours()+":"+transaction.time.getMinutes()
+                                    td= transaction.user
+                                    td #{transaction.sum} €
+                                    td= transaction.type
         .row-fluid#warehouse(style='display:none;')
             .span12
                 h1 Laoseis

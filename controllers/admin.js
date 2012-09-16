@@ -14,15 +14,15 @@ exports.index = function(req,res){
 
 exports.warehouse = function(req,res){
     if(req.body.name != ''){
-        products.updateQuantity(req.body.name, req.body.quantity, function(err){
+        products.updateQuantity(req.body.name, Number(req.body.quantity), function(err){
             res.redirect('/admin#warehouse');
         });
     }
     else{
         var product = {
             name: req.body.newName,
-            quantity: req.body.quantity,
-            price: req.body.price
+            quantity: Number(req.body.quantity),
+            price: Number(req.body.price)
         }
         products.save(product, function(err){
             res.redirect('/admin#warehouse');

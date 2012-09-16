@@ -1,4 +1,2 @@
-var mongojs = require('mongojs');
-var db = mongojs.connect('posdb');
-db.ObjectId = mongojs.ObjectId;
+var db = require('mongojs').connect('posdb');
 module.exports = db;
