@@ -21,6 +21,37 @@ block content
             $("#saveWarehouse").click(function(){
                 $("#changeWarehouseForm").submit();
             });
+            $("a.deleteUser").click(function(){
+                var id = $(this).data("user");
+                $.post("/users/remove",{id: id},function(data){
+                    if(data.status === 'success'){
+                        $("tr#"+id+"_user").remove();
+                    }
+                });
+            });
+            $("a.changeBalance").click(function(){
+                $("#inputBalanceId").val($(this).data("user"));
+                $("#inputBalance").val($(this).data("balance"));
+            });
+            $("#saveBalance").click(function(){
+                $("#changeBalanceForm").submit();
+            });
+            var toggleProductInputs = function(toggle){
+                $("#productName").toggle(toggle);
+                $("#productPrice").toggle(toggle);
+            }
+            toggleProductInputs($("#inputProduct").val() == '');
+            $("#inputProduct").change(function(){
+                toggleProductInputs($(this).val() == '');
+            });
+            $("a.removeProduct").click(function(){
+                var id = $(this).data("product");
+                $.post("/warehouse/remove",{id: id},function(data){
+                    if(data.status === 'success'){
+                        $("tr#"+id+"_product").remove();
+                    }
+                });
+            });
         });
     .navbar.navbar-inverse.navbar-fixed-top
         .navbar-inner
@@ -50,14 +81,25 @@ block content
                                 th Perenimi
                                 th Õllenimi
                                 th Saldo
+                                th
                         tbody#trans-tbody
                             each user in users
-                                tr
+                                tr(id='#{user._id}_user') 
                                     td= user.status
                                     td= user.firstname
                                     td= user.lastname
                                     td= user.beername
                                     td #{user.balance} €
+                                    td
+                                        .btn-group
+                                            a.btn.btn-small.dropdown-toggle(data-toggle='dropdown', href='#')
+                                                | Muuda 
+                                                span.caret
+                                              ul.dropdown-menu
+                                                li: a.changeUser(data-user='#{user._id}') Muuda kasutajat
+                                                li: a.changeBalance(href='#changeBalanceModal', role='button', data-toggle='modal', data-user='#{user._id}', data-balance='#{user.balance}') Muuda saldot
+                                                li: a.deleteUser(data-user='#{user._id}') Kustuta
+
                 if users.length > 10
                     .pagination
                         ul
@@ -67,7 +109,7 @@ block content
                             li: a 3
                             li: a 4
                             li: a »
-                a.btn(href='#newUser', role='button', data-toggle='modal') Lisa kasutaja
+                a.btn.btn-primary(href='#newUser', role='button', data-toggle='modal') Lisa kasutaja
                 #newUser.modal(tabindex='-1', role='dialog', aria-labelledby='addUserLabel', aria-hidden='true', style='display: none;')
                     .modal-header
                         button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
@@ -97,6 +139,20 @@ block content
                     .modal-footer
                         button.btn(data-dismiss='modal', aria-hidden='true') Sulge
                         button#createUser.btn.btn-primary Salvesta
+                #changeBalanceModal.modal(tabindex='-1', role='dialog', aria-labelledby='changeBalanceLabel', aria-hidden='true', style='display: none;')
+                    .modal-header
+                        button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+                        h3#changeBalanceLabel Muuda saldot
+                    .modal-body
+                        form#changeBalanceForm.form-horizontal(action='/users/balance', method='post')
+                            .control-group
+                                label.control-label(for='inputBalance') Saldo
+                                .controls
+                                    input#inputBalanceId(type='hidden', name='id')
+                                    input#inputBalance(type='text', placeholder='0',name='balance')
+                    .modal-footer
+                        button.btn(data-dismiss='modal', aria-hidden='true') Sulge
+                        button#saveBalance.btn.btn-primary Salvesta
         .row-fluid#transactions(style='display:none;')
             .span12
                 h1 Tehingud
@@ -132,12 +188,14 @@ block content
                                 th Toode
                                 th Hind
                                 th Kogus
+                                th
                         tbody#trans-tbody
                             each product in products
-                                tr
+                                tr(id='#{product._id}_product') 
                                     td= product.name
                                     td #{product.price} €
                                     td= product.quantity
+                                    td: a.btn.btn-danger.btn-small.removeProduct(data-product='#{product._id}') Kustuta
                 a.btn(href='#changeWarehouse', role='button', data-toggle='modal') Muuda laoseisu
                 #changeWarehouse.modal(tabindex='-1', role='dialog', aria-labelledby='changeWarehouseLabel', aria-hidden='true', style='display: none;')
                     .modal-header
@@ -148,13 +206,22 @@ block content
                             .control-group
                                 label.control-label(for='inputProduct') Toode
                                 .controls
-                                    select(name='name')
-                                        option Õlu
-                                        option Kali/Limonaad
+                                    select#inputProduct(name='name')
+                                        each product in products
+                                            option(value='#{product.name}') #{product.name}
+                                        option(value='') Uus
+                            .control-group#productName(style='display:none;')
+                                label.control-label(for='inputName') Nimi
+                                .controls
+                                    input#inputName(type='text', placeholder='Toote nimi',name='newName')
+                            .control-group#productPrice(style='display:none;')
+                                label.control-label(for='inputPrice') Hind
+                                .controls
+                                    input#inputPrice(type='text', placeholder='Hind',name='price')
                             .control-group
                                 label.control-label(for='inputQty') Laoseis
                                 .controls
-                                    input#inputQty(type='text', placeholder='10',name='quantity')
+                                    input#inputQty(type='text', placeholder='Kogus',name='quantity')
                     .modal-footer
                         button.btn(data-dismiss='modal', aria-hidden='true') Sulge
                         button#saveWarehouse.btn.btn-primary Salvesta
