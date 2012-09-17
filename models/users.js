@@ -5,6 +5,10 @@ exports.getAll = function(callback){
 	users.find(callback);
 }
 
+exports.get = function(id,callback){
+    users.findOne({_id: db.ObjectId(id)}, callback);
+}
+
 exports.getUser = function(fullName,callback){
     var user = userFromFullName(fullName);
     users.findOne({firstname: user.firstname, lastname: user.lastname}, callback);
@@ -13,6 +17,13 @@ exports.getUser = function(fullName,callback){
 exports.save = function(user,callback){
     console.log(user);
     users.save(user, callback);
+}
+
+exports.update = function(id,user,callback){
+    console.log("Updating user: "+id);
+    users.update({_id: db.ObjectId(id)},
+        {$set: {firstname: user.firstname, lastname: user.lastname, beername: user.beername, status: user.status}},
+        callback);
 }
 
 exports.remove = function(id,callback){

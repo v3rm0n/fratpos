@@ -15,8 +15,11 @@ block content
             $("#main-nav li a ").click(function(){
                 navigate($(this).attr("href"));
             });
-            $("#createUser").click(function(){
-                $("#createUserForm").submit();
+            $("#addUser").click(function(){
+                $.get("/users/change", function(data){
+                    $("#changeUserDiv").html(data);
+                    $("#changeUser").modal();
+                });
             });
             $("#saveWarehouse").click(function(){
                 $("#changeWarehouseForm").submit();
@@ -27,6 +30,13 @@ block content
                     if(data.status === 'success'){
                         $("tr#"+id+"_user").remove();
                     }
+                });
+            });
+            $("a.changeUser").click(function(){
+                var id = $(this).data("user");
+                $.get("/users/change",{id: id}, function(data){
+                    $("#changeUserDiv").html(data);
+                    $("#changeUser").modal();
                 });
             });
             $("a.changeBalance").click(function(){
@@ -96,38 +106,11 @@ block content
                                                 | Muuda 
                                                 span.caret
                                               ul.dropdown-menu
+                                                li: a.changeUser(data-user='#{user._id}') Muuda kasutajat
                                                 li: a.changeBalance(href='#changeBalanceModal', role='button', data-toggle='modal', data-user='#{user._id}', data-balance='#{user.balance}') Muuda saldot
                                                 li: a.deleteUser(data-user='#{user._id}') Kustuta
-                a.btn.btn-primary(href='#newUser', role='button', data-toggle='modal') Lisa kasutaja
-                #newUser.modal(tabindex='-1', role='dialog', aria-labelledby='addUserLabel', aria-hidden='true', style='display: none;')
-                    .modal-header
-                        button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
-                        h3#addUserLabel Lisa kasutaja
-                    .modal-body
-                        form#createUserForm.form-horizontal(action='/users', method='post')
-                            .control-group
-                                label.control-label(for='inputStatus') Staatus
-                                .controls
-                                    select(name='status')
-                                        option reb!
-                                        option ksv!
-                                        option vil!
-                                        option kül!
-                            .control-group
-                                label.control-label(for='inputFirstname') Eesnimi
-                                .controls
-                                    input#inputFirstname(type='text', placeholder='Eesnimi', name='firstname')
-                            .control-group
-                                label.control-label(for='inputLastname') Perenimi
-                                .controls
-                                    input#inputLastname(type='text', placeholder='Perenimi', name='lastname')
-                            .control-group
-                                label.control-label(for='inputBeername') Õllenimi
-                                .controls
-                                    input#inputBeername(type='text', placeholder='Õllenimi', name='beername')
-                    .modal-footer
-                        button.btn(data-dismiss='modal', aria-hidden='true') Sulge
-                        button#createUser.btn.btn-primary Salvesta
+                button#addUser.btn.btn-primary Lisa kasutaja
+                #changeUserDiv
                 #changeBalanceModal.modal(tabindex='-1', role='dialog', aria-labelledby='changeBalanceLabel', aria-hidden='true', style='display: none;')
                     .modal-header
                         button.close(type='button', data-dismiss='modal', aria-hidden='true') ×

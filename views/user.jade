@@ -1,0 +1,34 @@
+#changeUser.modal(tabindex='-1', role='dialog', aria-labelledby='changeUserLabel', aria-hidden='true')
+    .modal-header
+        button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+        h3#changeUserLabel Lisa kasutaja
+    .modal-body
+        form#createUserForm.form-horizontal(action='/users', method='post')
+            input(type='hidden', name='id', value='#{user._id}')
+            .control-group
+                label.control-label(for='inputStatus') Staatus
+                .controls
+                    select(name='status', value='#{user.status}')
+                        option reb!
+                        option ksv!
+                        option vil!
+                        option kül!
+            .control-group
+                label.control-label(for='inputFirstname') Eesnimi
+                .controls
+                    input#inputFirstname(type='text', placeholder='Eesnimi', name='firstname', value='#{user.firstname}')
+            .control-group
+                label.control-label(for='inputLastname') Perenimi
+                .controls
+                    input#inputLastname(type='text', placeholder='Perenimi', name='lastname', value='#{user.lastname}')
+            .control-group
+                label.control-label(for='inputBeername') Õllenimi
+                .controls
+                    input#inputBeername(type='text', placeholder='Õllenimi', name='beername', value='#{user.beername}')
+    .modal-footer
+        button.btn(data-dismiss='modal', aria-hidden='true') Sulge
+        button#saveUser.btn.btn-primary Salvesta
+script
+    $("#saveUser").click(function(){
+        $("#createUserForm").submit();
+    });

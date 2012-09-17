@@ -9,6 +9,7 @@ module.exports = function(app) {
     //Ajax requests
 	app.get('/users', users.index);
     app.post('/users', users.add);
+    app.get('/users/change', users.change);
     app.post('/users/remove', users.remove);
     app.get('/users/balance', users.balance);
     app.post('/users/balance', users.changeBalance);

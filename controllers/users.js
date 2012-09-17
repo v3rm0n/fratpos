@@ -12,18 +12,40 @@ exports.add = function(req,res){
         status: req.body.status,
         firstname: req.body.firstname,
         lastname: req.body.lastname,
-        beername: req.body.beername,
-        balance: 0
+        beername: req.body.beername
     }
-    users.save(user,function(err){
-        res.redirect('/admin#users');
-    });
+    var id = req.body.id;
+    if(id != ''){
+        users.update(id,user,function(err){
+            res.redirect('/admin#users');
+        });
+    }
+    else {
+        user.balance = 0;
+        users.save(user,function(err){
+            res.redirect('/admin#users');
+        }); 
+    }
 }
 
 exports.remove = function(req,res){
     users.remove(req.body.id, function(err){
         res.send({status: err == null ? 'success' : err});
     });
+}
+
+exports.change = function(req,res){
+    users.get(req.query.id, function(err,user){
+        if(user == null)
+            user = {
+                _id: '',
+                firstname: '',
+                lastname: '',
+                beername: '',
+                status: ''
+            };
+        res.render('user', {user: user});
+    })
 }
 
 exports.changeBalance = function(req,res){
