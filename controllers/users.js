@@ -35,8 +35,18 @@ exports.remove = function(req,res){
 }
 
 exports.change = function(req,res){
-    users.get(req.query.id, function(err,user){
-        if(user == null)
+    if(req.query.id == null){
+        renderUser(null);
+    }
+    else {
+        users.get(req.query.id, function(err,user){
+            renderUser(user);
+        });
+    }
+}
+
+function renderUser(user){
+    if(user == null) {
             user = {
                 _id: '',
                 firstname: '',
@@ -44,8 +54,8 @@ exports.change = function(req,res){
                 beername: '',
                 status: ''
             };
-        res.render('user', {user: user});
-    })
+        }
+    res.render('user', {user: user});
 }
 
 exports.changeBalance = function(req,res){
