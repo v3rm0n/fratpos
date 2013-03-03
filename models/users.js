@@ -39,7 +39,7 @@ exports.changeBalance = function(id, balance, callback){
 var userFromFullName = function(fullName){
     //status! Firstname Lastname (Beername)
     console.log(fullName);
-    var params = /([\wäöõü]*!) ([\wöäüõ]*) ([\wöäüõ]*)/i.exec(fullName);
+    var params = /([\wäöõü]*!?) ([\wöäüõ]*) ([\wöäüõ]*)/i.exec(fullName);
     return {
         status: params[1],
         firstname: params[2],
