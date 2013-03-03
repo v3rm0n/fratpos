@@ -36,16 +36,16 @@ exports.remove = function(req,res){
 
 exports.change = function(req,res){
     if(req.query.id == null){
-        renderUser(null);
+        renderUser(null, res);
     }
     else {
         users.get(req.query.id, function(err,user){
-            renderUser(user);
+            renderUser(user, res);
         });
     }
 }
 
-function renderUser(user){
+function renderUser(user, res){
     if(user == null) {
             user = {
                 _id: '',
