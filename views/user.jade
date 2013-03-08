@@ -32,3 +32,8 @@ script
     $("#saveUser").click(function(){
         $("#createUserForm").submit();
     });
+    $('#createUserForm input').keydown(function(e) {
+        if (e.keyCode == 13) {
+            $('#createUserForm').submit();
+        }
+    });

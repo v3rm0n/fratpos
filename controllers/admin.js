@@ -1,4 +1,5 @@
 var products = require('../models/products');
+var transactions = require('../models/transactions');
 //Admin liides
 exports.index = function(req,res){
     var users = require('../models/users');
@@ -32,6 +33,12 @@ exports.changeProduct = function(req,res){
 
 exports.removeProduct = function(req,res){
     products.remove(req.body.id, function(err){
+        res.send({status: err == null ? 'success' : err});
+    });
+}
+
+exports.reset = function(req,res){
+    transactions.reset(function(err){
         res.send({status: err == null ? 'success' : err});
     });
 }

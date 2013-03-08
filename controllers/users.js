@@ -2,8 +2,8 @@ var users = require('../models/users');
 
 exports.index = function(req,res){
 	users.getAll(function(err, docs) {
-        var names = docs.map(function(item){ return item.status+' '+item.firstname+' '+item.lastname+' ('+item.beername+')';});
-        res.send(names);
+        var idAndNames = docs.map(function(item){ return {id: item._id, name: users.getUserFullName(item)};});
+        res.send(idAndNames);
     });
 }
 
@@ -64,8 +64,8 @@ exports.changeBalance = function(req,res){
     });
 }
 
-exports.balance = function(req,res){
-    users.getUser(req.query.fullName,function(err,user){
-        res.send({status: err == null ? 'success' : err, balance: user.balance});
-    })
+exports.reset = function(req,res){
+    users.resetBalances(function(err){
+        res.send({status: err == null ? 'success' : err});
+    });
 }

@@ -21,8 +21,29 @@ block content
                     $("#changeUser").modal();
                 });
             });
+            $("#resetBalance").click(function(){
+                var reset = window.confirm("Oled kindel, et tahad kõikide liikmete saldosi nullida?");
+                if(reset){
+                    $.post("/users/reset", function(){
+                        window.location.reload();
+                    })
+                }
+            });
+            $("#resetTransactions").click(function(){
+                var reset = window.confirm("Oled kindel, et tahad kõik tehingud eemaldada?");
+                if(reset){
+                    $.post("/transaction/reset", function(){
+                        window.location.reload();
+                    });
+                }
+            });
             $("#saveWarehouse").click(function(){
                 $("#changeWarehouseForm").submit();
+            });
+            $('#changeWarehouseForm input').keydown(function(e) {
+                if (e.keyCode == 13) {
+                    $('#changeWarehouseForm').submit();
+                }
             });
             $("a.deleteUser").click(function(){
                 var id = $(this).data("user");
@@ -45,6 +66,11 @@ block content
             });
             $("#saveBalance").click(function(){
                 $("#changeBalanceForm").submit();
+            });
+            $('#changeBalanceForm input').keydown(function(e) {
+                if (e.keyCode == 13) {
+                    $('#changeBalanceForm').submit();
+                }
             });
             var toggleProductInputs = function(toggle){
                 $("#productName").toggle(toggle);
@@ -110,6 +136,8 @@ block content
                                                 li: a.changeBalance(href='#changeBalanceModal', role='button', data-toggle='modal', data-user='#{user._id}', data-balance='#{user.balance}') Muuda saldot
                                                 li: a.deleteUser(data-user='#{user._id}') Kustuta
                 button#addUser.btn.btn-primary Lisa kasutaja
+                &nbsp;
+                button#resetBalance.btn.btn-danger Nulli saldod
                 #changeUserDiv
                 #changeBalanceModal.modal(tabindex='-1', role='dialog', aria-labelledby='changeBalanceLabel', aria-hidden='true', style='display: none;')
                     .modal-header
@@ -137,11 +165,12 @@ block content
                                 th Makseviis
                         tbody#trans-tbody
                             each transaction in transactions
-                                tr
+                                tr(class='#{transaction.invalid ? 'error' : ''}')
                                     td= transaction.time.toDateString()+" "+transaction.time.getHours()+":"+transaction.time.getMinutes()
                                     td= transaction.user
                                     td #{transaction.sum} €
                                     td= transaction.type
+                button#resetTransactions.btn.btn-danger Nulli tehingud
         .row-fluid#warehouse(style='display:none;')
             .span12
                 h1 Laoseis

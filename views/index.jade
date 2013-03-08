@@ -11,19 +11,16 @@ block content
                 $("#inputIcon").typeahead({
                     source: function(query, process){
                                 $.get("/users",{query: query},function(data){
-                                    process(data);
+                                    var transformed = data.map(function(user){ return user.name;});
+                                    process(transformed);
                                 });
                             },
                     updater: function(item){
-                        userExists(function(exists){
+                        userExists(function(exists, id){
                             $("#inputIcon").closest(".control-group").toggleClass("error",!exists);
                             $("#inputIcon").closest(".control-group").toggleClass("success",exists);
+                            $("#inputIcon").data("user", id);
                             showRebButton();
-                            $.get("/users/balance",{fullName: item},function(data){
-                                var hasBalance = data.status === 'success' && data.balance > 0;
-                                 $("#balancePayment").toggle(hasBalance);
-                                 $("#debtPayment").toggle(!hasBalance);
-                            })
                         });
                         return item;
                     }
@@ -36,8 +33,18 @@ block content
                 function userExists(callback){
                     $.get("/users", function(data){
                         var name = $("#inputIcon").val();
-                        var exists = $.inArray(name,data) != -1;
-                        callback(exists);
+                        var exists = false;
+                        var id = -1;
+                        for(i = 0; i<data.length;i++){
+                            var user = data[i];
+                            console.log(user);
+                            if(user.name === name) {
+                                exists = true;
+                                id = user.id;
+                                break;
+                            }
+                        }
+                        callback(exists, id);
                     });
                 }
                 function calculateTotal(){
@@ -85,10 +92,10 @@ block content
                     }
                     userExists(function(exists){
                         if(exists){
-                            $.post("/transaction",{products: products, type: type, user: $("#inputIcon").val()}, function(data){
+                            $.post("/transaction",{products: products, type: type, user: $("#inputIcon").data("user")}, function(data){
                                 if(data.status === 'success'){
                                     var d = new Date();
-                                    var transaction = $("<tr class ='success'><td>"+d.getHours()+":"+d.getMinutes()+"</td><td>"+$("#inputIcon").val()+"</td><td>"+data.sum+" €</td><td>"+type+"</td></tr>");
+                                    var transaction = $("<tr data-transaction="+data.id+" class='success'><td>"+d.getHours()+":"+d.getMinutes()+"</td><td>"+$("#inputIcon").val()+"</td><td>"+data.sum+" €</td><td>"+type+"</td></tr>");
                                     transaction.prependTo("#trans-tbody");
                                     setTimeout(function(){
                                         transaction.removeClass("success");
@@ -112,13 +119,25 @@ block content
                     addTransaction(getProducts(),$(this).data("type"));
                 });
                 $("#one-beer").click(function(){
-                    addTransaction([{name: "Õlu", quantity: 1, price: 1}],"Sula");
+                    addTransaction([{name: "Õlu", quantity: 1}],"Sula");
                 });
                 $("#fox-beer").click(function(){
-                    addTransaction([{name: "Õlu", quantity: 1, price: 0}],"Sula");
+                    addTransaction([{name: "Õlu", quantity: 1, price: 0}],"Rebaseõlu");
                 });
                 //Tooltipid
                 $("#one-beer,#fox-beer").tooltip();
+                //Tehingute invalideerimine
+                $("#trans-tbody").on("click", "tr", function(){
+                    var confirmed = window.confirm("Kas oled kindel, et tahad selle tehingu tagasi võtta?");
+                    if(confirmed){
+                        var row = $(this);
+                        $.post("/transaction/invalid", {id: row.data("transaction")}, function(data){
+                            if(data.status === "success"){
+                                row.addClass("error");
+                            }
+                        });
+                    }
+                });
             });
         .container-fluid
             .row-fluid
@@ -134,7 +153,7 @@ block content
                                     i.icon-user
                                 input#inputIcon(type='text', placeholder='Kliendi nimi')
                                 button#fox-beer.btn.btn-success(title='Vajuta siia kui tahad võtta rebaseõlu', style='display:none;') Rebaseõlu
-                                button#one-beer.btn.btn-primary(title='Vajuta siia kui tahad osta ainult ühe õlle') Õlu      
+                                button#one-beer.btn.btn-primary(title='Vajuta siia kui tahad osta ainult ühe õlle') Õlu
                 .span7
                     #noname-error.alert.alert-error(style='display:none;')
                         strong Viga! 
@@ -186,9 +205,7 @@ block content
                                                     |  €
                                     .btn-group
                                         button.payButton.btn.btn-primary(data-type='Sula') Sulas
-                                        button#balancePayment.payButton.btn(data-type='Ettemaks', style='display:none;') Ettemaksuga
-                                        button#debtPayment.payButton.btn.btn-danger(data-type='Võlg', style='display:none;') Võlgu
-                                        button.payButton.btn(data-type='Mobiil') Mobiiliga
+                                        button.payButton.btn(data-type='Ettemaks/Võlg') Ettemaks/Võlg
             .row-fluid
                 .span12
                     h4 Viimased tehingud
@@ -203,7 +220,7 @@ block content
                                 th Makseviis
                         tbody#trans-tbody
                             each transaction in transactions
-                                tr
+                                tr(data-transaction='#{transaction._id}', class='#{transaction.invalid ? 'error' : ''}') 
                                     td= transaction.time.getHours()+":"+transaction.time.getMinutes()
                                     td= transaction.user
                                     td #{transaction.sum} €

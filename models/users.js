@@ -36,6 +36,20 @@ exports.changeBalance = function(id, balance, callback){
     users.update({_id: db.ObjectId(id)}, {$set: {balance: balance}},callback);
 }
 
+exports.incrementBalance = function(id, increment, callback){
+    console.log('Incrementing user '+id+'balance by '+increment);
+    users.update({_id: db.ObjectId(id)}, {$inc: {balance: increment}},callback);
+}
+
+exports.resetBalances = function(callback){
+    users.update({},{$set: {balance: 0}}, {multi: true}, callback);
+}
+
+exports.getUserFullName = function(user){
+    var fullName = user.status+' '+user.firstname+' '+user.lastname+' ('+user.beername+')';
+    return fullName;
+}
+
 var userFromFullName = function(fullName){
     //status! Firstname Lastname (Beername)
     console.log(fullName);
