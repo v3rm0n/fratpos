@@ -55,7 +55,7 @@ exports.invalid = function(id, callback){
 var incrementBalance = function(transactionId, callback) {
     console.log('Updating user balance');
     transactions.findOne({_id: db.ObjectId(transactionId)}, function(err, transaction){
-        if(err != null) {
+        if(err != null  || transaction.type == "Sula") {
             callback(err);
             return;
         }

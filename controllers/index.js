@@ -50,7 +50,12 @@ var decrementProductsAndBalance = function(transaction, callback){
             callbacks--;
             if(callbacks == 0){
                 var sum = transactions.getTransactionSum(transaction);
-                users.incrementBalance(transaction.user, -sum, callback);
+                if(transaction.type != "Sula"){
+                    users.incrementBalance(transaction.user, -sum, callback);
+                }
+                else {
+                    callback(err);
+                }
             }
             else if(err != null){
                 callback(err);
