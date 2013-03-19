@@ -3,8 +3,12 @@ var transactions = db.collection('transactions');
 var users = require('../models/users');
 var products = require('../models/products');
 
-exports.getAll = function(callback){
-    transactions.find({hidden: false}).sort({time: -1},function(err,docs){
+exports.getAll = function(callback) {
+    exports.getWithFilter({hidden: false}, callback);
+}
+
+exports.getWithFilter = function(filter, callback){
+    transactions.find(filter).sort({time: -1},function(err,docs){
         docs.map(function(item){ 
             item.sum = exports.getTransactionSum(item);
             users.get(item.user, function(err, user){
@@ -35,51 +39,52 @@ exports.reset = function(callback){
 
 exports.invalid = function(id, callback){
     console.log('Marking transaction '+id+' invalid');
-    transactions.update({_id: db.ObjectId(id)}, {$set: {invalid: true}}, function(err){
-        if(err != null){
+    transactions.findOne({_id: db.ObjectId(id)}, function(err, transaction){
+        if(transaction.invalid){
             callback(err);
-            return;
         }
-        incrementBalance(id, function(err){
-            if(err != null){
-                callback(err);
-                return;
-            }
-            updateProductQuantities(id, function(err){
-                callback(err);
-            });
-        });
-    });
-}
-
-var incrementBalance = function(transactionId, callback) {
-    console.log('Updating user balance');
-    transactions.findOne({_id: db.ObjectId(transactionId)}, function(err, transaction){
-        if(err != null  || transaction.type == "Sula") {
-            callback(err);
-            return;
-        }
-        var sum = exports.getTransactionSum(transaction);
-        users.incrementBalance(transaction.user, sum, callback);
-    });
-}
-
-var updateProductQuantities = function(transactionId, callback) {
-    console.log('Updating product quantities');
-    transactions.findOne({_id: db.ObjectId(transactionId)}, function(err, transaction){
-        if(err != null) {
-            callback(err);
-            return;
-        }
-        var callbacks = transaction.products.length;
-        transaction.products.forEach(function(product){
-            products.incQuantity(product.name, product.quantity, function(err){
-                callbacks--;
-                if(callbacks == 0 || err != null){
+        else {
+            transactions.update({_id: db.ObjectId(id)}, {$set: {invalid: true}}, function(err){
+                if(err != null){
                     callback(err);
                     return;
                 }
+                incrementBalance(transaction, function(err){
+                    if(err != null){
+                        callback(err);
+                    }
+                    else {
+                        updateProductQuantities(transaction, function(err){
+                            callback(err);
+                        });
+                    }
+                });
             });
+        }
+    });
+}
+
+var incrementBalance = function(transaction, callback) {
+    console.log('Updating user balance');
+    if(transaction.type == "Sula") {
+        callback();
+    }
+    else {
+        var sum = exports.getTransactionSum(transaction);
+        users.incrementBalance(transaction.user, sum, callback);
+    }
+}
+
+var updateProductQuantities = function(transaction, callback) {
+    console.log('Updating product quantities');
+    var callbacks = transaction.products.length;
+    transaction.products.forEach(function(product){
+        products.incQuantity(product.name, product.quantity, function(err){
+            callbacks--;
+            if(callbacks == 0 || err != null){
+                callback(err);
+                return;
+            }
         });
     });
 }

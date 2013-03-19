@@ -3,9 +3,10 @@ extends layout
 block content
         script
             $(function(){
+                var delay = 1000;
                 //Üldine veateade ajaxi päringutel
                 $(document).ajaxError(function(){
-                    $("#ajax-error").show().delay(2000).slideUp();
+                    $("#ajax-error").show().delay(delay).slideUp();
                 });
                 //Otsing
                 $("#inputIcon").typeahead({
@@ -37,7 +38,6 @@ block content
                         var id = -1;
                         for(i = 0; i<data.length;i++){
                             var user = data[i];
-                            console.log(user);
                             if(user.name === name) {
                                 exists = true;
                                 id = user.id;
@@ -87,7 +87,7 @@ block content
                     var ok = false;
                     products.map(function(prod){if(prod.quantity > 0){ok=true;}});
                     if(!ok){
-                        $("#products-error").show().delay(2000).slideUp();
+                        $("#products-error").show().delay(delay).slideUp();
                         return;
                     }
                     userExists(function(exists){
@@ -99,18 +99,18 @@ block content
                                     transaction.prependTo("#trans-tbody");
                                     setTimeout(function(){
                                         transaction.removeClass("success");
-                                    },2000);
+                                    },delay);
                                     $(".qty").html(" 0 ");
                                     $("#sum").html("0");
-                                    $("#success-message").show().delay(2000).slideUp();
+                                    $("#success-message").show().delay(delay).slideUp();
                                 }
                                 else{
-                                    $("#transaction-error").show().delay(2000).slideUp();
+                                    $("#transaction-error").show().delay(delay).slideUp();
                                 }
                             });
                         }
                         else{
-                            $("#noname-error").show().delay(2000).slideUp();
+                            $("#noname-error").show().delay(delay).slideUp();
                         }
                     });
                 }
@@ -124,8 +124,17 @@ block content
                 $("#fox-beer").click(function(){
                     addTransaction([{name: "Õlu", quantity: 1, price: 0}],"Rebaseõlu");
                 });
+                $("#transactions").click(function(){
+                    userExists(function(exists){
+                        if(exists){
+                        }
+                        else{
+                            $("#noname-error").show().delay(delay).slideUp();
+                        }
+                    });
+                });
                 //Tooltipid
-                $("#one-beer,#fox-beer").tooltip();
+                $("#one-beer,#fox-beer,#transactions").tooltip();
                 //Tehingute invalideerimine
                 $("#trans-tbody").on("click", "tr", function(){
                     var confirmed = window.confirm("Kas oled kindel, et tahad selle tehingu tagasi võtta?");
@@ -133,7 +142,8 @@ block content
                         var row = $(this);
                         $.post("/transaction/invalid", {id: row.data("transaction")}, function(data){
                             if(data.status === "success"){
-                                row.addClass("error");
+                                $("#revert-message").show().delay(delay).slideUp();
+                                row.addClass("error").delay(delay).slideUp();
                             }
                         });
                     }
@@ -170,6 +180,9 @@ block content
                     #success-message.alert.alert-success(style='display:none;')
                         strong Õnnestus! 
                         | Kõik on korras, tooted läksid kirja.
+                    #revert-message.alert.alert-success(style='display:none;')
+                        strong Õnnestus! 
+                        | Tehing eemaldatud nimekirjast.
             br
             .row-fluid
                 .span12
