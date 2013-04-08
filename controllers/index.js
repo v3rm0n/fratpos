@@ -3,7 +3,7 @@ var products = require('../models/products');
 var users = require('../models/users');
 //Kassa
 exports.index = function(req, res){
-    transactions.getWithFilter({hidden: true, invalid: false}, function(err,trans){
+    transactions.getWithFilter({hidden: false, invalid: false}, function(err,trans){
         products.getAll(function(err,prods){
             res.render('index', { title: 'Kassa', transactions: trans, products: prods});
         });

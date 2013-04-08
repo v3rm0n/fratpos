@@ -102,6 +102,7 @@ block content
                                     },delay);
                                     $(".qty").html(" 0 ");
                                     $("#sum").html("0");
+                                    $("#inputIcon").focus().val("");
                                     $("#success-message").show().delay(delay).slideUp();
                                 }
                                 else{
@@ -118,23 +119,6 @@ block content
                 $(".payButton").click(function(){
                     addTransaction(getProducts(),$(this).data("type"));
                 });
-                $("#one-beer").click(function(){
-                    addTransaction([{name: "Õlu", quantity: 1}],"Sula");
-                });
-                $("#fox-beer").click(function(){
-                    addTransaction([{name: "Õlu", quantity: 1, price: 0}],"Rebaseõlu");
-                });
-                $("#transactions").click(function(){
-                    userExists(function(exists){
-                        if(exists){
-                        }
-                        else{
-                            $("#noname-error").show().delay(delay).slideUp();
-                        }
-                    });
-                });
-                //Tooltipid
-                $("#one-beer,#fox-beer,#transactions").tooltip();
                 //Tehingute invalideerimine
                 $("#trans-tbody").on("click", "tr", function(){
                     var confirmed = window.confirm("Kas oled kindel, et tahad selle tehingu tagasi võtta?");
@@ -158,12 +142,7 @@ block content
                 .span5
                     .control-group
                         .controls
-                            .input-prepend.input-append
-                                span.add-on
-                                    i.icon-user
-                                input#inputIcon(type='text', placeholder='Kliendi nimi')
-                                button#fox-beer.btn.btn-success(title='Vajuta siia kui tahad võtta rebaseõlu', style='display:none;') Rebaseõlu
-                                button#one-beer.btn.btn-primary(title='Vajuta siia kui tahad osta ainult ühe õlle') Õlu
+                            input#inputIcon(type='text', placeholder='Kliendi nimi')
                 .span7
                     #noname-error.alert.alert-error(style='display:none;')
                         strong Viga! 
@@ -186,39 +165,35 @@ block content
             br
             .row-fluid
                 .span12
-                    #accordion.accordion
-                        .accordion-group
-                            .accordion-heading
-                                a.accordion-toggle(data-toggle='collapse', data-parent='#accordion', href='#collapseOne') Täpsemalt
-                            #collapseOne.accordion-body.collapse.input
-                                .accordion-inner 
-                                    table.table.table-bordered.table-hover
-                                        thead
-                                            tr
-                                                th Toode
-                                                th Kogus
-                                                th Hind
-                                        tbody#prod-tbody
-                                            for product in products
-                                                tr.product
-                                                    td.prod-name= product.name
-                                                    td 
-                                                        i.gi-circle_plus.prod-add
-                                                        span.qty  0 
-                                                        i.gi-circle_minus.prod-remove
+                    table.table.table-bordered.table-hover
+                        thead
+                            tr
+                                th Toode
+                                th Kogus
+                                th Hind
+                        tbody#prod-tbody
+                            for product in products
+                                tr.product
+                                    td.prod-name= product.name
+                                    td 
+                                        i.gi-circle_plus.prod-add
+                                        span.qty  0 
+                                        i.gi-circle_minus.prod-remove
 
-                                                    td 
-                                                        span.price= product.price
-                                                        |  €
-                                            tr
-                                                th
-                                                th Kokku
-                                                th
-                                                    span#sum 0
-                                                    |  €
-                                    .btn-group
-                                        button.payButton.btn.btn-primary(data-type='Sula') Sulas
-                                        button.payButton.btn(data-type='Ettemaks/Võlg') Ettemaks/Võlg
+                                    td 
+                                        span.price= product.price
+                                        |  €
+                            tr
+                                th
+                                th Kokku
+                                th
+                                    span#sum 0
+                                    |  €
+                    .btn-group
+                        button.payButton.btn.btn-primary(data-type='Sula') Sulas
+                        button.payButton.btn(data-type='Ettemaks/Võlg') Ettemaks/Võlg
+                        button.payButton.btn.btn-info(data-type='Rebaseõlu') Rebaseõlu
+            br
             .row-fluid
                 .span12
                     h4 Viimased tehingud

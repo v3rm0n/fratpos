@@ -2,6 +2,7 @@ var db = require('./db');
 var transactions = db.collection('transactions');
 var users = require('../models/users');
 var products = require('../models/products');
+var async = require('async');
 
 exports.getAll = function(callback) {
     exports.getWithFilter({hidden: false}, callback);
@@ -9,13 +10,21 @@ exports.getAll = function(callback) {
 
 exports.getWithFilter = function(filter, callback){
     transactions.find(filter).sort({time: -1},function(err,docs){
-        docs.map(function(item){ 
-            item.sum = exports.getTransactionSum(item);
-            users.get(item.user, function(err, user){
-                item.user = users.getUserFullName(user);
-            });
+        if(err != null){
+            callback(err);
+            return;
+        }
+        async.map(docs, addSumAndUserToTransaction, function(err,docs){
+            callback(err,docs);
         });
-        callback(err,docs);
+    });
+}
+
+var addSumAndUserToTransaction = function(item, callback){
+    item.sum = exports.getTransactionSum(item);
+    users.get(item.user, function(err, user){
+        item.user = users.getUserFullName(user);
+        callback(null, item);
     });
 }
 
