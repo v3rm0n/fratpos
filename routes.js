@@ -20,4 +20,10 @@ module.exports = function(app) {
     app.post('/transaction', index.transaction);
     app.post('/transaction/invalid', index.invalid);
     app.post('/transaction/reset', admin.reset);
+
+    app.post('/status', admin.addStatus);
+    app.post('/status/remove', admin.removeStatus);
+
+    app.post('/paytype', admin.addPaytype);
+    app.post('/paytype/remove', admin.removePaytype);
 }

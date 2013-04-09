@@ -77,14 +77,37 @@ block content
                 $("#productPrice").toggle(toggle);
             }
             toggleProductInputs($("#inputProduct").val() == '');
-            $("#inputProduct").change(function(){
-                toggleProductInputs($(this).val() == '');
+            $(".inputProduct").dropkick({
+                change: function(value, label){
+                    console.log(value);
+                    toggleProductInputs(value == '');
+                }
             });
             $("a.removeProduct").click(function(){
                 var id = $(this).data("product");
                 $.post("/warehouse/remove",{id: id},function(data){
+                    window.location.reload();
+                });
+            });
+            $("#saveStatus").click(function(){
+                $("#addStatusForm").submit();
+            });
+            $("a.removeStatus").click(function(){
+                var id = $(this).data("status");
+                $.post("/status/remove",{id: id},function(data){
                     if(data.status === 'success'){
-                        $("tr#"+id+"_product").remove();
+                        $("tr#"+id+"_status").remove();
+                    }
+                });
+            });
+            $("#savePaytype").click(function(){
+                $("#addPaytypeForm").submit();
+            });
+            $("a.removePaytype").click(function(){
+                var id = $(this).data("paytype");
+                $.post("/paytype/remove",{id: id},function(data){
+                    if(data.status === 'success'){
+                        $("tr#"+id+"_paytype").remove();
                     }
                 });
             });
@@ -92,19 +115,24 @@ block content
     .navbar.navbar-inverse.navbar-fixed-top
         .navbar-inner
             .container-fluid
-              a.btn.btn-navbar(data-toggle='collapse', data-target='.nav-collapse')
+              button.btn.btn-navbar(data-toggle='collapse', data-target='.nav-collapse')
                 span.icon-bar
                 span.icon-bar
                 span.icon-bar
-              a.brand(href='/') Kassa
               .nav-collapse.collapse
                 ul#main-nav.nav
-                  li.active
-                    a(href='#users') Kasutajad
-                  li
-                    a(href='#transactions') Tehingud
-                  li
-                    a(href='#warehouse') Laoseis
+                    li
+                        a(href='/') Kassa
+                    li.active
+                        a(href='#users') Kasutajad
+                    li
+                        a(href='#transactions') Tehingud
+                    li
+                        a(href='#warehouse') Laoseis
+                    li
+                        a(href='#paytypes') Makseviisid
+                    li
+                        a(href='#statuses') Staatused
     .container-fluid
         .row-fluid#users
             .span12
@@ -128,16 +156,16 @@ block content
                                     td #{user.balance} €
                                     td
                                         .btn-group
-                                            a.btn.btn-small.dropdown-toggle(data-toggle='dropdown', href='#')
+                                            a.btn.dropdown-toggle(data-toggle='dropdown', href='#')
                                                 | Muuda 
                                                 span.caret
                                               ul.dropdown-menu
                                                 li: a.changeUser(data-user='#{user._id}') Muuda kasutajat
                                                 li: a.changeBalance(href='#changeBalanceModal', role='button', data-toggle='modal', data-user='#{user._id}', data-balance='#{user.balance}') Muuda saldot
                                                 li: a.deleteUser(data-user='#{user._id}') Kustuta
-                button#addUser.btn.btn-primary Lisa kasutaja
+                button#addUser.btn.btn-large Lisa kasutaja
                 &nbsp;
-                button#resetBalance.btn.btn-danger Nulli saldod
+                button#resetBalance.btn.btn-danger.btn-large Nulli saldod
                 #changeUserDiv
                 #changeBalanceModal.modal(tabindex='-1', role='dialog', aria-labelledby='changeBalanceLabel', aria-hidden='true', style='display: none;')
                     .modal-header
@@ -156,39 +184,45 @@ block content
         .row-fluid#transactions(style='display:none;')
             .span12
                 h1 Tehingud
-                table.table.table-bordered.table-hover
-                        thead
-                            tr
-                                th Aeg
-                                th Nimi
-                                th Summa
-                                th Makseviis
-                        tbody#trans-tbody
-                            each transaction in transactions
-                                tr(class='#{transaction.invalid ? 'error' : ''}')
-                                    td= transaction.time.toDateString()+" "+transaction.time.getHours()+":"+transaction.time.getMinutes()
-                                    td= transaction.user
-                                    td #{transaction.sum} €
-                                    td= transaction.type
-                button#resetTransactions.btn.btn-danger Nulli tehingud
+                if transactions.length > 0
+                    table.table.table-bordered.table-hover
+                            thead
+                                tr
+                                    th Aeg
+                                    th Nimi
+                                    th Summa
+                                    th Makseviis
+                            tbody#trans-tbody
+                                each transaction in transactions
+                                    tr(class='#{transaction.invalid ? 'error' : ''}')
+                                        td= transaction.time.toDateString()+" "+transaction.time.getHours()+":"+transaction.time.getMinutes()
+                                        td= transaction.user
+                                        td #{transaction.sum} €
+                                        td= transaction.type
+                    button#resetTransactions.btn.btn-danger.btn-large Nulli tehingud
+                else
+                    p Käesoleval perioodil ei ole veel tehinguid tehtud.
         .row-fluid#warehouse(style='display:none;')
             .span12
                 h1 Laoseis
-                table.table.table-bordered.table-hover
-                        thead
-                            tr
-                                th Toode
-                                th Hind
-                                th Kogus
-                                th
-                        tbody#trans-tbody
-                            each product in products
-                                tr(id='#{product._id}_product') 
-                                    td= product.name
-                                    td #{product.price} €
-                                    td= product.quantity
-                                    td: a.btn.btn-danger.btn-small.removeProduct(data-product='#{product._id}') Kustuta
-                a.btn(href='#changeWarehouse', role='button', data-toggle='modal') Muuda laoseisu
+                if products.length > 0
+                    table.table.table-bordered.table-hover
+                            thead
+                                tr
+                                    th Toode
+                                    th Hind
+                                    th Kogus
+                                    th
+                            tbody#trans-tbody
+                                each product in products
+                                    tr(id='#{product._id}_product') 
+                                        td= product.name
+                                        td #{product.price} €
+                                        td= product.quantity
+                                        td: a.btn.btn-danger.removeProduct(data-product='#{product._id}') Kustuta
+                else
+                    p Tooteid ei ole. Uute toodete lisamiseks vajuta nuppu "Muuda laoseisu"
+                a.btn.btn-large(href='#changeWarehouse', role='button', data-toggle='modal') Muuda laoseisu
                 #changeWarehouse.modal(tabindex='-1', role='dialog', aria-labelledby='changeWarehouseLabel', aria-hidden='true', style='display: none;')
                     .modal-header
                         button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
@@ -198,7 +232,7 @@ block content
                             .control-group
                                 label.control-label(for='inputProduct') Toode
                                 .controls
-                                    select#inputProduct(name='name')
+                                    select#inputProduct.inputProduct.span7(name='name')
                                         each product in products
                                             option(value='#{product.name}') #{product.name}
                                         option(value='') Uus
@@ -217,3 +251,79 @@ block content
                     .modal-footer
                         button.btn(data-dismiss='modal', aria-hidden='true') Sulge
                         button#saveWarehouse.btn.btn-primary Salvesta
+        .row-fluid#paytypes(style='display:none;')
+            .span12
+                h1 Makseviisid
+                if paytypes.length > 0
+                    table.table.table-bordered.table-hover
+                            thead
+                                tr
+                                    th Nimetus
+                                    th Mõjutab saldot
+                                    th Lubatud staatusele
+                                    th
+                            tbody#trans-tbody
+                                each paytype in paytypes
+                                    tr(id='#{paytype._id}_paytype') 
+                                        td= paytype.name
+                                        td= paytype.affectsBalance ? 'Jah' : 'Ei'
+                                        td= paytype.allowedForStatus
+                                        td: a.btn.btn-danger.removePaytype(data-paytype='#{paytype._id}') Kustuta
+                else 
+                    p Makseviise ei ole. Lisamiseks vajuta nuppu "Lisa makseviis"
+                a.btn.btn-large(href='#addPaytype', role='button', data-toggle='modal') Lisa makseviis
+                #addPaytype.modal(tabindex='-1', role='dialog', aria-labelledby='addPaytypeLabel', aria-hidden='true', style='display: none;')
+                    .modal-header
+                        button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+                        h3#addPaytypeLabel Lisa makseviis
+                    .modal-body
+                        form#addPaytypeForm.form-horizontal(action='/paytype', method='post')
+                            .control-group
+                                label.control-label(for='paytypeName') Nimetus
+                                .controls
+                                    input#paytypeName(type='text', placeholder='Nimetus',name='name')
+                                .control-group
+                                label.control-label(for='affectsBalance') Mõjutab saldot
+                                .controls
+                                    label.checkbox(for='affectsBalance')
+                                        input#affectsBalance(type='checkbox',name='affectsBalance', checked=true)
+                                br
+                                label.control-label(for='affectsBalance') Lubatud staatustele
+                                .controls
+                                    each status in statuses
+                                        label.checkbox(for='#{status._id}_allowedForStatus')
+                                            input(id='#{status._id}_allowedForStatus', type='checkbox',name='allowedForStatus', value='#{status.name}', checked=true)
+                                            | #{status.name}
+                    .modal-footer
+                        button.btn(data-dismiss='modal', aria-hidden='true') Sulge
+                        button#savePaytype.btn.btn-primary Salvesta
+        .row-fluid#statuses(style='display:none;')
+            .span12
+                h1 Staatused
+                if statuses.length > 0
+                    table.table.table-bordered.table-hover
+                            thead
+                                tr
+                                    th Nimetus
+                                    th
+                            tbody
+                                each status in statuses
+                                    tr(id='#{status._id}_status') 
+                                        td= status.name
+                                        td: a.btn.btn-danger.removeStatus(data-status='#{status._id}') Kustuta
+                else
+                    p Staatuseid ei ole. Lisamiseks vajuta nuppu "Lisa staatus"
+                a.btn.btn-large(href='#addStatus', role='button', data-toggle='modal') Lisa staatus
+                #addStatus.modal(tabindex='-1', role='dialog', aria-labelledby='addStatusLabel', aria-hidden='true', style='display: none;')
+                    .modal-header
+                        button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+                        h3#addStatusLabel Lisa staatus
+                    .modal-body
+                        form#addStatusForm.form-horizontal(action='/status', method='post')
+                            .control-group
+                                label.control-label(for='statusName') Nimetus
+                                .controls
+                                    input#statusName(type='text', placeholder='staatus',name='status')
+                    .modal-footer
+                        button.btn(data-dismiss='modal', aria-hidden='true') Sulge
+                        button#saveStatus.btn.btn-primary Salvesta

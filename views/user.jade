@@ -8,11 +8,9 @@
             .control-group
                 label.control-label(for='inputStatus') Staatus
                 .controls
-                    select(name='status', value='#{user.status}')
-                        option reb!
-                        option ksv!
-                        option vil!
-                        option kül!
+                    select.span7(name='status')
+                        each status in statuses
+                            option(value='#{status.name}', selected=user.status == status.name) #{status.name}
             .control-group
                 label.control-label(for='inputFirstname') Eesnimi
                 .controls
@@ -29,6 +27,7 @@
         button.btn(data-dismiss='modal', aria-hidden='true') Sulge
         button#saveUser.btn.btn-primary Salvesta
 script
+    $("select[name='status']").dropkick();
     $("#saveUser").click(function(){
         $("#createUserForm").submit();
     });
