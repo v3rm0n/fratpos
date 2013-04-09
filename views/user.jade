@@ -8,7 +8,7 @@
             .control-group
                 label.control-label(for='inputStatus') Staatus
                 .controls
-                    select(name='status', value='#{user.status}')
+                    select.span7(name='status', value='#{user.status}')
                         option reb!
                         option ksv!
                         option vil!
@@ -29,6 +29,7 @@
         button.btn(data-dismiss='modal', aria-hidden='true') Sulge
         button#saveUser.btn.btn-primary Salvesta
 script
+    $("select").dropkick();
     $("#saveUser").click(function(){
         $("#createUserForm").submit();
     });

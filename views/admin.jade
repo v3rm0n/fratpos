@@ -77,8 +77,11 @@ block content
                 $("#productPrice").toggle(toggle);
             }
             toggleProductInputs($("#inputProduct").val() == '');
-            $("#inputProduct").change(function(){
-                toggleProductInputs($(this).val() == '');
+            $(".inputProduct").dropkick({
+                change: function(value, label){
+                    console.log(value);
+                    toggleProductInputs(value == '');
+                }
             });
             $("a.removeProduct").click(function(){
                 var id = $(this).data("product");
@@ -92,19 +95,20 @@ block content
     .navbar.navbar-inverse.navbar-fixed-top
         .navbar-inner
             .container-fluid
-              a.btn.btn-navbar(data-toggle='collapse', data-target='.nav-collapse')
+              button.btn.btn-navbar(data-toggle='collapse', data-target='.nav-collapse')
                 span.icon-bar
                 span.icon-bar
                 span.icon-bar
-              a.brand(href='/') Kassa
               .nav-collapse.collapse
                 ul#main-nav.nav
-                  li.active
-                    a(href='#users') Kasutajad
-                  li
-                    a(href='#transactions') Tehingud
-                  li
-                    a(href='#warehouse') Laoseis
+                    li
+                        a(href='/') Kassa
+                    li.active
+                        a(href='#users') Kasutajad
+                    li
+                        a(href='#transactions') Tehingud
+                    li
+                        a(href='#warehouse') Laoseis
     .container-fluid
         .row-fluid#users
             .span12
@@ -128,16 +132,16 @@ block content
                                     td #{user.balance} €
                                     td
                                         .btn-group
-                                            a.btn.btn-small.dropdown-toggle(data-toggle='dropdown', href='#')
+                                            a.btn.dropdown-toggle(data-toggle='dropdown', href='#')
                                                 | Muuda 
                                                 span.caret
                                               ul.dropdown-menu
                                                 li: a.changeUser(data-user='#{user._id}') Muuda kasutajat
                                                 li: a.changeBalance(href='#changeBalanceModal', role='button', data-toggle='modal', data-user='#{user._id}', data-balance='#{user.balance}') Muuda saldot
                                                 li: a.deleteUser(data-user='#{user._id}') Kustuta
-                button#addUser.btn.btn-primary Lisa kasutaja
+                button#addUser.btn.btn-primary.btn-large Lisa kasutaja
                 &nbsp;
-                button#resetBalance.btn.btn-danger Nulli saldod
+                button#resetBalance.btn.btn-danger.btn-large Nulli saldod
                 #changeUserDiv
                 #changeBalanceModal.modal(tabindex='-1', role='dialog', aria-labelledby='changeBalanceLabel', aria-hidden='true', style='display: none;')
                     .modal-header
@@ -170,7 +174,7 @@ block content
                                     td= transaction.user
                                     td #{transaction.sum} €
                                     td= transaction.type
-                button#resetTransactions.btn.btn-danger Nulli tehingud
+                button#resetTransactions.btn.btn-danger.btn-large Nulli tehingud
         .row-fluid#warehouse(style='display:none;')
             .span12
                 h1 Laoseis
@@ -187,8 +191,8 @@ block content
                                     td= product.name
                                     td #{product.price} €
                                     td= product.quantity
-                                    td: a.btn.btn-danger.btn-small.removeProduct(data-product='#{product._id}') Kustuta
-                a.btn(href='#changeWarehouse', role='button', data-toggle='modal') Muuda laoseisu
+                                    td: a.btn.btn-danger.removeProduct(data-product='#{product._id}') Kustuta
+                a.btn.btn-large(href='#changeWarehouse', role='button', data-toggle='modal') Muuda laoseisu
                 #changeWarehouse.modal(tabindex='-1', role='dialog', aria-labelledby='changeWarehouseLabel', aria-hidden='true', style='display: none;')
                     .modal-header
                         button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
@@ -198,7 +202,7 @@ block content
                             .control-group
                                 label.control-label(for='inputProduct') Toode
                                 .controls
-                                    select#inputProduct(name='name')
+                                    select#inputProduct.inputProduct.span7(name='name')
                                         each product in products
                                             option(value='#{product.name}') #{product.name}
                                         option(value='') Uus
