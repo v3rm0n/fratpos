@@ -21,16 +21,10 @@ block content
                             $("#inputIcon").closest(".control-group").toggleClass("error",!exists);
                             $("#inputIcon").closest(".control-group").toggleClass("success",exists);
                             $("#inputIcon").data("user", id);
-                            showRebButton();
                         });
                         return item;
                     }
                 });
-                function showRebButton(){
-                    var reb = "reb!";
-                    var showReb = $("#inputIcon").val().substring(0, reb.length) === reb;
-                    $("#fox-beer").toggle(showReb);
-                }
                 function userExists(callback){
                     $.get("/users", function(data){
                         var name = $("#inputIcon").val();
@@ -190,9 +184,8 @@ block content
                                     span#sum 0
                                     |  €
                     .btn-group
-                        button.payButton.btn.btn-primary.btn-large(data-type='Sula') Sulas
-                        button.payButton.btn.btn-large(data-type='Ettemaks/Võlg') Ettemaks/Võlg
-                        button.payButton.btn.btn-info.btn-large(data-type='Rebaseõlu') Rebaseõlu
+                        each paytype in paytypes
+                            button.payButton.btn.btn-large(data-type='#{paytype.name}') #{paytype.name}
             br
             .row-fluid
                 .span12

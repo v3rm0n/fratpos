@@ -1,17 +1,31 @@
 var products = require('../models/products');
 var transactions = require('../models/transactions');
+var users = require('../models/users');
+var statuses = require('../models/statuses');
+var paytypes = require('../models/paytypes');
+var async = require('async');
 //Admin liides
 exports.index = function(req,res){
-    var users = require('../models/users');
-    users.getAll(function(err,docs){
-        var transactions = require('../models/transactions');
-        transactions.getAll(function(err,trans){
-            products.getAll(function(err,prods){
-                res.render('admin', {title: 'Admin', users: docs, transactions: trans, products: prods});
-            });
-        });
-    });
+    async.parallel([
+        async.apply(users.getAll),
+        async.apply(transactions.getAll),
+        async.apply(products.getAll),
+        async.apply(paytypes.getAll),
+        async.apply(statuses.getAll)
+        ],
+        function(err, result){
+            res.render('admin', 
+                {title: 'Admin',
+                users: result[0], 
+                transactions: result[1], 
+                products: result[2],
+                paytypes: result[3],
+                statuses: result[4]}
+            );
+        }
+    );
 }
+
 
 exports.changeProduct = function(req,res){
     if(req.body.name != ''){
@@ -39,6 +53,36 @@ exports.removeProduct = function(req,res){
 
 exports.reset = function(req,res){
     transactions.reset(function(err){
+        res.send({status: err == null ? 'success' : err});
+    });
+}
+
+exports.addStatus = function(req, res) {
+    statuses.save({name: req.body.status}, function(err){
+        res.redirect('/admin#statuses');
+    });
+}
+
+exports.removeStatus = function(req, res) {
+    statuses.remove(req.body.id, function(err){
+        res.send({status: err == null ? 'success' : err});
+    });
+}
+
+exports.addPaytype = function(req, res){
+    console.log(req.body);
+    var paytype = {
+        name: req.body.name,
+        affectsBalance: req.body.affectsBalance == 'on',
+        allowedForStatus: req.body.allowedForStatus
+    }
+    paytypes.save(paytype, function(err){
+        res.redirect('/admin#paytypes');
+    });
+}
+
+exports.removePaytype = function(req, res) {
+    paytypes.remove(req.body.id, function(err){
         res.send({status: err == null ? 'success' : err});
     });
 }

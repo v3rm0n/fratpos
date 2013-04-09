@@ -1,29 +1,30 @@
 var transactions = require('../models/transactions');
 var products = require('../models/products');
 var users = require('../models/users');
+var paytypes = require('../models/paytypes');
+var async = require('async');
 //Kassa
 exports.index = function(req, res){
-    transactions.getWithFilter({hidden: false, invalid: false}, function(err,trans){
-        products.getAll(function(err,prods){
-            res.render('index', { title: 'Kassa', transactions: trans, products: prods});
+    async.parallel([
+            async.apply(transactions.getWithFilter,{hidden: false, invalid: false}),
+            async.apply(products.getAll),
+            async.apply(paytypes.getAll)
+        ]
+        ,function(err, result){
+            res.render('index', { title: 'Kassa', transactions: result[0], products: result[1], paytypes: result[2]});
         });
-    });
 };
 
 exports.transaction = function(req, res){
-    products.getAll(function(err, prods){
+    var parseQuantity = function(reqProd, callback){
+        reqProd.quantity = Number(reqProd.quantity);
+        callback();
+    }
+    async.each(req.body.products, parseQuantity, function(err){
         if(err != null){
             res.send({status: err});
             return;
         }
-        req.body.products.forEach(function(reqProd){
-            reqProd.quantity = Number(reqProd.quantity);
-            prods.forEach(function(prod){
-                if(prod.name === reqProd.name){
-                    reqProd.price = req.body.type != "Rebaseõlu" ? prod.price : 0;
-                }
-            });
-        });
         var transaction = {
             time: new Date(),
             user: req.body.user,
@@ -42,27 +43,20 @@ exports.transaction = function(req, res){
 }
 
 var decrementProductsAndBalance = function(transaction, callback){
-    var prods = transaction.products;
-    var callbacks = prods.length;
-    for(var i = 0; i<prods.length; i++){
-        var product = prods[i];
-        products.incQuantity(product.name,-product.quantity, function(err){
-            callbacks--;
-            if(callbacks == 0){
+    var decrement = function(product, callback){
+        products.incQuantity(product.name, -product.quantity, callback);
+    }
+    async.each(transaction.products, decrement, function(err){
+        paytypes.get(transaction.type, function(err, paytype){
+            if(paytype && paytype.affectsBalance == true){
                 var sum = transactions.getTransactionSum(transaction);
-                if(transaction.type != "Sula"){
-                    users.incrementBalance(transaction.user, -sum, callback);
-                }
-                else {
-                    callback(err);
-                }
+                users.incrementBalance(transaction.user, -sum, callback);
             }
-            else if(err != null){
+            else {
                 callback(err);
-                return;
             }
         });
-    }
+    });
 }
 
 exports.invalid = function(req, res){

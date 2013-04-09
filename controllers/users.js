@@ -1,4 +1,5 @@
 var users = require('../models/users');
+var statuses = require('../models/statuses');
 
 exports.index = function(req,res){
 	users.getAll(function(err, docs) {
@@ -47,15 +48,17 @@ exports.change = function(req,res){
 
 function renderUser(user, res){
     if(user == null) {
-            user = {
-                _id: '',
-                firstname: '',
-                lastname: '',
-                beername: '',
-                status: ''
-            };
-        }
-    res.render('user', {user: user});
+        user = {
+            _id: '',
+            firstname: '',
+            lastname: '',
+            beername: '',
+            status: ''
+        };
+    }
+    statuses.getAll(function(err, statuses){
+        res.render('user', {user: user, statuses: statuses});
+    });
 }
 
 exports.changeBalance = function(req,res){
