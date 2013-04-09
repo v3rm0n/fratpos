@@ -23,4 +23,7 @@ module.exports = function(app) {
 
     app.post('/status', admin.addStatus);
     app.post('/status/remove', admin.removeStatus);
+
+    app.post('/paytype', admin.addPaytype);
+    app.post('/paytype/remove', admin.removePaytype);
 }

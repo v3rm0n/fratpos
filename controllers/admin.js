@@ -68,3 +68,21 @@ exports.removeStatus = function(req, res) {
         res.send({status: err == null ? 'success' : err});
     });
 }
+
+exports.addPaytype = function(req, res){
+    console.log(req.body);
+    var paytype = {
+        name: req.body.name,
+        affectsBalance: req.body.affectsBalance == 'on',
+        allowedForStatus: req.body.allowedForStatus
+    }
+    paytypes.save(paytype, function(err){
+        res.redirect('/admin#paytypes');
+    });
+}
+
+exports.removePaytype = function(req, res) {
+    paytypes.remove(req.body.id, function(err){
+        res.send({status: err == null ? 'success' : err});
+    });
+}

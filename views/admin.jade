@@ -86,9 +86,7 @@ block content
             $("a.removeProduct").click(function(){
                 var id = $(this).data("product");
                 $.post("/warehouse/remove",{id: id},function(data){
-                    if(data.status === 'success'){
-                        $("tr#"+id+"_product").remove();
-                    }
+                    window.location.reload();
                 });
             });
             $("#saveStatus").click(function(){
@@ -99,6 +97,17 @@ block content
                 $.post("/status/remove",{id: id},function(data){
                     if(data.status === 'success'){
                         $("tr#"+id+"_status").remove();
+                    }
+                });
+            });
+            $("#savePaytype").click(function(){
+                $("#addPaytypeForm").submit();
+            });
+            $("a.removePaytype").click(function(){
+                var id = $(this).data("paytype");
+                $.post("/paytype/remove",{id: id},function(data){
+                    if(data.status === 'success'){
+                        $("tr#"+id+"_paytype").remove();
                     }
                 });
             });
@@ -175,21 +184,24 @@ block content
         .row-fluid#transactions(style='display:none;')
             .span12
                 h1 Tehingud
-                table.table.table-bordered.table-hover
-                        thead
-                            tr
-                                th Aeg
-                                th Nimi
-                                th Summa
-                                th Makseviis
-                        tbody#trans-tbody
-                            each transaction in transactions
-                                tr(class='#{transaction.invalid ? 'error' : ''}')
-                                    td= transaction.time.toDateString()+" "+transaction.time.getHours()+":"+transaction.time.getMinutes()
-                                    td= transaction.user
-                                    td #{transaction.sum} €
-                                    td= transaction.type
-                button#resetTransactions.btn.btn-danger.btn-large Nulli tehingud
+                if transactions.length > 0
+                    table.table.table-bordered.table-hover
+                            thead
+                                tr
+                                    th Aeg
+                                    th Nimi
+                                    th Summa
+                                    th Makseviis
+                            tbody#trans-tbody
+                                each transaction in transactions
+                                    tr(class='#{transaction.invalid ? 'error' : ''}')
+                                        td= transaction.time.toDateString()+" "+transaction.time.getHours()+":"+transaction.time.getMinutes()
+                                        td= transaction.user
+                                        td #{transaction.sum} €
+                                        td= transaction.type
+                    button#resetTransactions.btn.btn-danger.btn-large Nulli tehingud
+                else
+                    p Käesoleval perioodil ei ole veel tehinguid tehtud.
         .row-fluid#warehouse(style='display:none;')
             .span12
                 h1 Laoseis
@@ -254,9 +266,9 @@ block content
                                 each paytype in paytypes
                                     tr(id='#{paytype._id}_paytype') 
                                         td= paytype.name
-                                        td
-                                        td
-                                        td: a.btn.btn-danger.removeProduct(data-product='#{product._id}') Kustuta
+                                        td= paytype.affectsBalance ? 'Jah' : 'Ei'
+                                        td= paytype.allowedForStatus
+                                        td: a.btn.btn-danger.removePaytype(data-paytype='#{paytype._id}') Kustuta
                 else 
                     p Makseviise ei ole. Lisamiseks vajuta nuppu "Lisa makseviis"
                 a.btn.btn-large(href='#addPaytype', role='button', data-toggle='modal') Lisa makseviis
@@ -274,13 +286,13 @@ block content
                                 label.control-label(for='affectsBalance') Mõjutab saldot
                                 .controls
                                     label.checkbox(for='affectsBalance')
-                                        input#affectsBalance(type='checkbox',name='affectsBalance')
+                                        input#affectsBalance(type='checkbox',name='affectsBalance', checked=true)
                                 br
                                 label.control-label(for='affectsBalance') Lubatud staatustele
                                 .controls
                                     each status in statuses
                                         label.checkbox(for='#{status._id}_allowedForStatus')
-                                            input(id='#{status._id}_allowedForStatus', type='checkbox',name='#{status._id}_allowedForStatus')
+                                            input(id='#{status._id}_allowedForStatus', type='checkbox',name='allowedForStatus', value='#{status.name}', checked=true)
                                             | #{status.name}
                     .modal-footer
                         button.btn(data-dismiss='modal', aria-hidden='true') Sulge
