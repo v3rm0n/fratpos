@@ -1,0 +1,45 @@
+.row-fluid(ng-controller='UsersController')
+    .span12
+        h1 Kasutajad
+        table.table.table-bordered.table-hover
+                thead
+                    tr
+                        th Staatus
+                        th Eesnimi
+                        th Perenimi
+                        th Õllenimi
+                        th Saldo
+                        th
+                tbody
+                    tr(ng-repeat='user in users') 
+                        td(ng-bind='user.status')
+                        td(ng-bind='user.firstname')
+                        td(ng-bind='user.lastname')
+                        td(ng-bind='user.beername')
+                        td(ng-bind-template='{{user.balance}} €')
+                        td
+                            .btn-group
+                                a.btn.dropdown-toggle(data-toggle='dropdown', href='#')
+                                    | Muuda 
+                                    span.caret
+                                  ul.dropdown-menu
+                                    li: a(ng-click='changeUser(user)') Muuda kasutajat
+                                    li: a(ng-click='changeBalanceDialog(user)') Muuda saldot
+                                    li: a(ng-click='deleteUser(user)') Kustuta
+        button.btn.btn-large(ng-click='addUser()') Lisa kasutaja
+        &nbsp;
+        button.btn.btn-danger.btn-large(ng-click='clearBalances()') Nulli saldod
+        .modal(tabindex='-1', role='dialog', aria-labelledby='changeBalanceLabel', aria-hidden='true', style='display: none;')
+            .modal-header
+                button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+                h3#changeBalanceLabel Muuda saldot
+            .modal-body
+                form#changeBalanceForm.form-horizontal(action='/users/balance', method='post')
+                    .control-group
+                        label.control-label(for='inputBalance') Saldo
+                        .controls
+                            input(type='hidden', name='id')
+                            input(type='text', placeholder='0',name='balance')
+            .modal-footer
+                button.btn(data-dismiss='modal', aria-hidden='true') Sulge
+                button.btn.btn-primary Salvesta

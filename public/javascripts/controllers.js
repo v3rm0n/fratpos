@@ -1,37 +1,23 @@
-function PosController($scope, $http, $timeout){
+function PosController($scope, $http, $timeout, util){
 
   $scope.selectedProducts = {};
 
-  var transform = function(items, callback, after){
-    for(i=0;i<items.length;i++){
-      callback(items[i]);
-    }
-    after(items);
-  }
-
   $http.get("/posdata").success(function(data){
     //Do some transformation before updating the model
-    transform(data.users, 
+    util.transform(data.users, 
       function(user){
         user.label = user.status+" "+user.firstname+" "+user.lastname+" ("+user.beername+")";
     }, 
       function(users){
         $scope.users = data.users;
     });
-    transform(data.transactions, formatTransactionTime,
+    util.transform(data.transactions, util.formatTransactionTime,
       function(transactions){
-        $scope.transactions = data.transactions;
+        $scope.transactions = transactions;
       });
     $scope.products = data.products;
     $scope.paytypes = data.paytypes;
   });
-
-  var formatTransactionTime = function(transaction){
-    var time = new Date(transaction.time);
-    var hours = time.getHours() > 9 ? time.getHours() : "0"+time.getHours();
-    var minutes = time.getMinutes() > 9 ? time.getMinutes() : "0"+time.getMinutes();
-    transaction.formattedTime = hours+":"+minutes;
-  }
 
   $scope.changeQuantity = function(product, quantity){
     var selectedProduct = $scope.selectedProducts[product._id];
@@ -88,7 +74,7 @@ function PosController($scope, $http, $timeout){
           if(data.status == "success"){
             updateStatus("Tooted läksid edukalt kirja!", false);
             $scope.selectedProducts = {};
-            formatTransactionTime(data.transaction);
+            util.formatTransactionTime(data.transaction);
             $scope.transactions.unshift(data.transaction);
           }
           else{
@@ -121,4 +107,52 @@ function PosController($scope, $http, $timeout){
     },1000);
   }
 
+}
+
+function NavController($scope, $location){
+  $scope.isActive = function(page){
+    return $location.path() == "/"+page;
+  }
+}
+
+function UsersController($scope, $http, $dialog){
+
+  $http.get('/users').success(function(data){
+    $scope.users = data;
+  });
+
+  $scope.clearBalances = function(){
+    $http.post("/users/reset").success(function(data){
+      $scope.users = data;
+    });
+  }
+
+  $scope.deleteUser = function(user){
+    $http.post("/users/remove", {id: user._id}).success(function(){
+      $scope.users = $scope.users.filter(function(u){return user._id != u._id});
+    });
+  }
+
+  $scope.changeBalanceDialog = function(){
+    var d = $dialog.dialog();
+    d.open('/dialog');
+  }
+}
+
+function TransactionsController($scope, $http, util){
+  $http.get('/transactions').success(function(data){
+    util.transform(data, util.formatTransactionTime,
+      function(transactions){
+        $scope.transactions = transactions;
+      });
+  });
+
+  $scope.hideTransactions = function(){
+    $http.post('/transactions/reset').success(function(data){
+    util.transform(data, util.formatTransactionTime,
+      function(transactions){
+        $scope.transactions = transactions;
+      });
+  });
+  }
 }

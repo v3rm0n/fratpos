@@ -1,10 +1,9 @@
 var users = require('../models/users');
 var statuses = require('../models/statuses');
 
-exports.index = function(req,res){
-	users.getAll(function(err, docs) {
-        var idAndNames = docs.map(function(item){ return {id: item._id, name: users.getUserFullName(item)};});
-        res.send(idAndNames);
+exports.all = function(req,res){
+    users.getAll(function(err, users){
+        res.send(users);
     });
 }
 
@@ -46,8 +45,8 @@ exports.change = function(req,res){
     }
 }
 
-function renderUser(user, res){
-    if(user == null) {
+var renderUser = function(user, res){
+    if(user == null){
         user = {
             _id: '',
             firstname: '',
@@ -69,6 +68,8 @@ exports.changeBalance = function(req,res){
 
 exports.reset = function(req,res){
     users.resetBalances(function(err){
-        res.send({status: err == null ? 'success' : err});
+        users.getAll(function(err, users){
+            res.send(users);
+        });
     });
 }

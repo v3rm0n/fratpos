@@ -1,0 +1,49 @@
+.row-fluid#warehouse(style='display:none;')
+    .span12
+        h1 Laoseis
+        if products.length > 0
+            table.table.table-bordered.table-hover
+                    thead
+                        tr
+                            th Toode
+                            th Hind
+                            th Kogus
+                            th
+                    tbody#trans-tbody
+                        each product in products
+                            tr(id='#{product._id}_product') 
+                                td= product.name
+                                td #{product.price} €
+                                td= product.quantity
+                                td: a.btn.btn-danger.removeProduct(data-product='#{product._id}') Kustuta
+        else
+            p Tooteid ei ole. Uute toodete lisamiseks vajuta nuppu "Muuda laoseisu"
+        a.btn.btn-large(href='#changeWarehouse', role='button', data-toggle='modal') Muuda laoseisu
+        #changeWarehouse.modal(tabindex='-1', role='dialog', aria-labelledby='changeWarehouseLabel', aria-hidden='true', style='display: none;')
+            .modal-header
+                button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+                h3#changeWarehouseLabel Muuda laoseisu
+            .modal-body
+                form#changeWarehouseForm.form-horizontal(action='/warehouse', method='post')
+                    .control-group
+                        label.control-label(for='inputProduct') Toode
+                        .controls
+                            select#inputProduct.inputProduct.span7(name='name')
+                                each product in products
+                                    option(value='#{product.name}') #{product.name}
+                                option(value='') Uus
+                    .control-group#productName(style='display:none;')
+                        label.control-label(for='inputName') Nimi
+                        .controls
+                            input#inputName(type='text', placeholder='Toote nimi',name='newName')
+                    .control-group#productPrice(style='display:none;')
+                        label.control-label(for='inputPrice') Hind
+                        .controls
+                            input#inputPrice(type='text', placeholder='Hind',name='price')
+                    .control-group
+                        label.control-label(for='inputQty') Laoseis
+                        .controls
+                            input#inputQty(type='text', placeholder='Kogus',name='quantity')
+            .modal-footer
+                button.btn(data-dismiss='modal', aria-hidden='true') Sulge
+                button#saveWarehouse.btn.btn-primary Salvesta

@@ -1,0 +1,18 @@
+.row-fluid(ng-controller='TransactionsController')
+    .span12
+        h1 Tehingud
+        p(ng-hide='transactions.length > 0') Käesoleval perioodil ei ole veel tehinguid tehtud.
+        table.table.table-bordered.table-hover(ng-show='transactions.length > 0')
+                thead
+                    tr
+                        th Aeg
+                        th Nimi
+                        th Summa
+                        th Makseviis
+                tbody
+                        tr(ng-repeat='transaction in transactions', class='{{transaction.invalid && "error" || ""}}')
+                            td(ng-bind='transaction.formattedTime')
+                            td(ng-bind='transaction.user')
+                            td {{transaction.sum}} €
+                            td(ng-bind='transaction.type')
+        button.btn.btn-danger.btn-large(ng-click='hideTransactions()') Nulli tehingud

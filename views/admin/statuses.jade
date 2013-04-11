@@ -1,0 +1,30 @@
+.row-fluid#statuses(style='display:none;')
+    .span12
+        h1 Staatused
+        if statuses.length > 0
+            table.table.table-bordered.table-hover
+                    thead
+                        tr
+                            th Nimetus
+                            th
+                    tbody
+                        each status in statuses
+                            tr(id='#{status._id}_status') 
+                                td= status.name
+                                td: a.btn.btn-danger.removeStatus(data-status='#{status._id}') Kustuta
+        else
+            p Staatuseid ei ole. Lisamiseks vajuta nuppu "Lisa staatus"
+        a.btn.btn-large(href='#addStatus', role='button', data-toggle='modal') Lisa staatus
+        #addStatus.modal(tabindex='-1', role='dialog', aria-labelledby='addStatusLabel', aria-hidden='true', style='display: none;')
+            .modal-header
+                button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+                h3#addStatusLabel Lisa staatus
+            .modal-body
+                form#addStatusForm.form-horizontal(action='/status', method='post')
+                    .control-group
+                        label.control-label(for='statusName') Nimetus
+                        .controls
+                            input#statusName(type='text', placeholder='staatus',name='status')
+            .modal-footer
+                button.btn(data-dismiss='modal', aria-hidden='true') Sulge
+                button#saveStatus.btn.btn-primary Salvesta

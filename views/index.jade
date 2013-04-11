@@ -59,7 +59,7 @@ block content
                                 th Summa
                                 th Makseviis
                         tbody
-                            tr(ng-repeat='transaction in transactions',data-transaction='{{transaction._id}}', ng-click='invalidTransaction(transaction)')
+                            tr(ng-repeat='transaction in transactions', ng-click='invalidTransaction(transaction)')
                                 td(ng-bind='transaction.formattedTime')
                                 td(ng-bind='transaction.user')
                                 td {{transaction.sum}} €
