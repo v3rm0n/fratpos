@@ -7,6 +7,7 @@ module.exports = function(app) {
 	app.get('/', index.index);
 	app.get('/admin', admin.index);
     //Ajax requests
+    app.get('/posdata', index.posdata);
 	app.get('/users', users.index);
     app.post('/users', users.add);
     app.post('/users/reset', users.reset);

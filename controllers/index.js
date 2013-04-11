@@ -5,20 +5,31 @@ var paytypes = require('../models/paytypes');
 var async = require('async');
 //Kassa
 exports.index = function(req, res){
+    res.render('index', { title: 'Kassa'});
+};
+
+exports.invalid = function(req, res){
+    transactions.invalid(req.body.id, function(err){
+        res.send({status: err == null ? 'success' : err});
+    });
+}
+
+exports.posdata = function(req, res){
     async.parallel({
             transactions: async.apply(transactions.getWithFilter,{hidden: false, invalid: false}),
             products: async.apply(products.getAll),
-            paytypes: async.apply(paytypes.getAll)
+            paytypes: async.apply(paytypes.getAll),
+            users: async.apply(users.getAll)
         }
         ,function(err, result){
-            res.render('index', { title: 'Kassa', transactions: result.transactions, products: result.products, paytypes: result.paytypes});
+            res.send({transactions: result.transactions, products: result.products, paytypes: result.paytypes, users: result.users});
         });
 };
 
 exports.transaction = function(req, res){
     async.series({
         allowed: async.apply(isPaymentTypeAllowed, req),
-        created: async.apply(createTransaction, req)
+        transactionId: async.apply(createTransaction, req)
     },
     function(err, result){
         if(err){
@@ -27,11 +38,14 @@ exports.transaction = function(req, res){
         else if(!result.allowed) {
             res.send({status: "invalid_paytype"});
         }
-        else if(!result.created){
+        else if(!result.transactionId){
             res.send({status: "creation_failed"});
         }
         else{
-            res.send({status: "success"});
+            console.log(result.transactionId);
+            transactions.get(String(result.transactionId), function(err, transaction){
+                res.send({status: (err == null ? "success" : err), transaction: transaction});
+            });
         }
     });
 }
@@ -58,25 +72,22 @@ var isPaymentTypeAllowed = function(req, callback){
 }
 
 var createTransaction = function(req, callback){
-    var parseQuantity = function(reqProd, callback){
-        reqProd.quantity = Number(reqProd.quantity);
-        callback();
+    var products = [];
+    for(id in req.body.products)
+        products.push(req.body.products[id]);
+    var transaction = {
+        time: new Date(),
+        user: req.body.user,
+        products: products,
+        type: req.body.type,
+        invalid: false,
+        hidden: false
     }
-    async.each(req.body.products, parseQuantity, function(err){
-        var transaction = {
-            time: new Date(),
-            user: req.body.user,
-            products: req.body.products,
-            type: req.body.type,
-            invalid: false,
-            hidden: false
+    transactions.save(transaction, function(err, sum, id){
+        var end = function(err){
+            callback(err, id);
         }
-        transactions.save(transaction, function(err, sum, id){
-            var end = function(err){
-                callback(err, err == null);
-            }
-            err == null ? decrementProductsAndBalance(transaction, end) : end(err);
-        });
+        err == null ? decrementProductsAndBalance(transaction, end) : end(err);
     });
 }
 
@@ -94,11 +105,5 @@ var decrementProductsAndBalance = function(transaction, callback){
                 callback(err);
             }
         });
-    });
-}
-
-exports.invalid = function(req, res){
-    transactions.invalid(req.body.id, function(err){
-        res.send({status: err == null ? 'success' : err});
     });
 }

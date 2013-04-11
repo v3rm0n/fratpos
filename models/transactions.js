@@ -9,6 +9,12 @@ exports.getAll = function(callback) {
     exports.getWithFilter({hidden: false}, callback);
 }
 
+exports.get = function(id,callback){
+    transactions.findOne({_id: db.ObjectId(id)}, function(err, transaction){
+        addSumAndUserToTransaction(transaction, callback);
+    });
+}
+
 exports.getWithFilter = function(filter, callback){
     transactions.find(filter).sort({time: -1},function(err,docs){
         if(err != null){
