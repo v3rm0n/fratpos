@@ -1,29 +1,50 @@
 var index = require('./controllers/index');
 var admin = require('./controllers/admin');
 var users = require('./controllers/users');
+var transactions = require('./controllers/transactions');
+var products = require('./controllers/products');
+var statuses = require('./controllers/statuses');
+var paytypes = require('./controllers/paytypes');
 
 module.exports = function(app) {
     //Main views
 	app.get('/', index.index);
 	app.get('/admin', admin.index);
+    //Partials
+    app.get('/admin/:page', admin.page);
+    app.get('/dialog/:dialog', admin.dialog);
+
     //Ajax requests
-	app.get('/users', users.index);
-    app.post('/users', users.add);
-    app.post('/users/reset', users.reset);
-    app.get('/users/change', users.change);
-    app.post('/users/remove', users.remove);
-    app.post('/users/balance', users.changeBalance);
 
-    app.post('/warehouse', admin.changeProduct);
-    app.post('/warehouse/remove', admin.removeProduct);
-
+    //Pos actions
+    app.get('/posdata', index.posdata);
     app.post('/transaction', index.transaction);
     app.post('/transaction/invalid', index.invalid);
-    app.post('/transaction/reset', admin.reset);
 
-    app.post('/status', admin.addStatus);
-    app.post('/status/remove', admin.removeStatus);
+    //Admin actions
 
-    app.post('/paytype', admin.addPaytype);
-    app.post('/paytype/remove', admin.removePaytype);
+    //Users
+	app.get('/users', users.all);
+    app.post('/users/save', users.save);
+    app.post('/users/reset', users.reset);
+    app.post('/users/remove', users.remove);
+
+    //Transactions
+    app.get('/transactions', transactions.all);
+    app.post('/transactions/reset', transactions.reset);
+
+    //Products
+    app.get('/products', products.all);
+    app.post('/products/save', products.save);
+    app.post('/products/remove', products.remove);
+
+    //Statuses
+    app.get('/statuses', statuses.all);
+    app.post('/statuses/save', statuses.save);
+    app.post('/statuses/remove', statuses.remove);
+
+    //Paytypes
+    app.get('/paytypes', paytypes.all);
+    app.post('/paytypes/save', paytypes.save);
+    app.post('/paytypes/remove', paytypes.remove);
 }

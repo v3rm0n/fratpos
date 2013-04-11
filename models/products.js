@@ -7,6 +7,8 @@ exports.getAll = function(callback){
 
 exports.save = function(product,callback){
     console.log(product);
+    if(product._id != null)
+        product._id = db.ObjectId(product._id)
     products.save(product,callback);
 }
 

@@ -1,0 +1,18 @@
+.row-fluid(ng-controller='PaytypesController', ng-show='paytypes != null')
+    .span12
+        h1 Makseviisid
+        p(ng-hide='paytypes.length > 0') Makseviise ei ole. Lisamiseks vajuta nuppu "Lisa makseviis"
+        table.table.table-bordered.table-hover(ng-show='paytypes.length > 0')
+            thead
+                tr
+                    th Nimetus
+                    th Mõjutab saldot
+                    th Lubatud staatusele
+                    th
+            tbody
+                tr(ng-repeat='paytype in paytypes') 
+                    td(ng-bind='paytype.name')
+                    td(ng-bind-template='{{paytype.affectsBalance && "Jah" || "Ei"}}')
+                    td(ng-bind='paytype.allowedForStatus')
+                    td: a.btn.btn-danger(ng-click='deletePaytype(paytype)') Kustuta
+        button.btn.btn-large(ng-click='openPaytypeDialog()') Lisa makseviis

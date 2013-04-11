@@ -1,0 +1,19 @@
+.modal-header
+    button.close(type='button', data-dismiss='modal', aria-hidden='true', ng-click='close()') ×
+    h3 Muuda laoseisu
+.modal-body.form-horizontal
+    .control-group
+        label.control-label(for='inputName') Nimi
+        .controls
+            input#inputName(type='text', placeholder='Toote nimi',ng-model='object.name')
+    .control-group
+        label.control-label(for='inputPrice') Hind
+        .controls
+            input#inputPrice(type='number', placeholder='0.0', ng-model='object.price')
+    .control-group
+        label.control-label(for='inputQty') Laoseis
+        .controls
+            input#inputQty(type='number', placeholder='0', ng-model='object.quantity')
+.modal-footer
+    button.btn(data-dismiss='modal', aria-hidden='true', ng-click='close()') Sulge
+    button.btn.btn-primary(ng-click='save(object)') Salvesta

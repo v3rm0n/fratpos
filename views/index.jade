@@ -1,164 +1,27 @@
 extends layout
 
 block content
-        script
-            $(function(){
-                var delay = 1000;
-                //Üldine veateade ajaxi päringutel
-                $(document).ajaxError(function(){
-                    $("#ajax-error").show().delay(delay).slideUp();
-                });
-                //Otsing
-                $("#inputIcon").typeahead({
-                    source: function(query, process){
-                                $.get("/users",{query: query},function(data){
-                                    var transformed = data.map(function(user){ return user.name;});
-                                    process(transformed);
-                                });
-                            },
-                    updater: function(item){
-                        userExists(function(exists, id){
-                            $("#inputIcon").closest(".control-group").toggleClass("error",!exists);
-                            $("#inputIcon").closest(".control-group").toggleClass("success",exists);
-                            $("#inputIcon").data("user", id);
-                        });
-                        return item;
-                    }
-                });
-                function userExists(callback){
-                    $.get("/users", function(data){
-                        var name = $("#inputIcon").val();
-                        var exists = false;
-                        var id = -1;
-                        for(i = 0; i<data.length;i++){
-                            var user = data[i];
-                            if(user.name === name) {
-                                exists = true;
-                                id = user.id;
-                                break;
-                            }
-                        }
-                        callback(exists, id);
-                    });
-                }
-                function calculateTotal(){
-                    var products = getProducts();
-                    var total = 0;
-                    for(var i = 0; i < products.length; i++){
-                        total += products[i].price*products[i].quantity;
-                    }
-                    $("#sum").html(total);
-                }
-                function getProducts(){
-                    var products = [];
-                    $("#prod-tbody tr.product").each(function(i, item){
-                        var product = {
-                            name: $(".prod-name", item).html(),
-                            quantity: Number($(".qty", item).html()),
-                            price: Number($(".price", item).html())
-                        }
-                        products.push(product);
-                    });
-                    return products;
-                }
-                //Toodete lisamine ja kustutamine
-                $(".prod-add").click(function(){
-                    var qty = $(this).siblings(".qty");
-                    var newQty = Number(qty.html())+1;
-                    qty.html(" "+newQty+" ");
-                    calculateTotal();
-                });
-                $(".prod-remove").click(function(){
-                    var qty = $(this).siblings(".qty");
-                    var newQty = Number(qty.html())-1;
-                    if(newQty < 0) {
-                        return;
-                    }
-                    qty.html(" "+newQty+" ");
-                    calculateTotal();
-                });
-                function addTransaction(products,type){
-                    var ok = false;
-                    products.map(function(prod){if(prod.quantity > 0){ok=true;}});
-                    if(!ok){
-                        $("#products-error").show().delay(delay).slideUp();
-                        return;
-                    }
-                    userExists(function(exists){
-                        if(exists){
-                            $.post("/transaction",{products: products, type: type, user: $("#inputIcon").data("user")}, function(data){
-                                if(data.status === 'success'){
-                                    var d = new Date();
-                                    var transaction = $("<tr data-transaction="+data.id+" class='success'><td>"+d.getHours()+":"+d.getMinutes()+"</td><td>"+$("#inputIcon").val()+"</td><td>"+data.sum+" €</td><td>"+type+"</td></tr>");
-                                    transaction.prependTo("#trans-tbody");
-                                    setTimeout(function(){
-                                        transaction.removeClass("success");
-                                    },delay);
-                                    $(".qty").html(" 0 ");
-                                    $("#sum").html("0");
-                                    $("#inputIcon").focus().val("");
-                                    $("#success-message").show().delay(delay).slideUp();
-                                }
-                                else{
-                                    $("#transaction-error").html("<strong>Viga!</strong> "+data.status).show().delay(delay).slideUp();
-                                }
-                            });
-                        }
-                        else{
-                            $("#noname-error").show().delay(delay).slideUp();
-                        }
-                    });
-                }
-                //Maksmine
-                $(".payButton").click(function(){
-                    addTransaction(getProducts(),$(this).data("type"));
-                });
-                //Tehingute invalideerimine
-                $("#trans-tbody").on("click", "tr", function(){
-                    var confirmed = window.confirm("Kas oled kindel, et tahad selle tehingu tagasi võtta?");
-                    if(confirmed){
-                        var row = $(this);
-                        $.post("/transaction/invalid", {id: row.data("transaction")}, function(data){
-                            if(data.status === "success"){
-                                $("#revert-message").show().delay(delay).slideUp();
-                                row.addClass("error").delay(delay).slideUp();
-                            }
-                        });
-                    }
-                });
-            });
-        .container-fluid
+        .container-fluid(ng-controller='PosController')
             .row-fluid
                 .span12
                     h2 Kassa
             br
             .row-fluid
+                .span12
+                    p Tehingu tegemiseks vali klient.
+            .row-fluid
                 .span5
-                    .control-group
+                    .control-group(class='{{user != null && "success" || "error"}}')
                         .controls
-                            input#inputIcon(type='text', placeholder='Kliendi nimi')
+                            input(type='text', placeholder='Kliendi nimi', ng-model='user', 
+                                typeahead='user as user.label for user in users | filter:$viewValue')
                 .span7
-                    #noname-error.alert.alert-error(style='display:none;')
-                        strong Viga! 
-                        | Sisestatud nime ei eksisteeri, palun sisesta uuesti.
-                    #transaction-error.alert.alert-error(style='display:none;')
-                        strong Viga! 
-                        | Viga tehingu salvestamisel. Proovi uuesti.
-                    #products-error.alert.alert-error(style='display:none;')
-                        strong Viga! 
-                        | Tooteid pole valitud. Palun vali tooted enne maksmist.
-                    #ajax-error.alert.alert-error(style='display:none;')
-                        strong Viga! 
-                        | Süsteem on katki, võta ühendust adminiga.
-                    #success-message.alert.alert-success(style='display:none;')
-                        strong Õnnestus! 
-                        | Kõik on korras, tooted läksid kirja.
-                    #revert-message.alert.alert-success(style='display:none;')
-                        strong Õnnestus! 
-                        | Tehing eemaldatud nimekirjast.
-            br
+                    .alert(ng-show='status != null', class='{{statusError && "alert-error" || "alert-success"}}')
+                        strong(ng-bind='status') 
+                        |  {{statusMessage}}
             .row-fluid
                 .span12
+                    h4 Tooted
                     table.table.table-bordered.table-hover.table-condensed
                         thead
                             tr
@@ -166,32 +29,28 @@ block content
                                 th Kogus
                                 th Hind
                         tbody#prod-tbody
-                            for product in products
-                                tr.product
-                                    td.prod-name= product.name
-                                    td 
-                                        i.gi-circle_plus.prod-add
-                                        span.qty  0 
-                                        i.gi-circle_minus.prod-remove
+                            tr(ng-repeat='product in products')
+                                td(ng-bind='product.name')
+                                td 
+                                    i.gi-circle_plus(ng-click='changeQuantity(product, 1)')
+                                    span(ng-bind='quantity(product)')
+                                    i.gi-circle_minus(ng-click='changeQuantity(product, -1)')
 
-                                    td 
-                                        span.price= product.price
-                                        |  €
+                                td 
+                                    span(ng-bind='product.price')
+                                    |  €
                             tr
                                 th
                                 th Kokku
                                 th
-                                    span#sum 0
+                                    span(ng-bind='sum()')
                                     |  €
                     .btn-group
-                        each paytype in paytypes
-                            button.payButton.btn.btn-large(data-type='#{paytype.name}') #{paytype.name}
+                        button.btn.btn-large(ng-repeat='paytype in allowedPaytypes()', ng-click='pay(paytype)') {{paytype.name}}
             br
-            .row-fluid
+            .row-fluid(ng-show='transactions.length > 0')
                 .span12
                     h4 Viimased tehingud
-            .row-fluid
-                .span12
                     table.table.table-bordered.table-hover
                         thead
                             tr
@@ -199,10 +58,9 @@ block content
                                 th Nimi
                                 th Summa
                                 th Makseviis
-                        tbody#trans-tbody
-                            each transaction in transactions
-                                tr(data-transaction='#{transaction._id}', class='#{transaction.invalid ? 'error' : ''}') 
-                                    td= transaction.time.getHours()+":"+transaction.time.getMinutes()
-                                    td= transaction.user
-                                    td #{transaction.sum} €
-                                    td= transaction.type
+                        tbody
+                            tr(ng-repeat='transaction in transactions', ng-click='invalidTransaction(transaction)')
+                                td(ng-bind='transaction.formattedTime')
+                                td(ng-bind='transaction.user')
+                                td {{transaction.sum}} €
+                                td(ng-bind='transaction.type')
