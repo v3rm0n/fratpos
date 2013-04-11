@@ -133,10 +133,47 @@ function UsersController($scope, $http, $dialog){
     });
   }
 
-  $scope.changeBalanceDialog = function(){
-    var d = $dialog.dialog();
-    d.open('/dialog');
+  $scope.openBalanceDialog = function(user){
+    var d = $dialog.dialog({resolve: {object: function(){ return user;}}});
+    d.open('/dialog/balance', DialogController).then(function(result){
+      if(result){
+        $http.post("/users/save",{user: result});
+      }
+    });
   }
+
+  $scope.openUserDialog = function(user){
+    var d = $dialog.dialog({resolve: {object: function(){return user;}}});
+    d.open('/dialog/user', DialogController).then(function(result){
+      if(result){
+          $http.post("/users/save",{user: result}).success(function(data){
+            if(user == null)
+              $scope.users.push(data);
+          });
+      }
+    });
+  }
+
+}
+
+function DialogController($scope, $http, dialog, object){
+
+  $scope.object = object;
+
+  $scope.change = object != null;
+
+  $http.get("/statuses").success(function(data){
+    $scope.statuses = data;
+  });
+
+  $scope.close = function(){
+    dialog.close(null);
+  }
+
+  $scope.save = function(object){
+    dialog.close(object);
+  }
+
 }
 
 function TransactionsController($scope, $http, util){

@@ -12,7 +12,7 @@ module.exports = function(app) {
 	app.get('/admin', admin.index);
     //Partials
     app.get('/admin/:page', admin.page);
-    app.get('/dialog', admin.page);
+    app.get('/dialog/:dialog', admin.dialog);
 
     //Ajax requests
 
@@ -25,11 +25,9 @@ module.exports = function(app) {
 
     //Users
 	app.get('/users', users.all);
-    app.post('/users/add', users.add);
+    app.post('/users/save', users.save);
     app.post('/users/reset', users.reset);
-    app.get('/users/change', users.change);
     app.post('/users/remove', users.remove);
-    app.post('/users/balance', users.changeBalance);
 
     //Transactions
     app.get('/transactions', transactions.all);

@@ -1,7 +1,8 @@
 .row-fluid(ng-controller='UsersController')
     .span12
         h1 Kasutajad
-        table.table.table-bordered.table-hover
+        p(ng-hide='users.length > 0') Kasutajaid ei ole. Uue kasutaja lisamiseks vajuta nuppu Lisa kasutaja.
+        table(ng-show='users.length > 0').table.table-bordered.table-hover
                 thead
                     tr
                         th Staatus
@@ -23,23 +24,9 @@
                                     | Muuda 
                                     span.caret
                                   ul.dropdown-menu
-                                    li: a(ng-click='changeUser(user)') Muuda kasutajat
-                                    li: a(ng-click='changeBalanceDialog(user)') Muuda saldot
+                                    li: a(ng-click='openUserDialog(user)') Muuda kasutajat
+                                    li: a(ng-click='openBalanceDialog(user)') Muuda saldot
                                     li: a(ng-click='deleteUser(user)') Kustuta
-        button.btn.btn-large(ng-click='addUser()') Lisa kasutaja
+        button.btn.btn-large(ng-click='openUserDialog()') Lisa kasutaja
         &nbsp;
         button.btn.btn-danger.btn-large(ng-click='clearBalances()') Nulli saldod
-        .modal(tabindex='-1', role='dialog', aria-labelledby='changeBalanceLabel', aria-hidden='true', style='display: none;')
-            .modal-header
-                button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
-                h3#changeBalanceLabel Muuda saldot
-            .modal-body
-                form#changeBalanceForm.form-horizontal(action='/users/balance', method='post')
-                    .control-group
-                        label.control-label(for='inputBalance') Saldo
-                        .controls
-                            input(type='hidden', name='id')
-                            input(type='text', placeholder='0',name='balance')
-            .modal-footer
-                button.btn(data-dismiss='modal', aria-hidden='true') Sulge
-                button.btn.btn-primary Salvesta

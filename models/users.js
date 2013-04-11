@@ -16,24 +16,14 @@ exports.getUser = function(fullName,callback){
 
 exports.save = function(user,callback){
     console.log(user);
+    if(user._id != null)
+        user._id = db.ObjectId(user._id)
     users.save(user, callback);
-}
-
-exports.update = function(id,user,callback){
-    console.log("Updating user: "+id);
-    users.update({_id: db.ObjectId(id)},
-        {$set: {firstname: user.firstname, lastname: user.lastname, beername: user.beername, status: user.status}},
-        callback);
 }
 
 exports.remove = function(id,callback){
     console.log('Removing user: '+id);
     users.remove({_id: db.ObjectId(id)}, callback);
-}
-
-exports.changeBalance = function(id, balance, callback){
-    console.log('Changing user '+id+'balance to '+balance);
-    users.update({_id: db.ObjectId(id)}, {$set: {balance: balance}},callback);
 }
 
 exports.incrementBalance = function(id, increment, callback){
