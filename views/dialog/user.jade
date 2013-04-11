@@ -6,7 +6,7 @@
         .control-group
             label.control-label(for='inputStatus') Staatus
             .controls
-                select(ng-model='object.status', ng-options='status.name as status.name for status in statuses')
+                select(ng-model='object.status', ng-options='status.name as status.name for status in statuses', required)
         .control-group
             label.control-label(for='inputFirstname') Eesnimi
             .controls

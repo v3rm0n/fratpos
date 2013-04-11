@@ -35,17 +35,16 @@ module.exports = function(app) {
 
     //Products
     app.get('/products', products.all);
-    app.post('/product/add', products.changeProduct);
-    app.post('/product/change', products.changeProduct);
-    app.post('/products/remove', products.removeProduct);
+    app.post('/products/save', products.save);
+    app.post('/products/remove', products.remove);
 
     //Statuses
     app.get('/statuses', statuses.all);
-    app.post('/statuses/add', statuses.addStatus);
-    app.post('/statuses/remove', statuses.removeStatus);
+    app.post('/statuses/save', statuses.save);
+    app.post('/statuses/remove', statuses.remove);
 
     //Paytypes
     app.get('/paytypes', paytypes.all);
-    app.post('/paytypes/add', paytypes.addPaytype);
-    app.post('/paytypes/remove', paytypes.removePaytype);
+    app.post('/paytypes/save', paytypes.save);
+    app.post('/paytypes/remove', paytypes.remove);
 }

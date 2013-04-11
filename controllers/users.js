@@ -11,7 +11,7 @@ exports.save = function(req,res){
     var user = req.body.user;
     if(!user.balance)
         user.balance = 0;
-    users.save(user,function(err){
+    users.save(user, function(err){
         res.send(user);
     }); 
 }

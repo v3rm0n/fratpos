@@ -1,4 +1,4 @@
-.row-fluid(ng-controller='TransactionsController')
+.row-fluid(ng-controller='TransactionsController', ng-show='transactions != null')
     .span12
         h1 Tehingud
         p(ng-hide='transactions.length > 0') Käesoleval perioodil ei ole veel tehinguid tehtud.

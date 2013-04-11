@@ -143,35 +143,20 @@ function UsersController($scope, $http, $dialog){
   }
 
   $scope.openUserDialog = function(user){
+    var userWasNull = user == null;
+    if(userWasNull){
+      user = {};
+      user.status = "";
+    }
     var d = $dialog.dialog({resolve: {object: function(){return user;}}});
     d.open('/dialog/user', DialogController).then(function(result){
       if(result){
           $http.post("/users/save",{user: result}).success(function(data){
-            if(user == null)
+            if(userWasNull)
               $scope.users.push(data);
           });
       }
     });
-  }
-
-}
-
-function DialogController($scope, $http, dialog, object){
-
-  $scope.object = object;
-
-  $scope.change = object != null;
-
-  $http.get("/statuses").success(function(data){
-    $scope.statuses = data;
-  });
-
-  $scope.close = function(){
-    dialog.close(null);
-  }
-
-  $scope.save = function(object){
-    dialog.close(object);
   }
 
 }
@@ -192,4 +177,110 @@ function TransactionsController($scope, $http, util){
       });
   });
   }
+}
+
+function ProductsController($scope, $http, $dialog){
+  $http.get("/products").success(function(data){
+    $scope.products = data;
+  });
+
+  $scope.deleteProduct = function(product){
+    $http.post("/products/remove", {id: product._id}).success(function(){
+      $scope.products = $scope.products.filter(function(u){return product._id != u._id});
+    });
+  }
+
+  $scope.openProductDialog = function(product){
+    var d = $dialog.dialog({resolve: {object: function(){return product;}}});
+    d.open('/dialog/product', DialogController).then(function(result){
+      if(result){
+          $http.post("/products/save",{product: result}).success(function(data){
+            if(product == null)
+              $scope.products.push(data);
+          });
+      }
+    });
+  }
+}
+
+function PaytypesController($scope, $http, $dialog){
+  $http.get("/paytypes").success(function(data){
+    $scope.paytypes = data;
+  });
+
+  $scope.deletePaytype = function(paytype){
+    $http.post("/paytypes/remove", {id: paytype._id}).success(function(){
+      $scope.paytypes = $scope.paytypes.filter(function(u){return paytype._id != u._id});
+    });
+  }
+
+  $scope.openPaytypeDialog = function(paytype){
+    var d = $dialog.dialog({resolve: {object: function(){return paytype;}}});
+    d.open('/dialog/paytype', DialogController).then(function(result){
+      if(result){
+          $http.post("/paytypes/save",{paytype: result}).success(function(data){
+            if(paytype == null)
+              $scope.paytypes.push(data);
+          });
+      }
+    });
+  }
+}
+
+function StatusesController($scope, $http, $dialog){
+  $http.get("/statuses").success(function(data){
+    $scope.statuses = data;
+  });
+
+  $scope.deleteStatus = function(status){
+    $http.post("/statuses/remove", {id: status._id}).success(function(){
+      $scope.statuses = $scope.statuses.filter(function(u){return status._id != u._id});
+    });
+  }
+
+  $scope.openStatusDialog = function(status){
+    var d = $dialog.dialog({resolve: {object: function(){return status;}}});
+    d.open('/dialog/status', DialogController).then(function(result){
+      if(result){
+          $http.post("/statuses/save",{status: result}).success(function(data){
+            if(status == null)
+              $scope.statuses.push(data);
+          });
+      }
+    });
+  }
+}
+
+function DialogController($scope, $http, dialog, object){
+
+  $scope.object = object;
+
+  $scope.change = object != null;
+
+  $http.get("/statuses").success(function(data){
+    $scope.statuses = data;
+    if($scope.object.status == "" && $scope.statuses.length > 0){
+      $scope.object.status = $scope.statuses[0].name;
+    }
+  });
+
+  $scope.updateForStatus = function(status){
+    if($scope.object.allowedForStatus == null)
+      $scope.object.allowedForStatus = [];
+    if($scope.object.allowedForStatus.indexOf(status.name) == -1 && status.checked){
+      $scope.object.allowedForStatus.push(status.name);
+    }
+    else if($scope.object.allowedForStatus.indexOf(status.name) != -1 && !status.checked){
+      $scope.object.allowedForStatus = $scope.object.allowedForStatus.filter(function(s){return s.name != status.name});
+    }
+  }
+
+  $scope.close = function(){
+    dialog.close(null);
+  }
+
+  $scope.save = function(object){
+    dialog.close(object);
+  }
+
 }

@@ -6,18 +6,14 @@ exports.all = function(req, res){
   });
 }
 
-exports.addPaytype = function(req, res){
-    var paytype = {
-        name: req.body.name,
-        affectsBalance: req.body.affectsBalance == 'on',
-        allowedForStatus: req.body.allowedForStatus
-    }
+exports.save = function(req, res){
+    var paytype = req.body.paytype;
     paytypes.save(paytype, function(err){
-        res.redirect('/admin#paytypes');
+        res.send(paytype);
     });
 }
 
-exports.removePaytype = function(req, res) {
+exports.remove = function(req, res) {
     paytypes.remove(req.body.id, function(err){
         res.send({status: err == null ? 'success' : err});
     });

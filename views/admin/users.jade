@@ -1,8 +1,8 @@
-.row-fluid(ng-controller='UsersController')
+.row-fluid(ng-controller='UsersController', ng-show='users != null')
     .span12
         h1 Kasutajad
         p(ng-hide='users.length > 0') Kasutajaid ei ole. Uue kasutaja lisamiseks vajuta nuppu Lisa kasutaja.
-        table(ng-show='users.length > 0').table.table-bordered.table-hover
+        table.table.table-bordered.table-hover(ng-show='users.length > 0')
                 thead
                     tr
                         th Staatus

@@ -6,13 +6,14 @@ exports.all = function(req, res){
   });
 }
 
-exports.addStatus = function(req, res) {
-    statuses.save({name: req.body.status}, function(err){
-        res.redirect('/admin#statuses');
+exports.save = function(req, res) {
+    var status = req.body.status;
+    statuses.save(status, function(err){
+        res.send(status);
     });
 }
 
-exports.removeStatus = function(req, res) {
+exports.remove = function(req, res) {
     statuses.remove(req.body.id, function(err){
         res.send({status: err == null ? 'success' : err});
     });
