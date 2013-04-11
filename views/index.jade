@@ -100,7 +100,7 @@ block content
                                     $("#success-message").show().delay(delay).slideUp();
                                 }
                                 else{
-                                    $("#transaction-error").show().delay(delay).slideUp();
+                                    $("#transaction-error").html("<strong>Viga!</strong> "+data.status).show().delay(delay).slideUp();
                                 }
                             });
                         }
