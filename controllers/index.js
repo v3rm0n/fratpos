@@ -22,13 +22,7 @@ exports.posdata = function(req, res){
             users: async.apply(users.getAll)
         }
         ,function(err, result){
-            var addName = function(user, callback){
-                user.label = users.getUserFullName(user);
-                callback(null, user);
-            }
-            async.map(result.users, addName, function(err, users){
-                res.send({transactions: result.transactions, products: result.products, paytypes: result.paytypes, users: users});
-            });
+            res.send({transactions: result.transactions, products: result.products, paytypes: result.paytypes, users: result.users});
         });
 };
 

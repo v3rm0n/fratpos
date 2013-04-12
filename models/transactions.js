@@ -30,7 +30,8 @@ exports.getWithFilter = function(filter, callback){
 var addSumAndUserToTransaction = function(item, callback){
     item.sum = exports.getTransactionSum(item);
     users.get(item.user, function(err, user){
-        item.user = users.getUserFullName(user);
+        if(user)
+            item.user = users.getUserFullName(user);
         callback(null, item);
     });
 }

@@ -112,6 +112,30 @@ function UsersController($scope, $http, $dialog){
     $scope.users = data;
   });
 
+  $scope.filteredUsers = function(){
+    var users = $scope.users;
+    if($scope.filter != null && $scope.filter.length > 0)
+      users = users.filter(function(user){return user.label.toLowerCase().indexOf($scope.filter) != -1;});
+    if($scope.sortfield != null){
+      var sort = function(a,b){
+        if($scope.asc)
+          return String(a[$scope.sortfield]).localeCompare(b[$scope.sortfield]);
+        else
+          return String(b[$scope.sortfield]).localeCompare(a[$scope.sortfield]);
+      }
+      users = users.sort(sort);
+    }
+    return users;
+  }
+
+  $scope.asc = true; 
+
+  $scope.sort = function(sortfield){
+    if($scope.sortfield == sortfield)
+      $scope.asc = !$scope.asc;
+    $scope.sortfield = sortfield;
+  }
+
   $scope.clearBalances = function(){
     $http.post("/users/reset").success(function(data){
       $scope.users = data;

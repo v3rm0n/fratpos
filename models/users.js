@@ -1,8 +1,21 @@
 var db = require('./db');
 var users = db.collection('users');
+var async = require('async');
 
 exports.getAll = function(callback){
-	users.find(callback);
+    users.find(function(err, users){
+        if(err){
+            callback(err, users);
+            return;
+        }
+        var addName = function(user, callback){
+            user.label = exports.getUserFullName(user);
+            callback(null, user);
+        }
+        async.map(users, addName, function(err, users){
+            callback(err,users);
+        });
+    });
 }
 
 exports.get = function(id,callback){
