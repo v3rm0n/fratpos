@@ -27,7 +27,8 @@ exports.incrementBalance = function(id, increment, callback){
 }
 
 exports.getUserFullName = function(user){
-    var fullName = user.status+' '+user.firstname+' '+user.lastname+' ('+user.beername+')';
+    var fullName = user.status + ' ' + user.firstname + ' ' + user.lastname +
+    (user.beername != null && user.beername.length > 0 ? ' ('+user.beername+')' : '');
     return fullName;
 }
 

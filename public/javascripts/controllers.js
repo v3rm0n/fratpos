@@ -3,13 +3,7 @@ function PosController($scope, $http, $timeout, util){
   $scope.selectedProducts = {};
 
   $http.get("/posdata").success(function(data){
-    util.transform(data.users, 
-      function(user){
-        user.label = user.status+" "+user.firstname+" "+user.lastname+" ("+user.beername+")";
-    }, 
-      function(users){
-        $scope.users = data.users;
-    });
+    $scope.users = data.users;
     util.transform(data.transactions, util.formatTransactionTime,
       function(transactions){
         $scope.transactions = transactions;
