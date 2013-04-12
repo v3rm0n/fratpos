@@ -22,4 +22,10 @@
                               ul.dropdown-menu
                                 li: a(ng-click='openProductDialog(product)') Muuda toodet
                                 li: a(ng-click='deleteProduct(product)') Kustuta
+            tfoot
+                tr
+                    th
+                    th Kokku
+                    th(ng-bind='totalProducts()')
+                    th
         button.btn.btn-large(ng-click='openProductDialog()') Lisa toode

@@ -175,6 +175,12 @@ function ProductsController($scope, $http, $dialog){
     $scope.products = data;
   });
 
+  $scope.totalProducts = function(){
+    if($scope.products != null)
+      return $scope.products.reduce(function(sum, product){ return sum+product.quantity;},0);
+    return 0;
+  }
+
   $scope.deleteProduct = function(product){
     $http.post("/products/remove", {id: product._id}).success(function(){
       $scope.products = $scope.products.filter(function(u){return product._id != u._id});
