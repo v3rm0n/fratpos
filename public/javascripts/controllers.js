@@ -3,7 +3,6 @@ function PosController($scope, $http, $timeout, util){
   $scope.selectedProducts = {};
 
   $http.get("/posdata").success(function(data){
-    //Do some transformation before updating the model
     util.transform(data.users, 
       function(user){
         user.label = user.status+" "+user.firstname+" "+user.lastname+" ("+user.beername+")";
@@ -22,13 +21,11 @@ function PosController($scope, $http, $timeout, util){
   $scope.changeQuantity = function(product, quantity){
     var selectedProduct = $scope.selectedProducts[product._id];
     if(selectedProduct == null){
-      console.log('new product')
       selectedProduct = angular.copy(product);
       selectedProduct.quantity = 0;
       $scope.selectedProducts[product._id] = selectedProduct;
     }
     var newQuantity = selectedProduct.quantity + quantity;
-    console.log('new qty '+newQuantity)
     if(newQuantity >= 0)
       selectedProduct.quantity = newQuantity;
   }
@@ -254,7 +251,6 @@ function StatusesController($scope, $http, $dialog){
 function DialogController($scope, $http, dialog, object){
 
   $scope.object = object;
-
   $scope.change = object != null;
 
   $http.get("/statuses").success(function(data){
@@ -282,5 +278,4 @@ function DialogController($scope, $http, dialog, object){
   $scope.save = function(object){
     dialog.close(object);
   }
-
 }

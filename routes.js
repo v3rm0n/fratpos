@@ -8,8 +8,8 @@ var paytypes = require('./controllers/paytypes');
 
 module.exports = function(app) {
     //Main views
-	app.get('/', index.index);
-	app.get('/admin', admin.index);
+    app.get('/', index.index);
+    app.get('/admin', admin.index);
     //Partials
     app.get('/admin/:page', admin.page);
     app.get('/dialog/:dialog', admin.dialog);
@@ -24,7 +24,7 @@ module.exports = function(app) {
     //Admin actions
 
     //Users
-	app.get('/users', users.all);
+    app.get('/users', users.all);
     app.post('/users/save', users.save);
     app.post('/users/reset', users.reset);
     app.post('/users/remove', users.remove);

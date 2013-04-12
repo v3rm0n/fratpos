@@ -4,8 +4,8 @@ var nconf = require('./nconf');
 
 //Web framework
 var express = require('express'),
-   http = require('http')
-  , path = require('path');
+   http = require('http'),
+   path = require('path');
 
 var app = express();
 
@@ -15,6 +15,7 @@ app.configure(function(){
   app.set('view engine', 'jade');
   app.use(express.favicon());
   app.use(express.logger('dev'));
+  app.use(express.compress());
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(app.router);

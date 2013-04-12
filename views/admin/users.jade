@@ -3,30 +3,30 @@
         h1 Kasutajad
         p(ng-hide='users.length > 0') Kasutajaid ei ole. Uue kasutaja lisamiseks vajuta nuppu Lisa kasutaja.
         table.table.table-bordered.table-hover(ng-show='users.length > 0')
-                thead
-                    tr
-                        th Staatus
-                        th Eesnimi
-                        th Perenimi
-                        th Õllenimi
-                        th Saldo
-                        th
-                tbody
-                    tr(ng-repeat='user in users') 
-                        td(ng-bind='user.status')
-                        td(ng-bind='user.firstname')
-                        td(ng-bind='user.lastname')
-                        td(ng-bind='user.beername')
-                        td(ng-bind-template='{{user.balance}} €')
-                        td
-                            .btn-group
-                                a.btn.dropdown-toggle(data-toggle='dropdown', href='#')
-                                    | Muuda 
-                                    span.caret
-                                  ul.dropdown-menu
-                                    li: a(ng-click='openUserDialog(user)') Muuda kasutajat
-                                    li: a(ng-click='openBalanceDialog(user)') Muuda saldot
-                                    li: a(ng-click='deleteUser(user)') Kustuta
+            thead
+                tr
+                    th Staatus
+                    th Eesnimi
+                    th Perenimi
+                    th Õllenimi
+                    th Saldo
+                    th
+            tbody
+                tr(ng-repeat='user in users') 
+                    td(ng-bind='user.status')
+                    td(ng-bind='user.firstname')
+                    td(ng-bind='user.lastname')
+                    td(ng-bind='user.beername')
+                    td(ng-bind-template='{{user.balance}} €')
+                    td
+                        .btn-group
+                            a.btn.dropdown-toggle(data-toggle='dropdown', href='#')
+                                | Muuda 
+                                span.caret
+                              ul.dropdown-menu
+                                li: a(ng-click='openUserDialog(user)') Muuda kasutajat
+                                li: a(ng-click='openBalanceDialog(user)') Muuda saldot
+                                li: a(ng-click='deleteUser(user)') Kustuta
         button.btn.btn-large(ng-click='openUserDialog()') Lisa kasutaja
         &nbsp;
         button.btn.btn-danger.btn-large(ng-click='clearBalances()') Nulli saldod
