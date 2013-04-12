@@ -6,22 +6,25 @@ var products = require('./controllers/products');
 var statuses = require('./controllers/statuses');
 var paytypes = require('./controllers/paytypes');
 
+var passport = require('passport');
+
 module.exports = function(app) {
-    //Main views
-    app.get('/', index.index);
-    app.get('/admin', admin.index);
+    
     //Partials
     app.get('/admin/:page', admin.page);
     app.get('/dialog/:dialog', admin.dialog);
 
-    //Ajax requests
-
-    //Pos actions
+    //Pos view
+    app.get('/', index.index);
+    //Pos authenticated actions
     app.get('/posdata', index.posdata);
     app.post('/transaction', index.transaction);
     app.post('/transaction/invalid', index.invalid);
 
-    //Admin actions
+    //Admin view
+    app.get('/admin', authAdmin, admin.index);
+
+    //Admin authenticated actions
 
     //Users
     app.get('/users', users.all);
@@ -48,3 +51,7 @@ module.exports = function(app) {
     app.post('/paytypes/save', paytypes.save);
     app.post('/paytypes/remove', paytypes.remove);
 }
+
+var authAdmin = passport.authenticate('digest', {session: false});
+
+var authPos = function(){}

@@ -4,5 +4,9 @@
   },
   "database": {
     "connection": "posdb"
+  },
+  "admin": {
+    "username": "admin",
+    "password": "password"
   }
 }
