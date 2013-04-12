@@ -1,7 +1,6 @@
 var app = angular.module('fratpos', ['ui.bootstrap'])
 .config(function($routeProvider){
   $routeProvider
-  .when("/dialog/:name", {templateUrl: "/dialog"})
   .when("/users", {templateUrl: "/admin/users"})
   .when("/transactions", {templateUrl: "/admin/transactions"})
   .when("/products", {templateUrl: "/admin/products"})
