@@ -46,7 +46,7 @@ block content
                             th Makseviis
                     tbody
                         each transaction in stocktaking.transactions
-                            tr
+                            tr(class='#{transaction.invalid ? "error" : ""}')
                                 td #{transaction.formattedTime}
                                 td #{transaction.user}
                                 td #{transaction.sum} €
@@ -55,7 +55,7 @@ block content
                         tr
                             th
                             th Kokku
-                            th #{stocktaking.balancesSum} €
+                            th #{stocktaking.transactionsSum} €
                             th
         .row-fluid
             .span12
