@@ -21,11 +21,3 @@ exports.remove = function(req,res){
         res.send({status: err == null ? 'success' : err});
     });
 }
-
-exports.reset = function(req,res){
-    users.resetBalances(function(err){
-        users.getAll(function(err, users){
-            res.send(users);
-        });
-    });
-}

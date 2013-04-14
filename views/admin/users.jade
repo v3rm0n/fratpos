@@ -31,6 +31,12 @@
                                     li: a(ng-click='openUserDialog(user)') Muuda kasutajat
                                     li: a(ng-click='openBalanceDialog(user)') Muuda saldot
                                     li: a(ng-click='deleteUser(user)') Kustuta
+                tfoot
+                    tr
+                        th
+                        th
+                        th
+                        th Kokku
+                        th(ng-bind-template='{{totalBalance()}} €')
+                        th
         button.btn.btn-large(ng-click='openUserDialog()') Lisa kasutaja
-        &nbsp;
-        button.btn.btn-danger.btn-large(ng-click='clearBalances()') Nulli saldod

@@ -5,11 +5,3 @@ exports.all = function(req, res){
       res.send(transactions);
   });
 }
-
-exports.reset = function(req,res){
-    transactions.reset(function(err){
-        transactions.getAll(function(err, transactions) {
-          res.send(transactions);
-      });
-    });
-}

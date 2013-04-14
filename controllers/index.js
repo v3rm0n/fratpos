@@ -16,7 +16,7 @@ exports.invalid = function(req, res){
 
 exports.posdata = function(req, res){
     async.parallel({
-            transactions: async.apply(transactions.getWithFilter,{hidden: false, invalid: false}),
+            transactions: async.apply(transactions.getWithFilter,{invalid: false}),
             products: async.apply(products.getAll),
             paytypes: async.apply(paytypes.getAll),
             users: async.apply(users.getAll)
@@ -80,8 +80,7 @@ var createTransaction = function(req, callback){
         user: req.body.user,
         products: products,
         type: req.body.type,
-        invalid: false,
-        hidden: false
+        invalid: false
     }
     transactions.save(transaction, function(err, sum, id){
         var end = function(err){

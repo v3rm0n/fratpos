@@ -6,7 +6,7 @@ var paytypes = require('../models/paytypes');
 var async = require('async');
 
 exports.getAll = function(callback) {
-    exports.getWithFilter({hidden: false}, callback);
+    exports.getWithFilter({}, callback);
 }
 
 exports.get = function(id,callback){
@@ -16,13 +16,13 @@ exports.get = function(id,callback){
 }
 
 exports.getWithFilter = function(filter, callback){
-    transactions.find(filter).sort({time: -1},function(err,docs){
+    transactions.find(filter).sort({time: -1},function(err,transactions){
         if(err != null){
             callback(err);
             return;
         }
-        async.map(docs, addSumAndUserToTransaction, function(err,docs){
-            callback(err,docs);
+        async.map(transactions, addSumAndUserToTransaction, function(err,transactions){
+            callback(err,transactions);
         });
     });
 }
@@ -42,16 +42,17 @@ exports.save = function(transaction, callback){
     });
 }
 
+exports.remove = function(callback){
+    console.log('Removing all transactions');
+    transactions.remove(callback);
+}
+
 exports.getTransactionSum = function(transaction){
     var sum = 0;
     for(var i = 0;i< transaction.products.length;i++){
         sum += Number(transaction.products[i].price) * Number(transaction.products[i].quantity);
     }
     return sum;
-}
-
-exports.reset = function(callback){
-    transactions.update({},{$set: {hidden: true}}, {multi: true}, callback);
 }
 
 exports.invalid = function(id, callback){
@@ -64,6 +65,7 @@ exports.invalid = function(id, callback){
             transactions.update({_id: db.ObjectId(id)}, {$set: {invalid: true}}, callback);
         }],
         function(err, result){
+            if(err){callback(err);return;}
             async.series([
                 async.apply(incrementBalance, result[0]),
                 async.apply(updateProductQuantities, result[0])

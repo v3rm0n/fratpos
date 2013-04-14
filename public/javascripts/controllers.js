@@ -4,10 +4,8 @@ function PosController($scope, $http, $timeout, util){
 
   $http.get("/posdata").success(function(data){
     $scope.users = data.users;
-    util.transform(data.transactions, util.formatTransactionTime,
-      function(transactions){
-        $scope.transactions = transactions;
-      });
+    data.transactions.forEach(util.formatTime);
+    $scope.transactions = data.transactions;
     $scope.products = data.products;
     $scope.paytypes = data.paytypes;
   });
@@ -65,7 +63,8 @@ function PosController($scope, $http, $timeout, util){
           if(data.status == "success"){
             updateStatus("Tooted läksid edukalt kirja!", false);
             $scope.selectedProducts = {};
-            util.formatTransactionTime(data.transaction);
+            $scope.user = null;
+            util.formatTime(data.transaction);
             $scope.transactions.unshift(data.transaction);
           }
           else{
@@ -136,10 +135,11 @@ function UsersController($scope, $http, $dialog){
     $scope.sortfield = sortfield;
   }
 
-  $scope.clearBalances = function(){
-    $http.post("/users/reset").success(function(data){
-      $scope.users = data;
-    });
+  $scope.totalBalance = function(){
+    var users = $scope.filteredUsers();
+    if(users != null)
+      return users.reduce(function(sum, user){ return sum+user.balance;},0);
+    return 0;
   }
 
   $scope.deleteUser = function(user){
@@ -178,19 +178,29 @@ function UsersController($scope, $http, $dialog){
 
 function TransactionsController($scope, $http, util){
   $http.get('/transactions').success(function(data){
-    util.transform(data, util.formatTransactionTime,
-      function(transactions){
-        $scope.transactions = transactions;
-      });
+    data.forEach(util.formatTime);
+    $scope.transactions = data;
   });
 
-  $scope.hideTransactions = function(){
-    $http.post('/transactions/reset').success(function(data){
-    util.transform(data, util.formatTransactionTime,
-      function(transactions){
-        $scope.transactions = transactions;
+  $scope.totalSum = function(){
+    var transactions = $scope.transactions;
+    if(transactions != null)
+      return transactions.reduce(function(sum, transaction){ 
+        if(!transaction.invalid)
+          return sum+transaction.sum;
+        return sum;
+      },0);
+    return 0;
+  }
+
+  $scope.invalidTransaction = function(transaction){
+    var confirmed = window.confirm("Kas oled kindel, et tahad selle tehingu tagasi võtta?");
+    if(confirmed){
+      $http.post("/transaction/invalid", {id: transaction._id})
+      .success(function(data){
+        transaction.invalid = true;
       });
-  });
+    }
   }
 }
 
@@ -269,6 +279,27 @@ function StatusesController($scope, $http, $dialog){
           });
       }
     });
+  }
+}
+
+function StocktakingController($scope, $http, $window, util){
+  $http.get("/stocktakings").success(function(data){
+    data.forEach(util.formatTime);
+    $scope.stocktakings = data;
+  });
+
+  $scope.downloadCSV = function(stocktaking){
+    $window.open("/stocktakings/csv/"+stocktaking._id);
+  }
+
+  $scope.stocktaking = function(){
+    var confirmed = window.confirm("Oled kindel, et tahad teha inventuuri? Kasutajate saldod nullitakse ja tehingud eemaldatakse.");
+    if(confirmed){
+      $http.post("/stocktakings/generate").success(function(data){
+          util.formatTime(data);
+          $scope.stocktakings.push(data);
+      });
+    }
   }
 }
 

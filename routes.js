@@ -5,6 +5,7 @@ var transactions = require('./controllers/transactions');
 var products = require('./controllers/products');
 var statuses = require('./controllers/statuses');
 var paytypes = require('./controllers/paytypes');
+var stocktakings = require('./controllers/stocktakings');
 
 module.exports = function(app) {
     //Main views
@@ -26,12 +27,10 @@ module.exports = function(app) {
     //Users
     app.get('/users', users.all);
     app.post('/users/save', users.save);
-    app.post('/users/reset', users.reset);
     app.post('/users/remove', users.remove);
 
     //Transactions
     app.get('/transactions', transactions.all);
-    app.post('/transactions/reset', transactions.reset);
 
     //Products
     app.get('/products', products.all);
@@ -47,4 +46,9 @@ module.exports = function(app) {
     app.get('/paytypes', paytypes.all);
     app.post('/paytypes/save', paytypes.save);
     app.post('/paytypes/remove', paytypes.remove);
+
+    //Stocktakings
+    app.get('/stocktakings', stocktakings.all);
+    app.post('/stocktakings/generate', stocktakings.generate);
+    app.get('/stocktakings/csv/:id', stocktakings.csv);
 }

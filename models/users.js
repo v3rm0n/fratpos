@@ -3,11 +3,12 @@ var users = db.collection('users');
 var async = require('async');
 
 exports.getAll = function(callback){
-    users.find(function(err, users){
-        if(err){
-            callback(err, users);
-            return;
-        }
+    exports.getWithFilter({}, callback);
+}
+
+exports.getWithFilter = function(filter, callback){
+    users.find(filter, function(err,users){
+        if(err != null){callback(err);return;}
         var addName = function(user, callback){
             user.label = exports.getUserFullName(user);
             callback(null, user);
