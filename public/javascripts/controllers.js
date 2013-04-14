@@ -1,5 +1,14 @@
 function PosController($scope, $http, $timeout, util){
 
+  $scope.intro = function(){
+    var opts = {
+      nextLabel: "Järgmine",
+      prevLabel: "Eelmine",
+      skipLabel: "Lõpeta"
+    }
+    introJs().setOptions(opts).start();
+  }
+
   $scope.selectedProducts = {};
 
   $http.get("/posdata").success(function(data){
@@ -194,7 +203,7 @@ function TransactionsController($scope, $http, util){
   }
 
   $scope.invalidTransaction = function(transaction){
-    var confirmed = window.confirm("Kas oled kindel, et tahad selle tehingu tagasi võtta?");
+    var confirmed = window.confirm("Kas oled kindel, et tahad selle tehingu katkestada?");
     if(confirmed){
       $http.post("/transaction/invalid", {id: transaction._id})
       .success(function(data){

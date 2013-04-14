@@ -8,12 +8,14 @@ block content
             br
             .row-fluid
                 .span12
-                    p Tehingu tegemiseks vali klient.
+                    p Juhiste jaoks vajuta 
+                        a(href="#", ng-click='intro()') siia
             .row-fluid
                 .span5
                     .control-group(class='{{user != null && "success" || "error"}}')
-                        .controls
-                            input(type='text', placeholder='Kliendi nimi', ng-model='user', 
+                        .controls(data-step='1',
+                            data-intro='Kõigepealt sisesta kliendi nimi. Alusta trükkimist ning kui näed õiget klienti, vajuta tema nime peal. Punane tähendab, et klienti pole valitud.')
+                            input(type='text', placeholder='Kliendi nimi', ng-model='user',
                                 typeahead='user as user.label for user in users | filter:$viewValue')
                 .span7
                     .alert(ng-show='status != null', class='{{statusError && "alert-error" || "alert-success"}}')
@@ -22,36 +24,35 @@ block content
             .row-fluid
                 .span12
                     h4 Tooted
-                    table.table.table-bordered.table-hover.table-condensed
+                    table.table.table-bordered.table-hover.table-condensed(data-step='2', data-intro='Kui klient on edukalt valitud(Kliendi nime kast on roheline), siis võid hakata tooteid valima.')
                         thead
                             tr
                                 th Toode
                                 th Kogus
                                 th Hind
-                        tbody#prod-tbody
+                        tbody
                             tr(ng-repeat='product in products')
                                 td(ng-bind='product.name')
-                                td 
+                                td(data-step='3', data-intro='Toote valimiseks ostukorvi vajuta "+". Toote eemaldamiseks ostukorvist vajuta "-".')
                                     i.gi-circle_plus(ng-click='changeQuantity(product, 1)')
                                     span(ng-bind='quantity(product)')
                                     i.gi-circle_minus(ng-click='changeQuantity(product, -1)')
-
                                 td 
                                     span(ng-bind='product.price')
                                     |  €
                             tr
                                 th
                                 th Kokku
-                                th
+                                th(data-step='4', data-intro='Käesoleva tehingu jaoks valitud toodete kogusummat näed siin.')
                                     span(ng-bind='sum()')
                                     |  €
-                    .btn-group
+                    .btn-group(data-step='5', data-intro='Kui tooted on valitud, siis vali makseviis. Makseviisi nupul vajutades viiakse tehing lõpuni.')
                         button.btn.btn-large(ng-repeat='paytype in allowedPaytypes()', ng-click='pay(paytype)') {{paytype.name}}
             br
-            .row-fluid(ng-show='transactions.length > 0')
+            .row-fluid(data-step='6', data-intro='Siin näed viimati sooritatud tehinguid. Kui juhtub, et tehing läks kogemata valesti, siis katkestamiseks vajuta tabelis tehingu reale.')
                 .span12
                     h4 Viimased tehingud
-                    table.table.table-bordered.table-hover
+                    table.table.table-bordered.table-hover(ng-show='transactions.length > 0')
                         thead
                             tr
                                 th Aeg
