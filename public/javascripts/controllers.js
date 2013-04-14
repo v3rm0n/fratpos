@@ -1,4 +1,4 @@
-function PosController($scope, $http, $timeout, util){
+function PosController($scope, $http, $timeout){
 
   $scope.intro = function(){
     var opts = {
@@ -13,7 +13,6 @@ function PosController($scope, $http, $timeout, util){
 
   $http.get("/posdata").success(function(data){
     $scope.users = data.users;
-    data.transactions.forEach(util.formatTime);
     $scope.transactions = data.transactions;
     $scope.products = data.products;
     $scope.paytypes = data.paytypes;
@@ -73,7 +72,6 @@ function PosController($scope, $http, $timeout, util){
             updateStatus("Tooted läksid edukalt kirja!", false);
             $scope.selectedProducts = {};
             $scope.user = null;
-            util.formatTime(data.transaction);
             $scope.transactions.unshift(data.transaction);
           }
           else{
@@ -185,9 +183,8 @@ function UsersController($scope, $http, $dialog){
 
 }
 
-function TransactionsController($scope, $http, util){
+function TransactionsController($scope, $http){
   $http.get('/transactions').success(function(data){
-    data.forEach(util.formatTime);
     $scope.transactions = data;
   });
 
@@ -222,6 +219,28 @@ function ProductsController($scope, $http, $dialog){
     if($scope.products != null)
       return $scope.products.reduce(function(sum, product){ return sum+product.quantity;},0);
     return 0;
+  }
+
+  $scope.sortedProducts = function(){
+    var products = $scope.products;
+    if($scope.sortfield != null){
+      var sort = function(a,b){
+        if($scope.asc)
+          return String(a[$scope.sortfield]).localeCompare(b[$scope.sortfield]);
+        else
+          return String(b[$scope.sortfield]).localeCompare(a[$scope.sortfield]);
+      }
+      products = products.sort(sort);
+    }
+    return products;
+  }
+
+  $scope.asc = true; 
+
+  $scope.sort = function(sortfield){
+    if($scope.sortfield == sortfield)
+      $scope.asc = !$scope.asc;
+    $scope.sortfield = sortfield;
   }
 
   $scope.deleteProduct = function(product){
@@ -291,21 +310,23 @@ function StatusesController($scope, $http, $dialog){
   }
 }
 
-function StocktakingController($scope, $http, $window, util){
+function StocktakingController($scope, $http, $window){
   $http.get("/stocktakings").success(function(data){
-    data.forEach(util.formatTime);
     $scope.stocktakings = data;
   });
 
-  $scope.downloadCSV = function(stocktaking){
+  $scope.download = function(stocktaking){
     $window.open("/stocktakings/csv/"+stocktaking._id);
+  }
+
+  $scope.view = function(stocktaking){
+    $window.open("/stocktakings/html/"+stocktaking._id);
   }
 
   $scope.stocktaking = function(){
     var confirmed = window.confirm("Oled kindel, et tahad teha inventuuri? Kasutajate saldod nullitakse ja tehingud eemaldatakse.");
     if(confirmed){
       $http.post("/stocktakings/generate").success(function(data){
-          util.formatTime(data);
           $scope.stocktakings.push(data);
       });
     }

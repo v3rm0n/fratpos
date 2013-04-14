@@ -51,4 +51,5 @@ module.exports = function(app) {
     app.get('/stocktakings', stocktakings.all);
     app.post('/stocktakings/generate', stocktakings.generate);
     app.get('/stocktakings/csv/:id', stocktakings.csv);
+    app.get('/stocktakings/html/:id', stocktakings.html);
 }

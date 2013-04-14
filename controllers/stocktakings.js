@@ -41,6 +41,12 @@ exports.generate = function(req, res) {
     });
 }
 
+exports.html = function(req, res) {
+  stocktakings.get(req.params.id, function(err, stocktaking){
+    res.render('stocktaking', { title: 'Inventuur', stocktaking: stocktaking});
+  });
+}
+
 exports.csv = function(req, res) {
   res.type("text/csv");
   transformStocktakingToCSV(req.params.id, function(err, content){

@@ -5,15 +5,15 @@
         table.table.table-bordered.table-hover(ng-show='products.length > 0')
             thead
                 tr
-                    th Toode
-                    th Hind
-                    th Kogus
+                    th(ng-click='sort("name")') Toode
+                    th(ng-click='sort("price")') Hind
+                    th(ng-click='sort("quantity")') Kogus
                     th
             tbody
-                tr(ng-repeat='product in products') 
+                tr(ng-repeat='product in sortedProducts()') 
                     td(ng-bind='product.name')
                     td(ng-bind-template='{{product.price}} €')
-                    td(ng-bind='product.quantity')
+                    td(ng-bind='product.quantity', style='{{product.quantity < 0 && "color: red;" || ""}}')
                     td
                         .btn-group
                             a.btn.dropdown-toggle(data-toggle='dropdown', href='#')

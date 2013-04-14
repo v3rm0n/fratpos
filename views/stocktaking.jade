@@ -1,0 +1,79 @@
+extends layout
+
+block content
+    .container-fluid
+        .row-fluid
+            .span12
+                h2 Inventuur
+        .row-fluid
+            .span12
+                p Loomise aeg: #{stocktaking.formattedTime}
+        .row-fluid
+            .span12
+                h1 Kasutajad
+                table.table.table-bordered.table-hover
+                    thead
+                        tr
+                            th Staatus
+                            th Eesnimi
+                            th Perenimi
+                            th Õllenimi
+                            th Saldo
+                    tbody
+                        each user in stocktaking.users
+                            tr
+                                td #{user.status}
+                                td #{user.firstname}
+                                td #{user.lastname}
+                                td #{user.beername}
+                                td #{user.balance} €
+                    tfoot
+                        tr
+                            th
+                            th
+                            th
+                            th Kokku
+                            th #{stocktaking.balancesSum} €
+        .row-fluid
+            .span12
+                h1 Tehingud
+                table.table.table-bordered.table-hover
+                    thead
+                        tr
+                            th Aeg
+                            th Nimi
+                            th Summa
+                            th Makseviis
+                    tbody
+                        each transaction in stocktaking.transactions
+                            tr
+                                td #{transaction.formattedTime}
+                                td #{transaction.user}
+                                td #{transaction.sum} €
+                                td #{transaction.type}
+                    tfoot
+                        tr
+                            th
+                            th Kokku
+                            th #{stocktaking.balancesSum} €
+                            th
+        .row-fluid
+            .span12
+                h1 Laoseis
+                table.table.table-bordered.table-hover
+                    thead
+                        tr
+                            th Toode
+                            th Hind
+                            th Kogus
+                    tbody
+                        each product in stocktaking.products
+                            tr
+                                td #{product.name}
+                                td #{product.price} €
+                                td #{product.quantity}
+                    tfoot
+                        tr
+                            th
+                            th Kokku
+                            th #{stocktaking.productsQuantity}

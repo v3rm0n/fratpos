@@ -17,5 +17,8 @@
                     td {{stocktaking.balancesSum}} €
                     td {{stocktaking.transactionsSum}} €
                     td {{stocktaking.productsQuantity}}
-                    td: a.btn(ng-click='downloadCSV(stocktaking)') Laadi alla
+                    td
+                        button.btn.btn-success(ng-click='download(stocktaking)') Laadi alla
+                        &nbsp;
+                        button.btn(ng-click='view(stocktaking)') Vaata
         button.btn.btn-danger.btn-large(ng-click='stocktaking()') Inventuur

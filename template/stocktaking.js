@@ -1,5 +1,5 @@
 Inventuur
-Loomise aeg {{time}}
+Loomise aeg {{formattedTime}}
 
 Kasutajad
 Staatus,Eesnimi,Perenimi,Õllenimi,Saldo{{#each users}}
@@ -7,8 +7,8 @@ Staatus,Eesnimi,Perenimi,Õllenimi,Saldo{{#each users}}
 ,,,Summa,{{balancesSum}}
 
 Tehingud
-Aeg,Tüüp,Summa,Katkestatud{{#each transactions}}
-{{time}},{{type}},{{sum}},{{#if invalid}}Jah{{/if}}{{/each}}
+Aeg,Nimi,Summa,Makseviis,Katkestatud{{#each transactions}}
+{{formattedTime}},{{user}},{{sum}},{{type}},{{#if invalid}}Jah{{/if}}{{/each}}
 ,Summa,{{transactionsSum}}
 
 Laoseis

@@ -11,7 +11,7 @@ exports.getAll = function(callback) {
 
 exports.get = function(id,callback){
     transactions.findOne({_id: db.ObjectId(id)}, function(err, transaction){
-        addSumAndUserToTransaction(transaction, callback);
+        addMissingInfo(transaction, callback);
     });
 }
 
@@ -21,19 +21,29 @@ exports.getWithFilter = function(filter, callback){
             callback(err);
             return;
         }
-        async.map(transactions, addSumAndUserToTransaction, function(err,transactions){
+        async.map(transactions, addMissingInfo, function(err,transactions){
             callback(err,transactions);
         });
     });
 }
 
-var addSumAndUserToTransaction = function(item, callback){
+var addMissingInfo = function(item, callback){
+    exports.formatTime(item);
     item.sum = exports.getTransactionSum(item);
     users.get(item.user, function(err, user){
         if(user)
             item.user = users.getUserFullName(user);
         callback(null, item);
     });
+}
+
+exports.formatTime = function(transaction){
+    var time = new Date(transaction.time);
+    var hours = time.getHours() > 9 ? time.getHours() : "0"+time.getHours();
+    var minutes = time.getMinutes() > 9 ? time.getMinutes() : "0"+time.getMinutes();
+    var date = time.getDate() > 9 ? time.getDate() : "0"+time.getDate();
+    var month = time.getMonth()+1 > 9 ? time.getMonth()+1 : "0"+(time.getMonth()+1);
+    transaction.formattedTime = hours+":"+minutes+" "+date+"."+month+"."+time.getFullYear();
 }
 
 exports.save = function(transaction, callback){

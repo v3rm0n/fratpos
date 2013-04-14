@@ -1,18 +1,26 @@
 var db = require('./db');
 var stocktakings = db.collection('stocktakings');
+var transactions = require('../models/transactions');
 
 exports.getAll = function(callback){
     stocktakings.find(function(err,stocktakings){
       if(stocktakings != null)
-        stocktakings.forEach(addBalancesAndTransactionsSum);
+        stocktakings.forEach(function(stocktaking){
+          stocktaking.transactions.forEach(transactions.formatTime);
+          transactions.formatTime(stocktaking);
+          addBalancesAndTransactionsSum(stocktaking);
+        });
       callback(err,stocktakings);
     });
 }
 
 exports.get = function(id,callback){
     stocktakings.findOne({_id: db.ObjectId(id)}, function(err, stocktaking){
-      if(stocktaking != null)
+      if(stocktaking != null){
+        stocktaking.transactions.forEach(transactions.formatTime);
+        transactions.formatTime(stocktaking);
         addBalancesAndTransactionsSum(stocktaking);
+      }
       callback(err,stocktaking);
     });
 }
