@@ -42,7 +42,6 @@ exports.transaction = function(req, res){
             res.send({status: "creation_failed"});
         }
         else{
-            console.log(result.transactionId);
             transactions.get(String(result.transactionId), function(err, transaction){
                 res.send({status: (err == null ? "success" : err), transaction: transaction});
             });

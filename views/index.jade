@@ -31,7 +31,7 @@ block content
                                 th(data-step='3', data-intro='Toote valimiseks ostukorvi vajuta "+". Toote eemaldamiseks ostukorvist vajuta "-".') Kogus
                                 th Hind
                         tbody
-                            tr(ng-repeat='product in products')
+                            tr(ng-repeat='product in products', class='{{product.quantity < 0 && "error" || ""}}')
                                 td(ng-bind='product.name')
                                 td
                                     i.gi-circle_plus(ng-click='changeQuantity(product, 1)')
