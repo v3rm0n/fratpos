@@ -28,12 +28,12 @@ block content
                         thead
                             tr
                                 th Toode
-                                th Kogus
+                                th(data-step='3', data-intro='Toote valimiseks ostukorvi vajuta "+". Toote eemaldamiseks ostukorvist vajuta "-".') Kogus
                                 th Hind
                         tbody
                             tr(ng-repeat='product in products')
                                 td(ng-bind='product.name')
-                                td(data-step='3', data-intro='Toote valimiseks ostukorvi vajuta "+". Toote eemaldamiseks ostukorvist vajuta "-".')
+                                td
                                     i.gi-circle_plus(ng-click='changeQuantity(product, 1)')
                                     span(ng-bind='quantity(product)')
                                     i.gi-circle_minus(ng-click='changeQuantity(product, -1)')
