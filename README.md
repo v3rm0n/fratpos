@@ -88,9 +88,7 @@ Kui **kassa** või **admin** kasutajal on **authenticate** parameetri väärtuse
 
 **NB!** Kui kassa on internetist ligipääsetav tuleks alati paroolid ära seadistada!
 
-Kui seadistus on paigas, tuleb käivitamiseks jooksutada: `node app.js`. 
-
-Veel parem oleks kasutada [node-supervisor](https://github.com/isaacs/node-supervisor) pluginat.
+Kui seadistus on paigas, tuleb sõtluvuste allatõmbamiseks: `npm install`  ning seejärel käivitamiseks `npm start` või kasutada [node-supervisor](https://github.com/isaacs/node-supervisor) pluginat: `npm install supervisor -g` ning seejärel: `supervisor app.js` või Linuxis taustal jooksutamiseks: `nohup supervisor app.js &`
 
 
 ## Tehnoloogiad
