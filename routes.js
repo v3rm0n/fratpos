@@ -7,68 +7,52 @@ var statuses = require('./controllers/statuses');
 var paytypes = require('./controllers/paytypes');
 var stocktakings = require('./controllers/stocktakings');
 
-var passport = require('passport');
-var nconf = require('./nconf');
+var passport = require('./lib/passport');
 
 module.exports = function(app) {
-
     //Pos view
-    app.get('/', authPos, index.index);
+    app.get('/', passport.authPos, index.index);
 
     //Pos actions
-    app.get('/posdata', authPos, index.posdata);
-    app.post('/transaction', authPos, index.transaction);
-    app.post('/transaction/invalid', authPos, index.invalid);
+    app.get('/posdata', passport.authPos, index.posdata);
+    app.post('/transaction', passport.authPos, index.transaction);
+    app.post('/transaction/invalid', passport.authPos, index.invalid);
 
     //Admin view
-    app.get('/admin', authAdmin, admin.index);
+    app.get('/admin', passport.authAdmin, admin.index);
 
     //Partials
-    app.get('/admin/:page', authAdmin, admin.page);
-    app.get('/dialog/:dialog', authAdmin, admin.dialog);
+    app.get('/admin/:page', passport.authAdmin, admin.page);
+    app.get('/dialog/:dialog', passport.authAdmin, admin.dialog);
 
     //Admin actions
 
     //Users
-    app.get('/users', authAdmin, users.all);
-    app.post('/users/save', authAdmin, users.save);
-    app.post('/users/remove', authAdmin, users.remove);
+    app.get('/users', passport.authAdmin, users.all);
+    app.post('/users/save', passport.authAdmin, users.save);
+    app.post('/users/remove', passport.authAdmin, users.remove);
 
     //Transactions
-    app.get('/transactions', authAdmin, transactions.all);
+    app.get('/transactions', passport.authAdmin, transactions.all);
 
     //Products
-    app.get('/products', authAdmin, products.all);
-    app.post('/products/save', authAdmin, products.save);
-    app.post('/products/remove', authAdmin, products.remove);
+    app.get('/products', passport.authAdmin, products.all);
+    app.post('/products/save', passport.authAdmin, products.save);
+    app.post('/products/remove', passport.authAdmin, products.remove);
 
     //Statuses
-    app.get('/statuses', authAdmin, statuses.all);
-    app.post('/statuses/save', authAdmin, statuses.save);
-    app.post('/statuses/remove', authAdmin, statuses.remove);
+    app.get('/statuses', passport.authAdmin, statuses.all);
+    app.post('/statuses/save', passport.authAdmin, statuses.save);
+    app.post('/statuses/remove', passport.authAdmin, statuses.remove);
 
     //Paytypes
-    app.get('/paytypes', authAdmin, paytypes.all);
-    app.post('/paytypes/save', authAdmin, paytypes.save);
-    app.post('/paytypes/remove', authAdmin, paytypes.remove);
+    app.get('/paytypes', passport.authAdmin, paytypes.all);
+    app.post('/paytypes/save', passport.authAdmin, paytypes.save);
+    app.post('/paytypes/remove', passport.authAdmin, paytypes.remove);
 
     //Stocktakings
-    app.get('/stocktakings', authAdmin, stocktakings.all);
-    app.post('/stocktakings/generate', authAdmin, stocktakings.generate);
-    app.get('/stocktakings/csv/:id', authAdmin, stocktakings.csv);
-    app.get('/stocktakings/html/:id', authAdmin, stocktakings.html);
-}
-
-var authAdmin = function(req, res, next){
-    if(nconf.get('admin:authenticate'))
-        passport.authenticate('admin', {session: false})(req,res,next);
-    else
-        next();
-}
-
-var authPos = function(req,res,next){
-    if(nconf.get('posuser:authenticate'))
-        passport.authenticate('pos', {session: false})(req,res,next);
-    else
-        next();
+    app.get('/stocktakings', passport.authAdmin, stocktakings.all);
+    app.post('/stocktakings/generate', passport.authAdmin, stocktakings.generate);
+    app.get('/stocktakings/csv/:id', passport.authAdmin, stocktakings.csv);
+    app.get('/stocktakings/html/:id', passport.authAdmin, stocktakings.html);
 }
