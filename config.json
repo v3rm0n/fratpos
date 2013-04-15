@@ -10,11 +10,13 @@
     "password": ""
   },
   "admin": {
+    "authenticate": true,
     "username": "admin",
-    "password": "admin"
+    "password": ""
   },
   "posuser": {
+    "authenticate": false,
     "username": "posuser",
-    "password": "posuser"
+    "password": ""
   }
 }

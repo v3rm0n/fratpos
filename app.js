@@ -5,10 +5,17 @@ var nconf = require('./nconf');
 var passport = require('passport'),
     DigestStrategy = require('passport-http').DigestStrategy;
 
-passport.use(new DigestStrategy({ qop: 'auth' },
+passport.use('admin', new DigestStrategy({ qop: 'auth' },
   function(username, done) {
       if (username != nconf.get("admin:username")) { return done(null, false); }
       return done(null, username, nconf.get("admin:password"));
+  }
+));
+
+passport.use('pos', new DigestStrategy({ qop: 'auth' },
+  function(username, done) {
+      if (username != nconf.get("posuser:username")) { return done(null, false); }
+      return done(null, username, nconf.get("posuser:password"));
   }
 ));
 
