@@ -59,4 +59,8 @@ module.exports = function(app) {
 
 var authAdmin = passport.authenticate('digest', {session: false});
 
+var authPos = function(){}}
+
+var authAdmin = passport.authenticate('digest', {session: false});
+
 var authPos = function(){}
