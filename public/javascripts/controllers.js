@@ -18,6 +18,18 @@ function PosController($scope, $http, $timeout){
     $scope.paytypes = data.paytypes;
   });
 
+  $scope.showAllProducts = false;
+
+  $scope.toggleShowAllProducts = function(){
+    $scope.showAllProducts = !$scope.showAllProducts;
+  }
+
+  $scope.filteredProducts = function(){
+    if($scope.showAllProducts)
+      return $scope.products;
+    return $scope.products.filter(function(product){ return product.quantity > 0;});
+  } 
+
   $scope.changeQuantity = function(product, quantity){
     var selectedProduct = $scope.selectedProducts[product._id];
     if(selectedProduct == null){
@@ -47,13 +59,11 @@ function PosController($scope, $http, $timeout){
     return sum;
   }
 
-  $scope.allowedPaytypes = function(){
+  $scope.isDisabled = function(paytype){
     if($scope.user){
-      return $scope.paytypes.filter(function(paytype){
-        return paytype.allowedForStatus.indexOf($scope.user.status) != -1;
-      });
+        return paytype.allowedForStatus.indexOf($scope.user.status) == -1;
     }
-    return $scope.paytypes;
+    return true;
   }
 
   $scope.pay = function(paytype){

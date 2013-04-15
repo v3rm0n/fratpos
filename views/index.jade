@@ -9,7 +9,7 @@ block content
             .row-fluid
                 .span12
                     p Juhiste jaoks vajuta 
-                        a(href="#", ng-click='intro()') siia
+                        a(href='#', ng-click='intro()') siia.
             .row-fluid
                 .span5
                     .control-group(class='{{user != null && "success" || "error"}}')
@@ -24,6 +24,8 @@ block content
             .row-fluid
                 .span12
                     h4 Tooted
+                    p Laos mitteolevaid tooteid ei kuvata. Kuvamiseks vajuta 
+                        a(href='#', ng-click='toggleShowAllProducts()') siia.
                     table.table.table-bordered.table-hover.table-condensed(data-step='2', data-intro='Kui klient on edukalt valitud(Kliendi nime kast on roheline), siis võid hakata tooteid valima.')
                         thead
                             tr
@@ -31,7 +33,7 @@ block content
                                 th(data-step='3', data-intro='Toote valimiseks ostukorvi vajuta "+". Toote eemaldamiseks ostukorvist vajuta "-".') Kogus
                                 th Hind
                         tbody
-                            tr(ng-repeat='product in products', class='{{product.quantity < 0 && "error" || ""}}')
+                            tr(ng-repeat='product in filteredProducts()', class='{{product.quantity < 0 && "error" || ""}}')
                                 td(ng-bind='product.name')
                                 td
                                     i.gi-circle_plus(ng-click='changeQuantity(product, 1)')
@@ -46,8 +48,8 @@ block content
                                 th(data-step='4', data-intro='Käesoleva tehingu jaoks valitud toodete kogusummat näed siin.')
                                     span(ng-bind='sum()')
                                     |  €
-                    .btn-group(data-step='5', data-intro='Kui tooted on valitud, siis vali makseviis. Makseviisi nupul vajutades viiakse tehing lõpuni.')
-                        button.btn.btn-large(ng-repeat='paytype in allowedPaytypes()', ng-click='pay(paytype)') {{paytype.name}}
+                    .btn-group(data-step='5', data-intro='Kui tooted on valitud, siis vali makseviis. Makseviisi nupul vajutades viiakse tehing lõpuni. Need mida vajutada ei saa pole kliendile lubatud.')
+                        button.btn.btn-large(ng-repeat='paytype in paytypes', ng-click='pay(paytype)', ng-disabled="isDisabled(paytype)") {{paytype.name}}
             br
             .row-fluid
                 .span12
