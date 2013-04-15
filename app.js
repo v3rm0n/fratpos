@@ -1,6 +1,8 @@
-
 //For config files
-var nconf = require('./nconf');
+var nconf = require('./lib/nconf');
+
+//For authentication
+var passport = require('./lib/passport');
 
 //Web framework
 var express = require('express'),
@@ -18,6 +20,7 @@ app.configure(function(){
   app.use(express.compress());
   app.use(express.bodyParser());
   app.use(express.methodOverride());
+  app.use(passport.init());
   app.use(app.router);
   app.use(express.static(path.join(__dirname, 'public')));
 });

@@ -10,11 +10,15 @@
     "password": ""
   },
   "admin": {
+    "authenticate": true,
+    "realm": "admin",
     "username": "admin",
-    "password": "admin"
+    "password": ""
   },
   "posuser": {
+    "authenticate": false,
+    "realm": "pos",
     "username": "posuser",
-    "password": "posuser"
+    "password": ""
   }
 }
