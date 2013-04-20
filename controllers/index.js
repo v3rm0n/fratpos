@@ -5,7 +5,7 @@ var paytypes = require('../models/paytypes');
 var async = require('async');
 //Kassa
 exports.index = function(req, res){
-    res.render('index', { title: 'Kassa'});
+    res.render('index', { title: 'Kassa', manifest: 'app.cache'});
 };
 
 exports.invalid = function(req, res){

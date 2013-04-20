@@ -20,7 +20,9 @@
     "mongojs": "0.7.x",
     "nconf": "0.6.x",
     "passport": "0.1.x",
-    "passport-http": "0.2.x"
+    "passport-http": "0.2.x",
+    "appcache-node": "0.0.x",
+    "wrench": "1.4.x"
   },
   "engines": {
     "node": ">=0.8"

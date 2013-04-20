@@ -1,6 +1,6 @@
 //Admin liides
 exports.index = function(req,res){
-    res.render('admin', {title: 'Admin'});
+    res.render('admin', {title: 'Admin', manifest: null});
 }
 
 exports.page = function(req, res){
