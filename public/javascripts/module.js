@@ -37,29 +37,51 @@ app.factory('localStorage',function($window){
   }
 });
 
-app.factory('api', function($http, $window, $rootScope, localStorage){
+app.factory('api', function($http, $window, $rootScope, $timeout, localStorage){
   return {
     init: function(){
       var that = this;
-      var submitInvalidTransactions = function(){
+      var submitInvalidTransactions = function(callback){
         var invalid = localStorage.get("invalidTransactions");
         console.log("We have "+invalid.length+" invalid transactions");
+        var callbacks = invalid.length;
+        if(callbacks == 0 && callback != null){
+          callback();
+          return;
+        }
         invalid.forEach(function(transaction){
-          that.invalid(transaction,function(){});
+          that.invalid(transaction,function(){
+            callbacks--;
+            if(callbacks == 0 && callback != null)
+              callback();
+          });
         });
       }
-      var submitTransactions = function(){
+      var submitTransactions = function(callback){
         var transactions = localStorage.get("transactions");
         console.log("We have "+transactions.length+" transactions");
+        var callbacks = transactions.length;
+        if(callbacks == 0 && callback != null){
+          callback();
+          return;
+        }
         transactions.forEach(function(data){
-          that.transaction(data, function(){});
+          that.transaction(data, function(){
+            callbacks--;
+            if(callbacks == 0 && callback != null)
+              callback();
+          });
         });
       }
       $window.addEventListener("online", function(){
         console.log("Browser is back online");
-        submitInvalidTransactions();
-        submitTransactions();
-        $rootScope.$broadcast("online");
+        $timeout(function(){
+          submitInvalidTransactions(function(){
+            submitTransactions(function(){
+              $rootScope.$broadcast("online");
+            });
+          });
+        },1000);
       });
       submitInvalidTransactions();
       submitTransactions();

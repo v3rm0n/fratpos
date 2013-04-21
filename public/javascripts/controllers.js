@@ -14,10 +14,7 @@ function PosController($scope, api, $timeout){
   getData();
   
   //Update data when browser comes back online.
-  //Use $timout because request fails if you do it right away
-  $scope.$on("online", function(){
-    $timeout(getData, 1000);
-  });
+  $scope.$on("online", getData);
 
   $scope.intro = function(){
     var opts = {
