@@ -10,53 +10,81 @@ var app = angular.module('fratpos', ['ui.bootstrap'])
   .otherwise({redirectTo: "/users"});
 });
 
-app.factory('api', function($http, $window){
+app.factory('api', function($http, $window, $rootScope){
   return {
-    init: function(scope){
+    init: function(){
       var that = this;
-      $window.addEventListener("online", function(){
-        that.posdata(function(data){
-          scope.users = data.users;
-          scope.transactions = data.transactions;
-          scope.products = data.products;
-          scope.paytypes = data.paytypes;
+      var submitInvalidTransactions = function(){
+        var invalid = JSON.parse($window.localStorage.getItem("invalidTransactions")) || [];
+        console.log("We have "+invalid.length+" invalid transactions");
+        invalid.forEach(that.invalid);
+      }
+      var submitTransactions = function(){
+        var transactions = JSON.parse($window.localStorage.getItem("transactions")) || [];
+        console.log("We have "+transactions.length+" transactions");
+        transactions.forEach(function(data){
+          that.transaction(data.products, data.type, data.user, function(){});
         });
+      }
+      $window.addEventListener("online", function(){
+        console.log("Browser is back online");
+        submitInvalidTransactions();
+        submitTransactions();
+        $rootScope.$broadcast("online");
       });
+      submitInvalidTransactions();
+      submitTransactions();
     },
     posdata: function(callback){
       if($window.navigator.onLine){
         $http.get("/posdata").success(function(data){
-          console.log('success');
-          $window.localStorage.setItem("posdata", data);
+          $window.localStorage.setItem("posdata", JSON.stringify(data));
           callback(data);
-        }).error(function(){console.log('the fuck');});
+        });
       }
       else{
-        callback($window.localStorage.getItem("posdata"));
+        callback(JSON.parse($window.localStorage.getItem("posdata")));
       }
     },
-    transaction: function(products, type, user, callback){
-      var data = {products: products, type: type, user: user};
+    transaction: function(data, callback){
+      var saveLocal = function(){
+        var transactions = JSON.parse($window.localStorage.getItem("transactions")) || [];
+        if(transactions.indexOf(data) === -1)
+          transactions.push(data);
+        $window.localStorage.setItem("transactions", JSON.stringify(transactions));
+        callback({status: "success", transaction: {time: new Date(), user: data.user, products: data.products, type: data.type, invalid: false}});
+      }
       if($window.navigator.onLine){
-        $http.post("/transaction", data).success(callback);
+        $http.post("/transaction", data).success(function(response){
+          var transactions = JSON.parse($window.localStorage.getItem("transactions")) || [];
+          if(transactions.indexOf(data) !== -1)
+            transactions.splice(transactions.indexOf(data), 1);
+          $window.localStorage.setItem("transactions", JSON.stringify(transactions));
+          callback(response);
+        }).error(saveLocal);
       }
       else{
-        var transactions = $window.localStorage.getItem("transactions") || [];
-        transactions.push(data);
-        $window.localStorage.setItem("transactions");
-        //TODO: Needs more info
-        callback({status: "success", transaction: {}});
+        saveLocal();
       }
     },
     invalid: function(transaction, callback){
+      var saveLocal = function(){
+        var invalid = JSON.parse($window.localStorage.getItem("invalidTransactions")) || [];
+        invalid.push(transaction);
+        $window.localStorage.setItem("invalidTransactions", JSON.stringify(invalid));
+        callback();
+      }
       if($window.navigator.onLine){
-        $http.post("/transaction/invalid", {id: transaction._id}).success(callback);
+        $http.post("/transaction/invalid", {id: transaction._id}).success(function(){
+          var invalid = JSON.parse($window.localStorage.getItem("invalidTransactions")) || [];
+          if(invalid.indexOf(transaction) !== -1)
+            invalid.splice(invalid.indexOf(transaction), 1);
+          $window.localStorage.setItem("invalidTransactions", JSON.stringify(invalid));
+          callback();
+        }).error(saveLocal);
       }
       else{
-        var invalid = $window.localStorage.getItem("invalidTransactions") || [];
-        invalid.push(transaction);
-        $window.localStorage.setItem("invalidTransactions");
-        callback();
+        saveLocal();
       }
     }
   }

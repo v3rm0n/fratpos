@@ -1,6 +1,23 @@
 function PosController($scope, api, $timeout){
 
-  api.init($scope);
+  api.init();
+
+  var getData = function(){
+    api.posdata(function(data){
+      $scope.users = data.users;
+      $scope.transactions = data.transactions;
+      $scope.products = data.products;
+      $scope.paytypes = data.paytypes;
+    });
+  }
+
+  getData();
+  
+  //Update data when browser comes back online.
+  //Use $timout because request fails if you do it right away
+  $scope.$on("online", function(){
+    $timeout(getData, 1000);
+  });
 
   $scope.intro = function(){
     var opts = {
@@ -13,12 +30,6 @@ function PosController($scope, api, $timeout){
 
   $scope.selectedProducts = {};
 
-  api.posdata(function(data){
-    $scope.users = data.users;
-    $scope.transactions = data.transactions;
-    $scope.products = data.products;
-    $scope.paytypes = data.paytypes;
-  });
 
   $scope.showAllProducts = false;
 
@@ -78,7 +89,8 @@ function PosController($scope, api, $timeout){
       return true;
     }
     if(!isEmpty($scope.selectedProducts) && $scope.user != null){
-      api.transaction($scope.selectedProducts, paytype.name, $scope.user._id, function(data){
+      var data = {products: $scope.selectedProducts, type: paytype.name, user: $scope.user};
+      api.transaction(data, function(data){
           if(data.status == "success"){
             updateStatus("Tooted läksid edukalt kirja!", false);
             $scope.selectedProducts = {};
