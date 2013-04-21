@@ -10,20 +10,76 @@ var app = angular.module('fratpos', ['ui.bootstrap'])
   .otherwise({redirectTo: "/users"});
 });
 
-app.factory('api', function($http, $window, $rootScope){
+app.factory('localTransactions',function($window){
+  return {
+    get: function(){
+      var transactions = JSON.parse($window.localStorage.getItem("transactions")) || [];
+      $window.localStorage.removeItem("transactions");
+      return transactions;
+    },
+    save: function(transactions){
+      $window.localStorage.setItem("transactions", JSON.stringify(transactions));
+    },
+    add: function(transaction){
+      if(transaction == null)
+        return;
+      var transactions = this.get();
+      if(transactions.indexOf(transaction) === -1)
+          transactions.push(transaction);
+      this.save(transactions);
+    },
+    remove: function(transaction){
+      var transactions = this.get();
+      if(transactions.indexOf(transaction) !== -1)
+        transactions.splice(transactions.indexOf(transaction), 1);
+      this.save(transactions);
+    }
+  }
+});
+
+app.factory('invalidTransactions',function($window){
+  return {
+    get: function(){
+      var transactions = JSON.parse($window.localStorage.getItem("invalidTransactions")) || [];
+      $window.localStorage.removeItem("invalidTransactions");
+      return transactions;
+    },
+    save: function(transactions){
+      $window.localStorage.setItem("invalidTransactions", JSON.stringify(transactions));
+    },
+    add: function(transaction){
+      if(transaction == null)
+        return;
+      var transactions = this.get();
+      if(transactions.indexOf(transaction) === -1)
+          transactions.push(transaction);
+      this.save(transactions);
+    },
+    remove: function(transaction){
+      var transactions = this.get();
+      if(transactions.indexOf(transaction) !== -1)
+        transactions.splice(transactions.indexOf(transaction), 1);
+      this.save(transactions);
+    }
+  }
+});
+
+app.factory('api', function($http, $window, $rootScope, localTransactions, invalidTransactions){
   return {
     init: function(){
       var that = this;
       var submitInvalidTransactions = function(){
-        var invalid = JSON.parse($window.localStorage.getItem("invalidTransactions")) || [];
+        var invalid = invalidTransactions.get();
         console.log("We have "+invalid.length+" invalid transactions");
-        invalid.forEach(that.invalid);
+        invalid.forEach(function(transaction){
+          that.invalid(transaction,function(){});
+        });
       }
       var submitTransactions = function(){
-        var transactions = JSON.parse($window.localStorage.getItem("transactions")) || [];
+        var transactions = localTransactions.get();
         console.log("We have "+transactions.length+" transactions");
         transactions.forEach(function(data){
-          that.transaction(data.products, data.type, data.user, function(){});
+          that.transaction(data, function(){});
         });
       }
       $window.addEventListener("online", function(){
@@ -48,18 +104,12 @@ app.factory('api', function($http, $window, $rootScope){
     },
     transaction: function(data, callback){
       var saveLocal = function(){
-        var transactions = JSON.parse($window.localStorage.getItem("transactions")) || [];
-        if(transactions.indexOf(data) === -1)
-          transactions.push(data);
-        $window.localStorage.setItem("transactions", JSON.stringify(transactions));
+        localTransactions.add(data);
         callback({status: "success", transaction: {time: new Date(), user: data.user, products: data.products, type: data.type, invalid: false}});
       }
       if($window.navigator.onLine){
         $http.post("/transaction", data).success(function(response){
-          var transactions = JSON.parse($window.localStorage.getItem("transactions")) || [];
-          if(transactions.indexOf(data) !== -1)
-            transactions.splice(transactions.indexOf(data), 1);
-          $window.localStorage.setItem("transactions", JSON.stringify(transactions));
+          localTransactions.remove(data);
           callback(response);
         }).error(saveLocal);
       }
@@ -69,17 +119,12 @@ app.factory('api', function($http, $window, $rootScope){
     },
     invalid: function(transaction, callback){
       var saveLocal = function(){
-        var invalid = JSON.parse($window.localStorage.getItem("invalidTransactions")) || [];
-        invalid.push(transaction);
-        $window.localStorage.setItem("invalidTransactions", JSON.stringify(invalid));
+        invalidTransactions.add(transaction);
         callback();
       }
       if($window.navigator.onLine){
         $http.post("/transaction/invalid", {id: transaction._id}).success(function(){
-          var invalid = JSON.parse($window.localStorage.getItem("invalidTransactions")) || [];
-          if(invalid.indexOf(transaction) !== -1)
-            invalid.splice(invalid.indexOf(transaction), 1);
-          $window.localStorage.setItem("invalidTransactions", JSON.stringify(invalid));
+          invalidTransactions.remove(transaction);
           callback();
         }).error(saveLocal);
       }
