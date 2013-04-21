@@ -30,11 +30,8 @@ exports.getWithFilter = function(filter, callback){
 var addMissingInfo = function(item, callback){
     exports.formatTime(item);
     item.sum = exports.getTransactionSum(item);
-    users.get(item.user, function(err, user){
-        if(user)
-            item.user = users.getUserFullName(user);
-        callback(null, item);
-    });
+    item.user = users.getUserFullName(item.user);
+    callback(null, item);
 }
 
 exports.formatTime = function(transaction){
@@ -75,7 +72,7 @@ exports.invalid = function(id, callback){
             transactions.update({_id: db.ObjectId(id)}, {$set: {invalid: true}}, callback);
         }],
         function(err, result){
-            if(err){callback(err);return;}
+            if(err || result[0] == null){callback(err);return;}
             async.series([
                 async.apply(incrementBalance, result[0]),
                 async.apply(updateProductQuantities, result[0])
@@ -88,7 +85,7 @@ var incrementBalance = function(transaction, callback) {
     paytypes.get(transaction.type, function(err, paytype){
         if(paytype.affectsBalance){
             var sum = exports.getTransactionSum(transaction);
-            users.incrementBalance(transaction.user, sum, callback);
+            users.incrementBalance(transaction.user._id, sum, callback);
         }
         else{
             callback(err);

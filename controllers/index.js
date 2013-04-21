@@ -5,7 +5,7 @@ var paytypes = require('../models/paytypes');
 var async = require('async');
 //Kassa
 exports.index = function(req, res){
-    res.render('index', { title: 'Kassa'});
+    res.render('index', { title: 'Kassa', manifest: 'app.cache'});
 };
 
 exports.invalid = function(req, res){
@@ -50,19 +50,15 @@ exports.transaction = function(req, res){
 }
 
 var isPaymentTypeAllowed = function(req, callback){
-    async.parallel({
-        user: async.apply(users.get, req.body.user),
-        paytypes: async.apply(paytypes.getAll)
-    },
-    function(err, result){
+    paytypes.getAll(function(err, paytypes){
         if(err){
             callback(err, false);
         }
         else {
-            for(i=0;i<result.paytypes.length;i++){
-                var paytype = result.paytypes[i];
+            for(i=0;i<paytypes.length;i++){
+                var paytype = paytypes[i];
                 if(paytype.name == req.body.type){
-                    callback(null, paytype.allowedForStatus.indexOf(result.user.status) != -1);
+                    callback(null, paytype.allowedForStatus.indexOf(req.body.user.status) != -1);
                     break;
                 }
             }

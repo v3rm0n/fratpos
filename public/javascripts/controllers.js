@@ -1,4 +1,20 @@
-function PosController($scope, $http, $timeout){
+function PosController($scope, api, $timeout){
+
+  api.init();
+
+  var getData = function(){
+    api.posdata(function(data){
+      $scope.users = data.users;
+      $scope.transactions = data.transactions;
+      $scope.products = data.products;
+      $scope.paytypes = data.paytypes;
+    });
+  }
+
+  getData();
+  
+  //Update data when browser comes back online.
+  $scope.$on("online", getData);
 
   $scope.intro = function(){
     var opts = {
@@ -11,12 +27,6 @@ function PosController($scope, $http, $timeout){
 
   $scope.selectedProducts = {};
 
-  $http.get("/posdata").success(function(data){
-    $scope.users = data.users;
-    $scope.transactions = data.transactions;
-    $scope.products = data.products;
-    $scope.paytypes = data.paytypes;
-  });
 
   $scope.showAllProducts = false;
 
@@ -25,7 +35,7 @@ function PosController($scope, $http, $timeout){
   }
 
   $scope.filteredProducts = function(){
-    if($scope.showAllProducts)
+    if($scope.showAllProducts || $scope.products == undefined)
       return $scope.products;
     return $scope.products.filter(function(product){ return product.quantity > 0;});
   } 
@@ -76,8 +86,8 @@ function PosController($scope, $http, $timeout){
       return true;
     }
     if(!isEmpty($scope.selectedProducts) && $scope.user != null){
-      $http.post("/transaction", {products: $scope.selectedProducts, type: paytype.name, user: $scope.user._id})
-        .success(function(data){
+      var data = {products: $scope.selectedProducts, type: paytype.name, user: $scope.user};
+      api.transaction(data, function(data){
           if(data.status == "success"){
             updateStatus("Tooted läksid edukalt kirja!", false);
             $scope.selectedProducts = {};
@@ -97,8 +107,7 @@ function PosController($scope, $http, $timeout){
   $scope.invalidTransaction = function(transaction){
     var confirmed = window.confirm("Kas oled kindel, et tahad selle tehingu tagasi võtta?");
     if(confirmed){
-      $http.post("/transaction/invalid", {id: transaction._id})
-      .success(function(data){
+      api.invalid(transaction, function(){
         updateStatus("Tehing tagasi võetud!", false);
         $scope.transactions = $scope.transactions.filter(function(item){return item._id != transaction._id});
       });
