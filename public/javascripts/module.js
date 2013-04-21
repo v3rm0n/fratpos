@@ -10,73 +10,46 @@ var app = angular.module('fratpos', ['ui.bootstrap'])
   .otherwise({redirectTo: "/users"});
 });
 
-app.factory('localTransactions',function($window){
+app.factory('localStorage',function($window){
   return {
-    get: function(){
-      var transactions = JSON.parse($window.localStorage.getItem("transactions")) || [];
-      $window.localStorage.removeItem("transactions");
-      return transactions;
+    get: function(name){
+      var items = JSON.parse($window.localStorage.getItem(name)) || [];
+      $window.localStorage.removeItem(name);
+      return items;
     },
-    save: function(transactions){
-      $window.localStorage.setItem("transactions", JSON.stringify(transactions));
+    save: function(items, name){
+      $window.localStorage.setItem(name, JSON.stringify(items));
     },
-    add: function(transaction){
-      if(transaction == null)
+    add: function(item, name){
+      if(item == null)
         return;
-      var transactions = this.get();
-      if(transactions.indexOf(transaction) === -1)
-          transactions.push(transaction);
-      this.save(transactions);
+      var items = this.get(name);
+      if(items.indexOf(item) === -1)
+          items.push(item);
+      this.save(items, name);
     },
-    remove: function(transaction){
-      var transactions = this.get();
-      if(transactions.indexOf(transaction) !== -1)
-        transactions.splice(transactions.indexOf(transaction), 1);
-      this.save(transactions);
+    remove: function(item, name){
+      var items = this.get(name);
+      if(items.indexOf(item) !== -1)
+        items.splice(items.indexOf(item), 1);
+      this.save(items, name);
     }
   }
 });
 
-app.factory('invalidTransactions',function($window){
-  return {
-    get: function(){
-      var transactions = JSON.parse($window.localStorage.getItem("invalidTransactions")) || [];
-      $window.localStorage.removeItem("invalidTransactions");
-      return transactions;
-    },
-    save: function(transactions){
-      $window.localStorage.setItem("invalidTransactions", JSON.stringify(transactions));
-    },
-    add: function(transaction){
-      if(transaction == null)
-        return;
-      var transactions = this.get();
-      if(transactions.indexOf(transaction) === -1)
-          transactions.push(transaction);
-      this.save(transactions);
-    },
-    remove: function(transaction){
-      var transactions = this.get();
-      if(transactions.indexOf(transaction) !== -1)
-        transactions.splice(transactions.indexOf(transaction), 1);
-      this.save(transactions);
-    }
-  }
-});
-
-app.factory('api', function($http, $window, $rootScope, localTransactions, invalidTransactions){
+app.factory('api', function($http, $window, $rootScope, localStorage){
   return {
     init: function(){
       var that = this;
       var submitInvalidTransactions = function(){
-        var invalid = invalidTransactions.get();
+        var invalid = localStorage.get("invalidTransactions");
         console.log("We have "+invalid.length+" invalid transactions");
         invalid.forEach(function(transaction){
           that.invalid(transaction,function(){});
         });
       }
       var submitTransactions = function(){
-        var transactions = localTransactions.get();
+        var transactions = localStorage.get("transactions");
         console.log("We have "+transactions.length+" transactions");
         transactions.forEach(function(data){
           that.transaction(data, function(){});
@@ -94,22 +67,54 @@ app.factory('api', function($http, $window, $rootScope, localTransactions, inval
     posdata: function(callback){
       if($window.navigator.onLine){
         $http.get("/posdata").success(function(data){
-          $window.localStorage.setItem("posdata", JSON.stringify(data));
+          localStorage.save(data, "posdata");
           callback(data);
         });
       }
       else{
-        callback(JSON.parse($window.localStorage.getItem("posdata")));
+        var posdata = localStorage.get("posdata");
+        callback(posdata);
+        localStorage.save(posdata, "posdata");
       }
     },
     transaction: function(data, callback){
       var saveLocal = function(){
-        localTransactions.add(data);
-        callback({status: "success", transaction: {time: new Date(), user: data.user, products: data.products, type: data.type, invalid: false}});
+        localStorage.add(data, "transactions");
+        var formatTime = function(transaction){
+            var time = new Date(transaction.time);
+            var hours = time.getHours() > 9 ? time.getHours() : "0"+time.getHours();
+            var minutes = time.getMinutes() > 9 ? time.getMinutes() : "0"+time.getMinutes();
+            var date = time.getDate() > 9 ? time.getDate() : "0"+time.getDate();
+            var month = time.getMonth()+1 > 9 ? time.getMonth()+1 : "0"+(time.getMonth()+1);
+            transaction.formattedTime = hours+":"+minutes+" "+date+"."+month+"."+time.getFullYear();
+        }
+        var getUserFullName = function(user){
+            var fullName = user.status + ' ' + user.firstname + ' ' + user.lastname +
+            (user.beername != null && user.beername.length > 0 ? ' ('+user.beername+')' : '');
+            return fullName;
+        }
+        var getSum = function(products){
+          var sum = 0;
+          for(id in products){
+            var product = products[id];
+            sum += product.price * product.quantity;
+          }
+          return sum;
+        }
+        var transaction = {
+          time: new Date(),
+          user: getUserFullName(data.user), 
+          products: data.products,
+          sum: getSum(data.products),
+          type: data.type, 
+          invalid: false
+        };
+        formatTime(transaction);
+        callback({status: "success", transaction: transaction});
       }
       if($window.navigator.onLine){
         $http.post("/transaction", data).success(function(response){
-          localTransactions.remove(data);
+          localStorage.remove(data, "transactions");
           callback(response);
         }).error(saveLocal);
       }
@@ -119,12 +124,12 @@ app.factory('api', function($http, $window, $rootScope, localTransactions, inval
     },
     invalid: function(transaction, callback){
       var saveLocal = function(){
-        invalidTransactions.add(transaction);
+        localStorage.add(transaction, "invalidTransactions");
         callback();
       }
       if($window.navigator.onLine){
         $http.post("/transaction/invalid", {id: transaction._id}).success(function(){
-          invalidTransactions.remove(transaction);
+          localStorage.remove(transaction, "invalidTransactions");
           callback();
         }).error(saveLocal);
       }
