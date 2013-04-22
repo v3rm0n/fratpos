@@ -36,7 +36,7 @@ exports.remove = function(id,callback){
 }
 
 exports.incrementBalance = function(id, increment, callback){
-    console.log('Incrementing user '+id+'balance by '+increment);
+    console.log('Incrementing user '+id+' balance by '+increment);
     users.update({_id: db.ObjectId(id)}, {$inc: {balance: increment}},callback);
 }
 

@@ -93,7 +93,7 @@ var decrementProductsAndBalance = function(transaction, callback){
         paytypes.get(transaction.type, function(err, paytype){
             if(paytype && paytype.affectsBalance == true){
                 var sum = transactions.getTransactionSum(transaction);
-                users.incrementBalance(transaction.user, -sum, callback);
+                users.incrementBalance(transaction.user._id, -sum, callback);
             }
             else {
                 callback(err);
