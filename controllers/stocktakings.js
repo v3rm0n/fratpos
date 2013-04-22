@@ -42,8 +42,17 @@ exports.generate = function(req, res) {
 }
 
 exports.html = function(req, res) {
-  stocktakings.get(req.params.id, function(err, stocktaking){
-    res.render('stocktaking', { title: 'Inventuur', manifest: null, stocktaking: stocktaking});
+  async.waterfall([
+    async.apply(stocktakings.get,req.params.id),
+    function(stocktaking,callback){
+      stocktakings.getPrevious(stocktaking, function(err,previous){
+        if(err){callback(err);return;}
+        callback(null,{stocktaking: stocktaking, previous: previous});
+      });
+    }
+  ],
+  function(err,result){
+    res.render('stocktaking', { title: 'Inventuur', manifest: null, stocktaking: result.stocktaking, previous: result.previous});
   });
 }
 

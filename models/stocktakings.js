@@ -14,15 +14,27 @@ exports.getAll = function(callback){
     });
 }
 
-exports.get = function(id,callback){
-    stocktakings.findOne({_id: db.ObjectId(id)}, function(err, stocktaking){
-      if(stocktaking != null){
-        stocktaking.transactions.forEach(transactions.formatTime);
-        transactions.formatTime(stocktaking);
-        addBalancesAndTransactionsSum(stocktaking);
-      }
-      callback(err,stocktaking);
+exports.get = function(id, callback){
+    stocktakings.findOne({_id: db.ObjectId(id)}, parse(callback));
+}
+
+exports.getPrevious = function(stocktaking, callback){
+    stocktakings.find({time: {$lt: stocktaking.time}}).sort({time: -1}).limit(1, function(err, stocktakings){
+      var previous = stocktakings.pop();
+      parse(callback)(err,previous);
     });
+}
+
+var parse = function(callback){
+  return function(err, stocktaking){
+    if(stocktaking != null){
+      stocktaking.transactions.forEach(transactions.formatTime);
+      transactions.formatTime(stocktaking);
+      addBalancesAndTransactionsSum(stocktaking);
+      addSumsByPaytype(stocktaking);
+    }
+    callback(err,stocktaking);
+  }
 }
 
 exports.save = function(stocktaking, callback){
@@ -43,4 +55,16 @@ var addBalancesAndTransactionsSum = function(stocktaking){
   stocktaking.balancesSum = balancesSum;
   stocktaking.transactionsSum = transactionsSum;
   stocktaking.productsQuantity = productsQuantity;
+}
+
+var addSumsByPaytype = function(stocktaking){
+  var sums = {};
+  stocktaking.transactions.forEach(function(transaction){
+    if(!transaction.invalid){
+      var sum = sums[transaction.type] || 0;
+      sum += transaction.sum;
+      sums[transaction.type] = sum;
+    }
+  });
+  stocktaking.sums = sums;
 }
