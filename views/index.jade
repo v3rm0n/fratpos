@@ -30,8 +30,8 @@ block content
                         thead
                             tr
                                 th Toode
-                                th(data-step='3', data-intro='Toote valimiseks ostukorvi vajuta "+". Toote eemaldamiseks ostukorvist vajuta "-".') Kogus
-                                th Hind
+                                th.quantity(data-step='3', data-intro='Toote valimiseks ostukorvi vajuta "+". Toote eemaldamiseks ostukorvist vajuta "-".') Kogus
+                                th.price Hind
                         tbody
                             tr(ng-repeat='product in filteredProducts()', class='{{product.quantity < 0 && "error" || ""}}')
                                 td(ng-bind='product.name')
