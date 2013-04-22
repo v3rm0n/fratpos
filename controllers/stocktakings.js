@@ -43,7 +43,7 @@ exports.generate = function(req, res) {
 
 exports.html = function(req, res) {
   stocktakings.get(req.params.id, function(err, stocktaking){
-    res.render('stocktaking', { title: 'Inventuur', stocktaking: stocktaking});
+    res.render('stocktaking', { title: 'Inventuur', manifest: null, stocktaking: stocktaking});
   });
 }
 
