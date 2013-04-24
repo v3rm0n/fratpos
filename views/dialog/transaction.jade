@@ -1,0 +1,25 @@
+.modal-header
+    button.close(type='button', data-dismiss='modal', aria-hidden='true', ng-click='close()') ×
+    h2 Tehingu info
+.modal-body
+  p Aeg: 
+    strong(ng-bind='object.formattedTime')
+  p Nimi: 
+    strong(ng-bind='object.user')
+  p Makseviis: 
+    strong(ng-bind='object.type')
+  h3 Tooted
+  table.table.table-bordered.table-condensed
+      thead
+          tr
+              th Toode
+              th Hind
+              th Kogus
+      tbody
+          tr(ng-repeat='product in object.products') 
+              td(ng-bind='product.name')
+              td(ng-bind-template='{{product.price}} €')
+              td(ng-bind='product.quantity')
+.modal-footer
+    button.btn(data-dismiss='modal', aria-hidden='true', ng-click='close()') Sulge
+    button.btn.btn-danger(ng-hide='object.invalid', ng-click='save(object)') Katkesta tehing
