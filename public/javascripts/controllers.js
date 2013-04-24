@@ -390,14 +390,14 @@ function DialogController($scope, $http, dialog, object){
   });
 
   $scope.updateForStatus = function(status){
-    if($scope.object.allowedForStatus == null)
-      $scope.object.allowedForStatus = [];
-    if($scope.object.allowedForStatus.indexOf(status.name) == -1 && status.checked){
-      $scope.object.allowedForStatus.push(status.name);
+    var allowed = $scope.object.allowedForStatus || [];
+    if(allowed.indexOf(status.name) === -1 && status.checked){
+      allowed.push(status.name);
     }
-    else if($scope.object.allowedForStatus.indexOf(status.name) != -1 && !status.checked){
-      $scope.object.allowedForStatus = $scope.object.allowedForStatus.filter(function(s){return s.name != status.name});
+    else if(!status.checked){
+      allowed.splice(allowed.indexOf(status.name),1);
     }
+    $scope.object.allowedForStatus = allowed;
   }
 
   $scope.close = function(){
