@@ -36,11 +36,11 @@ var addMissingInfo = function(item, callback){
 
 exports.formatTime = function(transaction){
     var time = new Date(transaction.time);
-    var hours = time.getHours() > 9 ? time.getHours() : "0"+time.getHours();
-    var minutes = time.getMinutes() > 9 ? time.getMinutes() : "0"+time.getMinutes();
-    var date = time.getDate() > 9 ? time.getDate() : "0"+time.getDate();
-    var month = time.getMonth()+1 > 9 ? time.getMonth()+1 : "0"+(time.getMonth()+1);
-    transaction.formattedTime = hours+":"+minutes+" "+date+"."+month+"."+time.getFullYear();
+    var hours = time.getHours() > 9 ? time.getHours() : '0'+time.getHours();
+    var minutes = time.getMinutes() > 9 ? time.getMinutes() : '0'+time.getMinutes();
+    var date = time.getDate() > 9 ? time.getDate() : '0'+time.getDate();
+    var month = time.getMonth()+1 > 9 ? time.getMonth()+1 : '0'+(time.getMonth()+1);
+    transaction.formattedTime = hours+':'+minutes+' '+date+'.'+month+'.'+time.getFullYear();
 }
 
 exports.save = function(transaction, callback){
