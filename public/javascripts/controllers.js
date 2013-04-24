@@ -226,7 +226,7 @@ function UsersController($scope, $http, $dialog){
 
 }
 
-function TransactionsController($scope, $http){
+function TransactionsController($scope, $http, $dialog){
   $http.get('/transactions').success(function(data){
     $scope.transactions = data;
   });
@@ -242,14 +242,16 @@ function TransactionsController($scope, $http){
     return 0;
   }
 
-  $scope.invalidTransaction = function(transaction){
-    var confirmed = window.confirm('Kas oled kindel, et tahad selle tehingu katkestada?');
-    if(confirmed){
-      $http.post('/transaction/invalid', {id: transaction._id})
-      .success(function(data){
-        transaction.invalid = true;
-      });
-    }
+  $scope.openDialog = function(transaction){
+    var d = $dialog.dialog({resolve: {object: function(){ return transaction;}}});
+    d.open('/dialog/transaction', DialogController).then(function(result){
+      if(result){
+        $http.post('/transaction/invalid/admin', {id: result._id})
+        .success(function(data){
+          result.invalid = true;
+        });
+      }
+    });
   }
 }
 
@@ -379,7 +381,6 @@ function StocktakingController($scope, $http, $window){
 function DialogController($scope, $http, dialog, object){
 
   $scope.object = object;
-  $scope.change = object != null;
 
   $http.get('/statuses').success(function(data){
     $scope.statuses = data;
