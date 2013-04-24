@@ -30,7 +30,8 @@ block content
                         thead
                             tr
                                 th Toode
-                                th.quantity(data-step='3', data-intro='Toote valimiseks ostukorvi vajuta "+". Toote eemaldamiseks ostukorvist vajuta "-".') Kogus
+                                th.choosequantity(data-step='3', data-intro='Toote valimiseks ostukorvi vajuta "+". Toote eemaldamiseks ostukorvist vajuta "-".') Kogus
+                                th.quantity Laoseis
                                 th.price Hind
                         tbody
                             tr(ng-repeat='product in filteredProducts()', class='{{product.quantity < 0 && "error" || ""}}')
@@ -39,10 +40,12 @@ block content
                                     i.gi-circle_plus(ng-click='changeQuantity(product, 1)')
                                     span(ng-bind='quantity(product)')
                                     i.gi-circle_minus(ng-click='changeQuantity(product, -1)')
+                                td(ng-bind='product.quantity')
                                 td 
                                     span(ng-bind='product.price')
                                     |  €
                             tr
+                                th
                                 th
                                 th Kokku
                                 th(data-step='4', data-intro='Käesoleva tehingu jaoks valitud toodete kogusummat näed siin.')

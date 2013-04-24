@@ -90,6 +90,14 @@ function PosController($scope, api, $timeout){
       api.transaction(data, function(data){
           if(data.status == "success"){
             updateStatus("Tooted läksid edukalt kirja!", false);
+            for(id in $scope.selectedProducts){
+              var selectedProduct = $scope.selectedProducts[id];
+              $scope.products.forEach(function(product){
+                if(product._id == id){
+                  product.quantity -= selectedProduct.quantity;
+                }
+              });
+            }
             $scope.selectedProducts = {};
             $scope.user = null;
             $scope.transactions.unshift(data.transaction);

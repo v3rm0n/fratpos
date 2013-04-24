@@ -2,8 +2,12 @@ body {
   padding: 50px;
 }
 
-.table th.quantity{
+.table th.choosequantity{
   width: 30%;
+}
+
+.table th.quantity{
+  width: 10%;
 }
 
 .table th.price{
