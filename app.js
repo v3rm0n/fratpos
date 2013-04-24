@@ -12,7 +12,7 @@ var express = require('express'),
 var app = express();
 
 app.configure(function(){
-  app.set('port', nconf.get('server:port') || 3000);
+  app.set('port', nconf.get('server:port'));
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
   app.use(express.favicon());

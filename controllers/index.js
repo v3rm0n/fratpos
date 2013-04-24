@@ -3,14 +3,31 @@ var products = require('../models/products');
 var users = require('../models/users');
 var paytypes = require('../models/paytypes');
 var async = require('async');
+
 //Kassa
 exports.index = function(req, res){
     res.render('index', { title: 'Kassa', manifest: 'app.cache'});
 };
 
 exports.invalid = function(req, res){
-    transactions.invalid(req.body.id, function(err){
-        res.send({status: err == null ? 'success' : err});
+    var nconf = require('../lib/nconf');
+    var isTimedOut = function(transaction){
+        var timeout = nconf.get('timeout') * 1000;
+        var time = transaction.time.getTime();
+        var current = new Date().getTime();
+        return current-time > timeout;
+    }
+    transactions.get(req.body.id, function(err, transaction){
+        if(isTimedOut(transaction)){
+            var adminPass = req.body.password;
+            if(adminPass !== nconf.get('admin:password')){
+                res.send({status: "Transaction has timed out!"});
+                return;
+            }
+        }
+        transactions.invalid(req.body.id, function(err){
+            res.send({status: err == null ? 'success' : err});
+        });
     });
 }
 

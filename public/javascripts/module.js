@@ -144,15 +144,19 @@ app.factory('api', function($http, $window, $rootScope, $timeout, localStorage){
         saveLocal();
       }
     },
-    invalid: function(transaction, callback){
+    invalid: function(transaction, password, callback){
+      if(typeof(password) === 'function'){
+        callback = password;
+        password = null;
+      }
       var saveLocal = function(){
         localStorage.add(transaction, 'invalidTransactions');
         callback();
       }
       if($window.navigator.onLine){
-        $http.post('/transaction/invalid', {id: transaction._id}).success(function(){
+        $http.post('/transaction/invalid', {id: transaction._id, password: password}).success(function(data){
           localStorage.remove(transaction, 'invalidTransactions');
-          callback();
+          callback(data);
         }).error(saveLocal);
       }
       else{

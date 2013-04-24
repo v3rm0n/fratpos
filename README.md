@@ -81,7 +81,9 @@ Kassa seadistus asub juurkaustas **config.json** failis.
     "realm": "pos",
     "username": "posuser",
     "password": ""
-  }
+  },
+  //Tehingute tagasivõtmise maksimaalne aeg enne kui küsitakse admin parooli (sekundites)
+  "timeout": 300
 }
 ```
 Kui **kassa** või **admin** kasutajal on **authenticate** parameetri väärtuseks **true**, siis küsitakse kasutaja käest parooli (Autentimine kasutab [HTTP Digest](http://en.wikipedia.org/wiki/Digest_access_authentication) autenti). Vaikimisi kassa kasutamisel parooli ei küsita, kuid admini käest küsitakse.

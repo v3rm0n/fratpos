@@ -115,9 +115,25 @@ function PosController($scope, api, $timeout){
   $scope.invalidTransaction = function(transaction){
     var confirmed = window.confirm('Kas oled kindel, et tahad selle tehingu tagasi võtta?');
     if(confirmed){
-      api.invalid(transaction, function(){
-        updateStatus('Tehing tagasi võetud!', false);
-        $scope.transactions = $scope.transactions.filter(function(item){return item._id != transaction._id});
+      api.invalid(transaction, function(data){
+        var handleSuccess = function(){
+          updateStatus('Tehing tagasi võetud!', false);
+          $scope.transactions = $scope.transactions.filter(function(item){return item._id != transaction._id});
+        }
+        var handlePassword = function(data){
+          if(data.status && data.status !== "success"){
+            var password = window.prompt('Tehingu tegemise ajast on möödunud liiga kaua. Palun sisesta admin parool, kui tahad tehingut ikkagi katkestada');
+            if(password != null){
+              api.invalid(transaction, password, function(data){
+                handlePassword(data);
+              });
+            }
+          }
+          else{
+            handleSuccess();
+          }
+        }
+        handlePassword(data);
       });
     }
   }

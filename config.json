@@ -20,5 +20,6 @@
     "realm": "pos",
     "username": "posuser",
     "password": ""
-  }
+  },
+  "timeout": 300
 }
