@@ -34,7 +34,7 @@ block content
                                 th.quantity Laoseis
                                 th.price Hind
                         tbody
-                            tr(ng-repeat='product in filteredProducts()', class='{{product.quantity < 0 && "error" || ""}}')
+                            tr(ng-repeat='product in filteredProducts()', class='{{product.quantity <= 0 && "error" || ""}}')
                                 td(ng-bind='product.name')
                                 td
                                     i.gi-circle_plus(ng-click='changeQuantity(product, 1)')

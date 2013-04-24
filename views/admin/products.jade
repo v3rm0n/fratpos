@@ -13,7 +13,7 @@
                 tr(ng-repeat='product in sortedProducts()') 
                     td(ng-bind='product.name')
                     td(ng-bind-template='{{product.price}} €')
-                    td(ng-bind='product.quantity', style='{{product.quantity < 0 && "color: red;" || ""}}')
+                    td(ng-bind='product.quantity', style='{{product.quantity <= 0 && "color: red;" || ""}}')
                     td
                         .btn-group
                             a.btn.dropdown-toggle(data-toggle='dropdown', href='#')
