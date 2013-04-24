@@ -52,7 +52,7 @@ block content
                                     span(ng-bind='sum()')
                                     |  €
                     .btn-group(data-step='5', data-intro='Kui tooted on valitud, siis vali makseviis. Makseviisi nupul vajutades viiakse tehing lõpuni. Need mida vajutada ei saa pole kliendile lubatud.')
-                        button.btn.btn-large(ng-repeat='paytype in paytypes', ng-click='pay(paytype)', ng-disabled="isDisabled(paytype)") {{paytype.name}}
+                        button.btn.btn-large(ng-repeat='paytype in paytypes', ng-click='pay(paytype)', ng-disabled='isDisabled(paytype)') {{paytype.name}}
             br
             .row-fluid
                 .span12

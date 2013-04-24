@@ -57,17 +57,17 @@ exports.html = function(req, res) {
 }
 
 exports.csv = function(req, res) {
-  res.type("text/csv");
+  res.type('text/csv');
   transformStocktakingToCSV(req.params.id, function(err, content){
     csv().from(content).to.stream(res);
   });
 }
 
 var transformStocktakingToCSV = function(id, callback){
-  if(id == null){callback("Stocktaking cannot be null!", null);return;}
+  if(id == null){callback('Stocktaking cannot be null!', null);return;}
   async.parallel({
     template: function(callback){
-      fs.readFile("./template/stocktaking.js", "utf8", function(err, data){
+      fs.readFile('./template/stocktaking.js', 'utf8', function(err, data){
         if(err != null){callback(err); return;}
         var template = handlebars.compile(data);
         callback(null, template);

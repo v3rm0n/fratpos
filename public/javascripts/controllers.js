@@ -14,7 +14,7 @@ function PosController($scope, api, $timeout){
   getData();
   
   //Update data when browser comes back online.
-  $scope.$on("online", getData);
+  $scope.$on('online', getData);
 
   $scope.intro = function(){
     var opts = {
@@ -57,7 +57,7 @@ function PosController($scope, api, $timeout){
     var selectedProduct = $scope.selectedProducts[product._id];
     if(selectedProduct)
       qty = selectedProduct.quantity;
-    return " "+qty+" ";
+    return ' '+qty+' ';
   }
 
   $scope.sum = function(){
@@ -88,8 +88,8 @@ function PosController($scope, api, $timeout){
     if(!isEmpty($scope.selectedProducts) && $scope.user != null){
       var data = {products: $scope.selectedProducts, type: paytype.name, user: $scope.user};
       api.transaction(data, function(data){
-          if(data.status == "success"){
-            updateStatus("Tooted läksid edukalt kirja!", false);
+          if(data.status == 'success'){
+            updateStatus('Tooted läksid edukalt kirja!', false);
             for(id in $scope.selectedProducts){
               var selectedProduct = $scope.selectedProducts[id];
               $scope.products.forEach(function(product){
@@ -103,20 +103,20 @@ function PosController($scope, api, $timeout){
             $scope.transactions.unshift(data.transaction);
           }
           else{
-            updateStatus("Viga tehingul: "+data.status, true);
+            updateStatus('Viga tehingul: '+data.status, true);
           }
       });
     }
     else{
-      updateStatus("Palun vali toode ja kasutaja enne maksmist", true);
+      updateStatus('Palun vali toode ja kasutaja enne maksmist', true);
     }
   }
 
   $scope.invalidTransaction = function(transaction){
-    var confirmed = window.confirm("Kas oled kindel, et tahad selle tehingu tagasi võtta?");
+    var confirmed = window.confirm('Kas oled kindel, et tahad selle tehingu tagasi võtta?');
     if(confirmed){
       api.invalid(transaction, function(){
-        updateStatus("Tehing tagasi võetud!", false);
+        updateStatus('Tehing tagasi võetud!', false);
         $scope.transactions = $scope.transactions.filter(function(item){return item._id != transaction._id});
       });
     }
@@ -124,7 +124,7 @@ function PosController($scope, api, $timeout){
 
   var updateStatus = function(message, error){
     $scope.statusMessage = message;
-    $scope.status = error ? "Viga!" : "Korras!";
+    $scope.status = error ? 'Viga!' : 'Korras!';
     $scope.statusError = error;
     $timeout(function(){
       $scope.status = null;
@@ -135,7 +135,7 @@ function PosController($scope, api, $timeout){
 
 function NavController($scope, $location){
   $scope.isActive = function(page){
-    return $location.path() == "/"+page;
+    return $location.path() == '/'+page;
   }
 }
 
@@ -177,7 +177,7 @@ function UsersController($scope, $http, $dialog){
   }
 
   $scope.deleteUser = function(user){
-    $http.post("/users/remove", {id: user._id}).success(function(){
+    $http.post('/users/remove', {id: user._id}).success(function(){
       $scope.users = $scope.users.filter(function(u){return user._id != u._id});
     });
   }
@@ -186,7 +186,7 @@ function UsersController($scope, $http, $dialog){
     var d = $dialog.dialog({resolve: {object: function(){ return user;}}});
     d.open('/dialog/balance', DialogController).then(function(result){
       if(result){
-        $http.post("/users/save",{user: result});
+        $http.post('/users/save',{user: result});
       }
     });
   }
@@ -195,12 +195,12 @@ function UsersController($scope, $http, $dialog){
     var userWasNull = user == null;
     if(userWasNull){
       user = {};
-      user.status = "";
+      user.status = '';
     }
     var d = $dialog.dialog({resolve: {object: function(){return user;}}});
     d.open('/dialog/user', DialogController).then(function(result){
       if(result){
-          $http.post("/users/save",{user: result}).success(function(data){
+          $http.post('/users/save',{user: result}).success(function(data){
             if(userWasNull)
               $scope.users.push(data);
           });
@@ -227,9 +227,9 @@ function TransactionsController($scope, $http){
   }
 
   $scope.invalidTransaction = function(transaction){
-    var confirmed = window.confirm("Kas oled kindel, et tahad selle tehingu katkestada?");
+    var confirmed = window.confirm('Kas oled kindel, et tahad selle tehingu katkestada?');
     if(confirmed){
-      $http.post("/transaction/invalid", {id: transaction._id})
+      $http.post('/transaction/invalid', {id: transaction._id})
       .success(function(data){
         transaction.invalid = true;
       });
@@ -238,7 +238,7 @@ function TransactionsController($scope, $http){
 }
 
 function ProductsController($scope, $http, $dialog){
-  $http.get("/products").success(function(data){
+  $http.get('/products').success(function(data){
     $scope.products = data;
   });
 
@@ -271,7 +271,7 @@ function ProductsController($scope, $http, $dialog){
   }
 
   $scope.deleteProduct = function(product){
-    $http.post("/products/remove", {id: product._id}).success(function(){
+    $http.post('/products/remove', {id: product._id}).success(function(){
       $scope.products = $scope.products.filter(function(u){return product._id != u._id});
     });
   }
@@ -280,7 +280,7 @@ function ProductsController($scope, $http, $dialog){
     var d = $dialog.dialog({resolve: {object: function(){return product;}}});
     d.open('/dialog/product', DialogController).then(function(result){
       if(result){
-          $http.post("/products/save",{product: result}).success(function(data){
+          $http.post('/products/save',{product: result}).success(function(data){
             if(product == null)
               $scope.products.push(data);
           });
@@ -290,12 +290,12 @@ function ProductsController($scope, $http, $dialog){
 }
 
 function PaytypesController($scope, $http, $dialog){
-  $http.get("/paytypes").success(function(data){
+  $http.get('/paytypes').success(function(data){
     $scope.paytypes = data;
   });
 
   $scope.deletePaytype = function(paytype){
-    $http.post("/paytypes/remove", {id: paytype._id}).success(function(){
+    $http.post('/paytypes/remove', {id: paytype._id}).success(function(){
       $scope.paytypes = $scope.paytypes.filter(function(u){return paytype._id != u._id});
     });
   }
@@ -304,7 +304,7 @@ function PaytypesController($scope, $http, $dialog){
     var d = $dialog.dialog({resolve: {object: function(){return paytype;}}});
     d.open('/dialog/paytype', DialogController).then(function(result){
       if(result){
-          $http.post("/paytypes/save",{paytype: result}).success(function(data){
+          $http.post('/paytypes/save',{paytype: result}).success(function(data){
             if(paytype == null)
               $scope.paytypes.push(data);
           });
@@ -314,12 +314,12 @@ function PaytypesController($scope, $http, $dialog){
 }
 
 function StatusesController($scope, $http, $dialog){
-  $http.get("/statuses").success(function(data){
+  $http.get('/statuses').success(function(data){
     $scope.statuses = data;
   });
 
   $scope.deleteStatus = function(status){
-    $http.post("/statuses/remove", {id: status._id}).success(function(){
+    $http.post('/statuses/remove', {id: status._id}).success(function(){
       $scope.statuses = $scope.statuses.filter(function(u){return status._id != u._id});
     });
   }
@@ -328,7 +328,7 @@ function StatusesController($scope, $http, $dialog){
     var d = $dialog.dialog({resolve: {object: function(){return status;}}});
     d.open('/dialog/status', DialogController).then(function(result){
       if(result){
-          $http.post("/statuses/save",{status: result}).success(function(data){
+          $http.post('/statuses/save',{status: result}).success(function(data){
             if(status == null)
               $scope.statuses.push(data);
           });
@@ -338,22 +338,22 @@ function StatusesController($scope, $http, $dialog){
 }
 
 function StocktakingController($scope, $http, $window){
-  $http.get("/stocktakings").success(function(data){
+  $http.get('/stocktakings').success(function(data){
     $scope.stocktakings = data;
   });
 
   $scope.download = function(stocktaking){
-    $window.open("/stocktakings/csv/"+stocktaking._id);
+    $window.open('/stocktakings/csv/'+stocktaking._id);
   }
 
   $scope.view = function(stocktaking){
-    $window.open("/stocktakings/html/"+stocktaking._id);
+    $window.open('/stocktakings/html/'+stocktaking._id);
   }
 
   $scope.stocktaking = function(){
-    var confirmed = window.confirm("Oled kindel, et tahad teha inventuuri? Kasutajate saldod nullitakse ja tehingud eemaldatakse.");
+    var confirmed = window.confirm('Oled kindel, et tahad teha inventuuri? Kasutajate saldod nullitakse ja tehingud eemaldatakse.');
     if(confirmed){
-      $http.post("/stocktakings/generate").success(function(data){
+      $http.post('/stocktakings/generate').success(function(data){
           $scope.stocktakings.push(data);
       });
     }
@@ -365,9 +365,9 @@ function DialogController($scope, $http, dialog, object){
   $scope.object = object;
   $scope.change = object != null;
 
-  $http.get("/statuses").success(function(data){
+  $http.get('/statuses').success(function(data){
     $scope.statuses = data;
-    if($scope.object.status == "" && $scope.statuses.length > 0){
+    if($scope.object.status == '' && $scope.statuses.length > 0){
       $scope.object.status = $scope.statuses[0].name;
     }
   });

@@ -36,14 +36,14 @@ exports.transaction = function(req, res){
             res.send({status: err});
         }
         else if(!result.allowed) {
-            res.send({status: "invalid_paytype"});
+            res.send({status: 'invalid_paytype'});
         }
         else if(!result.transactionId){
-            res.send({status: "creation_failed"});
+            res.send({status: 'creation_failed'});
         }
         else{
             transactions.get(String(result.transactionId), function(err, transaction){
-                res.send({status: (err == null ? "success" : err), transaction: transaction});
+                res.send({status: (err == null ? 'success' : err), transaction: transaction});
             });
         }
     });
