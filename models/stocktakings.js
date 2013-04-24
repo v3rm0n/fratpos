@@ -39,6 +39,7 @@ var parse = function(callback){
 
 exports.save = function(stocktaking, callback){
     stocktakings.save(stocktaking, function(err){
+      transactions.formatTime(stocktaking);
       addBalancesAndTransactionsSum(stocktaking);
       callback(err);
     });
