@@ -7,12 +7,16 @@
                 tr
                     th Nimetus
                     th Mõjutab saldot
+                    th Mõjutab laoseisu
+                    th Kreedit
                     th Lubatud staatusele
                     th
             tbody
                 tr(ng-repeat='paytype in paytypes') 
                     td(ng-bind='paytype.name')
                     td(ng-bind-template='{{paytype.affectsBalance && "Jah" || "Ei"}}')
+                    td(ng-bind-template='{{paytype.affectsQuantity && "Jah" || "Ei"}}')
+                    td(ng-bind-template='{{paytype.credit && "Jah" || "Ei"}}')
                     td(ng-bind='paytype.allowedForStatus')
                     td: a.btn.btn-danger(ng-click='deletePaytype(paytype)') Kustuta
         button.btn.btn-large(ng-click='openPaytypeDialog()') Lisa makseviis

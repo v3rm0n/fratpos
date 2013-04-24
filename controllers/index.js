@@ -111,14 +111,24 @@ var createTransaction = function(req, callback){
 }
 
 var decrementProductsAndBalance = function(transaction, callback){
-    var decrement = function(product, callback){
-        products.incQuantity(product.name, -product.quantity, callback);
-    }
-    async.each(transaction.products, decrement, function(err){
-        paytypes.get(transaction.type, function(err, paytype){
+    paytypes.get(transaction.type, function(err, paytype){
+        if(err){callback(err);return;}
+        var decrement = function(product, callback){
+            if(paytype.affectsQuantity){
+                var quantity = -product.quantity;
+                if(paytype.credit)
+                    quantity = -quantity;
+                products.incQuantity(product.name, quantity, callback);
+                return;
+            }
+            callback();
+        }
+        async.each(transaction.products, decrement, function(err){
             if(paytype && paytype.affectsBalance == true){
-                var sum = transactions.getTransactionSum(transaction);
-                users.incrementBalance(transaction.user._id, -sum, callback);
+                var sum = -transactions.getTransactionSum(transaction);
+                if(paytype.credit)
+                    sum = -sum;
+                users.incrementBalance(transaction.user._id, sum, callback);
             }
             else {
                 callback(err);

@@ -64,39 +64,46 @@ exports.getTransactionSum = function(transaction){
 
 exports.invalid = function(id, callback){
     console.log('Marking transaction '+id+' invalid');
-    async.series([
-        function(callback){
+    async.series({
+        transaction: function(callback){
             transactions.findOne({_id: db.ObjectId(id), invalid: false}, callback);
         },
-        function(callback){
+        update: function(callback){
             transactions.update({_id: db.ObjectId(id)}, {$set: {invalid: true}}, callback);
-        }],
+        }},
         function(err, result){
-            if(err || result[0] == null){callback(err);return;}
-            async.series([
-                async.apply(incrementBalance, result[0]),
-                async.apply(updateProductQuantities, result[0])
-                ], callback);
+            if(err || result.transaction == null){callback(err);return;}
+            paytypes.get(result.transaction.type, function(err, paytype){
+                if(err){callback(err);return;}
+                async.series([
+                    async.apply(incrementBalance, result.transaction, paytype),
+                    async.apply(updateProductQuantities, result.transaction, paytype)
+                    ], callback);
+            });
         });
 }
 
-var incrementBalance = function(transaction, callback) {
+var incrementBalance = function(transaction, paytype, callback) {
     console.log('Updating user balance');
-    paytypes.get(transaction.type, function(err, paytype){
-        if(paytype.affectsBalance){
-            var sum = exports.getTransactionSum(transaction);
-            users.incrementBalance(transaction.user._id, sum, callback);
-        }
-        else{
-            callback(err);
-        }
-    });
+    if(paytype.affectsBalance){
+        var sum = exports.getTransactionSum(transaction);
+        if(paytype.credit)
+            sum = -sum;
+        users.incrementBalance(transaction.user._id, sum, callback);
+    }
+    else{
+        callback();
+    }
 }
 
-var updateProductQuantities = function(transaction, callback) {
-    console.log('Updating product quantities');
-    var incQuantity = function(product, callback){
-        products.incQuantity(product.name, product.quantity, callback);
+var updateProductQuantities = function(transaction, paytype, callback) {
+    if(paytype.affectsQuantity){
+        console.log('Updating product quantities');
+        var incQuantity = function(product, callback){
+            products.incQuantity(product.name, product.quantity, callback);
+        }
+        async.each(transaction.products,incQuantity, callback);
+        return;
     }
-    async.each(transaction.products,incQuantity, callback);
+    callback();
 }

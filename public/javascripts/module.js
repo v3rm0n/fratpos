@@ -1,3 +1,4 @@
+//Main module
 var app = angular.module('fratpos', ['ui.bootstrap'])
 .config(function($routeProvider){
   $routeProvider
@@ -10,6 +11,74 @@ var app = angular.module('fratpos', ['ui.bootstrap'])
   .otherwise({redirectTo: "/users"});
 });
 
+//Directives
+
+//Nice toggle for boolean values
+app.directive('toggle', function(){
+  return {
+    restrict: 'E',
+    replace:  true,
+    require:  'ngModel',
+    template: '<div class="toggle toggle-icon">\
+                <label class="toggle-radio fui-checkmark-16"></label>\
+                <label class="toggle-radio fui-cross-16"></label>\
+              </div>',
+    link:  function(scope, element, attributes, ngModelCtrl){
+      var inactiveClass = 'toggle-off';
+
+      scope.$watch(function(){
+        return ngModelCtrl.$modelValue;
+      }, function(modelValue){
+        if(modelValue){
+          element.removeClass(inactiveClass);
+        }else{
+          element.addClass(inactiveClass);
+        }
+      });
+
+      element.bind('click', function(){
+        scope.$apply(function(){
+          ngModelCtrl.$setViewValue(element.hasClass(inactiveClass));
+        });
+      });
+    }
+  };
+});
+
+//Pretty checkboxes
+app.directive('checkbox', function(){
+  return {
+    restrict: 'E',
+    replace:  true,
+    transclude: true,
+    require:  'ngModel',
+    template: '<label class="checkbox">\
+                <span class="icon"></span><span class="icon-to-fade"></span>\
+                <div ng-transclude></div>\
+              </label>',
+    link: function(scope, element, attributes, ngModelCtrl){
+      var activeClass = 'checked';
+
+      scope.$watch(function(){
+        return ngModelCtrl.$modelValue;
+      }, function(modelValue){
+        if(modelValue){
+          element.addClass(activeClass);
+        }else{
+          element.removeClass(activeClass);
+        }
+      });
+
+      element.bind('click', function(){
+        scope.$apply(function(){
+          ngModelCtrl.$setViewValue(!element.hasClass(activeClass));
+        });
+      });
+    }
+  };
+});
+
+//Services
 app.factory('localStorage',function($window){
   return {
     get: function(name){

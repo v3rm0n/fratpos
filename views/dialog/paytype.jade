@@ -6,17 +6,22 @@
         label.control-label(for='paytypeName') Nimetus
         .controls
             input#paytypeName(type='text', placeholder='Nimetus', ng-model='object.name')
-        .control-group
+    .control-group
         label.control-label(for='affectsBalance') Mõjutab saldot
         .controls
-            label.checkbox(for='affectsBalance')
-                input#affectsBalance(type='checkbox', checked=true, ng-model='object.affectsBalance')
-        br
+            toggle(ng-model='object.affectsBalance')
+    .control-group
+        label.control-label(for='affectsQuantity') Mõjutab laoseisu
+        .controls
+            toggle(ng-model='object.affectsQuantity')
+    .control-group
+        label.control-label(for='credit') Kreedit
+        .controls
+            toggle(ng-model='object.credit')
+    .control-group
         label.control-label Lubatud staatustele
         .controls
-            label.checkbox(ng-repeat='status in statuses', for='{{status._id}}_allowedForStatus')
-                input(id='{{status._id}}_allowedForStatus', type='checkbox', value='{{status.name}}', ng-click='updateForStatus(status)', ng-model='status.checked')
-                | {{status.name}}
+            checkbox(ng-model='status.checked', ng-repeat='status in statuses', ng-click='updateForStatus(status)') {{status.name}}
 .modal-footer
     button.btn(data-dismiss='modal', aria-hidden='true', ng-click='close()') Sulge
     button.btn.btn-primary(ng-click='save(object)') Salvesta

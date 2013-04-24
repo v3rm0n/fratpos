@@ -380,7 +380,7 @@ function StocktakingController($scope, $http, $window){
 
 function DialogController($scope, $http, dialog, object){
 
-  $scope.object = object;
+  $scope.object = object || {};
 
   $http.get('/statuses').success(function(data){
     $scope.statuses = data;
