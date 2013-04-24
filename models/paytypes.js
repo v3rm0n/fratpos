@@ -6,7 +6,7 @@ exports.getAll = function(callback){
 }
 
 exports.get = function(name, callback){
-  console.log("Get paytype by name: "+name);
+  console.log('Get paytype by name: '+name);
   paytypes.findOne({name: name}, callback);
 }
 
