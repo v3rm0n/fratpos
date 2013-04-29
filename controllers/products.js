@@ -1,20 +1,28 @@
-var products = require('../models/products');
+var mongoose = require('mongoose');
+var Product = mongoose.model('Product');
 
 exports.all = function(req, res){
-  products.getAll(function(err, products) {
+  Product.find({},function(err, products) {
       res.send(products);
   });
 }
 
 exports.save = function(req, res){
-    var product = req.body.product;
-    products.save(product, function(err){
-        res.send(product);
-    });
+  var reqProduct = req.body.product;
+  var product = {
+    name: reqProduct.name,
+    price: reqProduct.price,
+    quantity: reqProduct.quantity
+  };
+  var id = reqProduct._id || null;
+  Product.findByIdAndUpdate(id, product, {upsert: true}, function(err, product){
+    if(err){res.send({status: err});return;}
+    res.send(product);
+  });
 }
 
 exports.remove = function(req, res){
-    products.remove(req.body.id, function(err){
+    Product.remove({_id: req.body.id}, function(err){
         res.send({status: err == null ? 'success' : err});
     });
 }

@@ -1,23 +1,21 @@
-var users = require('../models/users');
-var statuses = require('../models/statuses');
+var mongoose = require('mongoose');
+var User = mongoose.model('User');
 
 exports.all = function(req,res){
-    users.getAll(function(err, users){
+    User.find({},function(err, users){
         res.send(users);
     });
 }
 
 exports.save = function(req,res){
-    var user = req.body.user;
-    if(!user.balance)
-        user.balance = 0;
-    users.save(user, function(err){
+    var user = new User(req.body.user);
+    user.save(function(err,user){
         res.send(user);
-    }); 
+    });
 }
 
 exports.remove = function(req,res){
-    users.remove(req.body.id, function(err){
+    User.remove({_id: req.body.id}, function(err){
         res.send({status: err == null ? 'success' : err});
     });
 }

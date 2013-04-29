@@ -1,14 +1,10 @@
-var db = require('./db');
-var statuses = db.collection('statuses');
+var mongoose = require('mongoose');
+Schema = mongoose.Schema;
 
-exports.getAll = function(callback){
-    statuses.find(callback);
-}
+var StatusSchema = new Schema({
+  name: String
+});
 
-exports.save = function(status, callback){
-    statuses.save(status, callback);
-}
+module.exports = StatusSchema;
 
-exports.remove = function(id, callback){
-  statuses.remove({_id: db.ObjectId(id)}, callback);
-}
+mongoose.model('Status', StatusSchema);

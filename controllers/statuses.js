@@ -1,20 +1,21 @@
-var statuses = require('../models/statuses');
+var mongoose = require('mongoose');
+var Status = mongoose.model('Status');
 
 exports.all = function(req, res){
-  statuses.getAll(function(err, statuses) {
+  Status.find({},function(err, statuses) {
       res.send(statuses);
   });
 }
 
 exports.save = function(req, res) {
-    var status = req.body.status;
-    statuses.save(status, function(err){
+    var status = new Status(req.body.status);
+    status.save(function(err,status){
         res.send(status);
     });
 }
 
 exports.remove = function(req, res) {
-    statuses.remove(req.body.id, function(err){
+    Status.remove({_id: req.body.id}, function(err){
         res.send({status: err == null ? 'success' : err});
     });
 }

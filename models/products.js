@@ -1,28 +1,12 @@
-var db = require('./db');
-var products = db.collection('products');
+var mongoose = require('mongoose');
+Schema = mongoose.Schema;
 
-exports.getAll = function(callback){
-    products.find(callback);
-}
+var ProductSchema = new Schema({
+  name: String,
+  price: Number,
+  quantity: Number
+});
 
-exports.save = function(product,callback){
-    console.log(product);
-    if(product._id != null)
-        product._id = db.ObjectId(product._id)
-    products.save(product,callback);
-}
+module.exports = ProductSchema;
 
-exports.updateQuantity = function(name,quantity, callback){
-    console.log('Updating product '+name+' quantity to '+quantity);
-    products.update({name: name}, {$set: {quantity: quantity}}, callback);
-}
-
-exports.incQuantity = function(name,quantity,callback){
-    console.log('Incrementing product '+name+' quantity by '+quantity);
-    products.update({name: name}, {$inc: {quantity: quantity}}, callback);
-}
-
-exports.remove = function(id, callback){
-    console.log('Removing product '+id);
-    products.remove({_id: db.ObjectId(id)},callback);
-}
+mongoose.model('Product', ProductSchema);

@@ -18,6 +18,7 @@
     "handlebars": "1.0.x",
     "jade": "0.28.x",
     "mongojs": "0.7.x",
+    "mongoose": "3.6.x",
     "nconf": "0.6.x",
     "passport": "0.1.x",
     "passport-http": "0.2.x",
