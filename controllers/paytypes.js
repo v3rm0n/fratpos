@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Paytype = mongoose.model('Paytype');
 
 exports.all = function(req, res){
-  Paytype.find({},function(err, paytypes) {
+  Paytype.find(function(err, paytypes) {
       res.send(paytypes);
   });
 }

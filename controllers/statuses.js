@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Status = mongoose.model('Status');
 
 exports.all = function(req, res){
-  Status.find({},function(err, statuses) {
+  Status.find(function(err, statuses) {
       res.send(statuses);
   });
 }

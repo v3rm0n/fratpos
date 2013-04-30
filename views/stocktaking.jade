@@ -50,7 +50,7 @@ block content
                             each transaction in stocktaking.transactions
                                 tr(class='#{transaction.invalid ? "error" : ""}')
                                     td #{transaction.formattedTime}
-                                    td #{transaction.user}
+                                    td #{transaction.user.label}
                                     td #{transaction.sum} €
                                     td #{transaction.type}
             .row-fluid

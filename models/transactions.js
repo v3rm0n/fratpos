@@ -5,13 +5,22 @@ var ProductSchema = require('./products');
 
 var TransactionSchema = new Schema({
     time: Date,
-    user: {type: Schema.ObjectId, ref: 'User'},
+    user: Schema.Types.Mixed,
     type: String,
     products : [ProductSchema],
     invalid: Boolean
 },
 {
     toJSON: {virtuals: true}
+});
+
+TransactionSchema.pre('save', function(next){
+    var User = mongoose.model('User');
+    console.log('Finding user by id: '+this.userid);
+    User.findById(this.userid, function(err,user){
+        this.user = user;
+        next(err);
+    });
 });
 
 TransactionSchema.virtual('formattedTime').get(function(){
@@ -41,14 +50,6 @@ TransactionSchema.method('invalidate', function(cb){
             async.apply(updateProductQuantities, transaction)
         ], cb);
     });
-});
-
-TransactionSchema.static('findAll', function(query, cb){
-    if(!cb){
-        cb = query;
-        query = {};
-    }
-    this.find(query).populate('user').exec(cb);
 });
 
 var incrementBalance = function(transaction, cb) {

@@ -51,10 +51,10 @@ var invalidateTransaction = function(id, password, res){
 
 exports.posdata = function(req, res){
     async.parallel({
-            transactions: function(cb){Transaction.findAll({invalid:false}, cb);},
-            products: function(cb){Product.find({}, cb);},
-            paytypes: function(cb){Paytype.find({}, cb);},
-            users: function(cb){User.find({}, cb);}
+            transactions: function(cb){Transaction.find({invalid:false}, cb);},
+            products: function(cb){Product.find(cb);},
+            paytypes: function(cb){Paytype.find(cb);},
+            users: function(cb){User.find(cb);}
         }
         ,function(err, result){
             res.send({transactions: result.transactions, products: result.products, paytypes: result.paytypes, users: result.users});
@@ -82,31 +82,28 @@ exports.transaction = function(req, res){
     });
 }
 
-var isPaymentTypeAllowed = function(req, callback){
+var isPaymentTypeAllowed = function(req, cb){
     Paytype.findByName(req.body.type, function(err, paytype){
-        if(err){callback(err);return;}
-        callback(null, paytype.isAllowedForStatus(req.body.user.status));
+        if(err){cb(err);return;}
+        cb(null, paytype.isAllowedForStatus(req.body.user.status));
     });
 }
 
-var createTransaction = function(req, callback){
+var createTransaction = function(req, cb){
     var products = [];
     for(id in req.body.products)
         products.push(req.body.products[id]);
     var transaction = new Transaction({
         time: new Date(),
-        user: req.body.user._id,
+        user: req.body.user,
         products: products,
         type: req.body.type,
         invalid: false
     });
     transaction.save(function(err,transaction){
-        if(err){callback(err);return;}
-        Transaction.populate(transaction, {path: 'user'}, function(err, transaction){
-            var end = function(err){
-                callback(err, transaction);
-            }
-            err == null ? decrementProductsAndBalance(transaction, end) : end(err);
+        if(err){cb(err);return;}
+        decrementProductsAndBalance(transaction, function(err){
+            cb(err,transaction);
         });
     });
 }
