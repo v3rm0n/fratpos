@@ -4,6 +4,17 @@ var nconf = require('./lib/nconf');
 //For authentication
 var passport = require('./lib/passport');
 
+//Database
+var db = require('./lib/db');
+db.connect();
+
+// Bootstrap models
+var fs = require('fs');
+var modelsPath = __dirname + '/models';
+fs.readdirSync(modelsPath).forEach(function(file){
+  require(modelsPath+'/'+file);
+});
+
 //Web framework
 var express = require('express'),
    http = require('http'),

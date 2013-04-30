@@ -1,37 +1,39 @@
-var stocktakings = require('../models/stocktakings');
-var users = require('../models/users');
-var transactions = require('../models/transactions');
-var products = require('../models/products');
 var async = require('async');
 var fs = require('fs');
 var csv = require('csv');
 var handlebars = require('handlebars');
 
+var mongoose = require('mongoose');
+var Stocktaking = mongoose.model('Stocktaking');
+var User = mongoose.model('User');
+var Transaction = mongoose.model('Transaction');
+var Product = mongoose.model('Product');
+
 exports.all = function(req, res){
-  stocktakings.getAll(function(err, stocktakings) {
+  Stocktaking.find(function(err, stocktakings) {
       res.send(stocktakings);
   });
 }
 
 exports.generate = function(req, res) {
     async.parallel({
-      users: async.apply(users.getWithFilter, {balance: { $ne: 0}}),
-      transactions: async.apply(transactions.getAll),
-      products: async.apply(products.getAll)
+      users: function(cb){User.find({balance:{$ne: 0}},cb);},
+      transactions: function(cb){Transaction.find(cb)},
+      products: function(cb){Product.find(cb);}
     },
     function(err, result){
       if(err){res.send({status: err});return;}
-      var stocktaking = {
+      var stocktaking = new Stocktaking({
         time: new Date(),
         users: result.users,
         transactions: result.transactions,
         products: result.products
-      }
-      stocktakings.save(stocktaking, function(err){
+      });
+      stocktaking.save(function(err, stocktaking){
         if(err){res.send({status: err});return;}
         async.parallel([
-          async.apply(users.resetBalances),
-          async.apply(transactions.remove)
+          async.apply(User.resetBalances.bind(User)),
+          async.apply(Transaction.remove.bind(Transaction))
           ],
           function(err){
             if(err){res.send({status: err});return;}
@@ -43,11 +45,10 @@ exports.generate = function(req, res) {
 
 exports.html = function(req, res) {
   async.waterfall([
-    async.apply(stocktakings.get,req.params.id),
-    function(stocktaking,callback){
-      stocktakings.getPrevious(stocktaking, function(err,previous){
-        if(err){callback(err);return;}
-        callback(null,{stocktaking: stocktaking, previous: previous});
+    function(cb){Stocktaking.findById(req.params.id,cb);},
+    function(stocktaking,cb){
+      stocktaking.getPrevious(function(err,previous){
+        cb(err,{stocktaking: stocktaking, previous: previous});
       });
     }
   ],
@@ -73,7 +74,7 @@ var transformStocktakingToCSV = function(id, callback){
         callback(null, template);
       });
     },
-    stocktaking: async.apply(stocktakings.get, id)
+    stocktaking: function(cb){Stocktaking.findById(id, cb);}
   },
   function(err, result){
     if(err != null){callback(err); return;}

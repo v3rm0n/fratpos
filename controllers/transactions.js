@@ -1,7 +1,8 @@
-var transactions = require('../models/transactions');
+var mongoose = require('mongoose');
+var Transaction = mongoose.model('Transaction');
 
 exports.all = function(req, res){
-  transactions.getAll(function(err, transactions) {
+  Transaction.find(function(err, transactions) {
       res.send(transactions);
   });
 }

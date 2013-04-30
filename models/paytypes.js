@@ -1,19 +1,20 @@
-var db = require('./db');
-var paytypes = db.collection('paytypes');
+var mongoose = require('mongoose');
+Schema = mongoose.Schema;
 
-exports.getAll = function(callback){
-    paytypes.find(callback);
-}
+var PaytypeSchema = new Schema({
+  name: String,
+  affectsBalance: Boolean,
+  affectsQuantity: Boolean,
+  credit: Boolean,
+  allowedForStatus: [{type: String}]
+});
 
-exports.get = function(name, callback){
-  console.log('Get paytype by name: '+name);
-  paytypes.findOne({name: name}, callback);
-}
+PaytypeSchema.method('isAllowedForStatus', function(status){
+  return this.allowedForStatus.indexOf(status) != -1;
+});
 
-exports.save = function(paytype, callback){
-    paytypes.save(paytype, callback);
-}
+PaytypeSchema.static('findByName', function(name, cb){
+  this.model('Paytype').findOne({name: name}, cb);
+});
 
-exports.remove = function(id, callback){
-    paytypes.remove({_id: db.ObjectId(id)}, callback);
-}
+mongoose.model('Paytype', PaytypeSchema);

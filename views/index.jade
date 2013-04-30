@@ -67,6 +67,6 @@ block content
                         tbody
                             tr(ng-repeat='transaction in transactions', ng-click='invalidTransaction(transaction)')
                                 td(ng-bind='transaction.formattedTime')
-                                td(ng-bind='transaction.user')
+                                td(ng-bind='transaction.user.label')
                                 td {{transaction.sum}} €
                                 td(ng-bind='transaction.type')

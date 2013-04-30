@@ -1,51 +1,33 @@
-var db = require('./db');
-var users = db.collection('users');
-var async = require('async');
+var mongoose = require('mongoose');
+Schema = mongoose.Schema;
 
-exports.getAll = function(callback){
-    exports.getWithFilter({}, callback);
-}
+var UserSchema = new Schema({
+    firstname: String,
+    lastname: String,
+    beername: String,
+    status: String,
+    balance: Number
+},
+{
+    toJSON: {virtuals: true}
+});
 
-exports.getWithFilter = function(filter, callback){
-    users.find(filter, function(err,users){
-        if(err != null){callback(err);return;}
-        var addName = function(user, callback){
-            user.label = exports.getUserFullName(user);
-            callback(null, user);
-        }
-        async.map(users, addName, function(err, users){
-            callback(err,users);
-        });
-    });
-}
-
-exports.get = function(id,callback){
-    users.findOne({_id: db.ObjectId(id)}, callback);
-}
-
-exports.save = function(user,callback){
-    console.log(user);
-    if(user._id != null)
-        user._id = db.ObjectId(user._id)
-    users.save(user, callback);
-}
-
-exports.remove = function(id,callback){
-    console.log('Removing user: '+id);
-    users.remove({_id: db.ObjectId(id)}, callback);
-}
-
-exports.incrementBalance = function(id, increment, callback){
-    console.log('Incrementing user '+id+' balance by '+increment);
-    users.update({_id: db.ObjectId(id)}, {$inc: {balance: increment}},callback);
-}
-
-exports.getUserFullName = function(user){
-    var fullName = user.status + ' ' + user.firstname + ' ' + user.lastname +
-    (user.beername != null && user.beername.length > 0 ? ' ('+user.beername+')' : '');
+UserSchema.virtual('label').get(function(){
+    var fullName = this.status + ' ' + this.firstname + ' ' + this.lastname +
+        (this.beername != null && this.beername.length > 0 ? ' ('+this.beername+')' : '');
     return fullName;
-}
+});
 
-exports.resetBalances = function(callback){
-    users.update({},{$set: {balance: 0}}, {multi: true}, callback);
-}
+UserSchema.statics = {
+    resetBalances: function(cb){
+        this.model('User').update({},{$set: {balance: 0}}, {multi: true}, cb);
+    },
+    incrementBalance: function(id, amount, cb){
+        console.log('Incrementing user '+id+' balance by '+amount);
+        this.model('User').update({_id: id}, {$inc: {balance: amount}}, cb);
+    }
+};
+
+module.exports = UserSchema;
+
+mongoose.model('User', UserSchema);
