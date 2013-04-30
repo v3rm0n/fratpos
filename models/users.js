@@ -18,17 +18,13 @@ UserSchema.virtual('label').get(function(){
     return fullName;
 });
 
-UserSchema.methods = {
-    incrementBalance: function(amount, cb){
-        console.log('Incrementing user '+this._id+' balance by '+amount);
-        this.balance += amount;
-        this.save();
-    }
-};
-
 UserSchema.statics = {
     resetBalances: function(cb){
         this.update({},{$set: {balance: 0}}, {multi: true}).exec(cb);
+    },
+    incrementBalance: function(id, amount, cb){
+        console.log('Incrementing user '+this._id+' balance by '+amount);
+        this.update({_id: id}, {$inc: {balance: amount}}, cb);
     }
 };
 

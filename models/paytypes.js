@@ -1,6 +1,5 @@
 var mongoose = require('mongoose');
 Schema = mongoose.Schema;
-var StatusSchema = require('./statuses');
 
 var PaytypeSchema = new Schema({
   name: String,
@@ -10,16 +9,12 @@ var PaytypeSchema = new Schema({
   allowedForStatus: [{type: String}]
 });
 
-PaytypeSchema.methods = {
-  isAllowedForStatus: function(status){
-    return this.allowedForStatus.indexOf(status) != -1;
-  }
-}
+PaytypeSchema.method('isAllowedForStatus', function(status){
+  return this.allowedForStatus.indexOf(status) != -1;
+});
 
-PaytypeSchema.statics = {
-  findByName: function(name,cb){
-    this.find({name: name}, cb);
-  }
-}
+PaytypeSchema.static('findByName', function(name, cb){
+  this.model('Paytype').findOne({name: name}, cb);
+});
 
 mongoose.model('Paytype', PaytypeSchema);

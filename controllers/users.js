@@ -8,8 +8,17 @@ exports.all = function(req,res){
 }
 
 exports.save = function(req,res){
-    var user = new User(req.body.user);
-    user.save(function(err,user){
+    var reqUser = req.body.user;
+    var user = {
+        firstname: reqUser.firstname,
+        lastname: reqUser.lastname,
+        beername: reqUser.beername,
+        status: reqUser.status,
+        balance: reqUser.balance || 0
+    };
+    var id = reqUser._id || new mongoose.Types.ObjectId;
+    User.findByIdAndUpdate(id, user, {upsert: true}, function(err, user){
+        if(err){res.send({status: err});return;}
         res.send(user);
     });
 }

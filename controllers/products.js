@@ -14,7 +14,7 @@ exports.save = function(req, res){
     price: reqProduct.price,
     quantity: reqProduct.quantity
   };
-  var id = reqProduct._id || null;
+  var id = reqProduct._id || new mongoose.Types.ObjectId;
   Product.findByIdAndUpdate(id, product, {upsert: true}, function(err, product){
     if(err){res.send({status: err});return;}
     res.send(product);

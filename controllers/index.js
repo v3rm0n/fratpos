@@ -1,9 +1,12 @@
-var transactions = require('../models/transactions');
-var products = require('../models/products');
-var users = require('../models/users');
-var paytypes = require('../models/paytypes');
 var async = require('async');
 var nconf = require('../lib/nconf');
+
+//Models
+var mongoose = require('mongoose');
+var Transaction = mongoose.model('Transaction');
+var Product = mongoose.model('Product');
+var Paytype = mongoose.model('Paytype');
+var User = mongoose.model('User');
 
 //Kassa
 exports.index = function(req, res){
@@ -26,25 +29,32 @@ var invalidateTransaction = function(id, password, res){
         var current = new Date().getTime();
         return current-time > timeout;
     }
-    transactions.get(id, function(err, transaction){
+    console.log('Invalidating transaction: '+id);
+    Transaction.findById(id, function(err, transaction){
         if(isTimedOut(transaction)){
             if(password !== nconf.get('admin:password')){
                 res.send({status: "Transaction has timed out!"});
                 return;
             }
         }
-        transactions.invalid(id, function(err){
-            res.send({status: err == null ? 'success' : err});
-        });
+        console.log('Transaction already invalid: '+transaction.invalid);
+        if(!transaction.invalid){
+            transaction.invalidate(function(err){
+                res.send({status: err == null ? 'success' : err});
+            });
+        }
+        else{
+            res.send({status: 'success'});
+        }
     });
 }
 
 exports.posdata = function(req, res){
     async.parallel({
-            transactions: async.apply(transactions.getWithFilter,{invalid: false}),
-            products: async.apply(products.getAll),
-            paytypes: async.apply(paytypes.getAll),
-            users: async.apply(users.getAll)
+            transactions: function(cb){Transaction.findAll({invalid:false}, cb);},
+            products: function(cb){Product.find({}, cb);},
+            paytypes: function(cb){Paytype.find({}, cb);},
+            users: function(cb){User.find({}, cb);}
         }
         ,function(err, result){
             res.send({transactions: result.transactions, products: result.products, paytypes: result.paytypes, users: result.users});
@@ -54,7 +64,7 @@ exports.posdata = function(req, res){
 exports.transaction = function(req, res){
     async.series({
         allowed: async.apply(isPaymentTypeAllowed, req),
-        transactionId: async.apply(createTransaction, req)
+        transaction: async.apply(createTransaction, req)
     },
     function(err, result){
         if(err){
@@ -63,31 +73,19 @@ exports.transaction = function(req, res){
         else if(!result.allowed) {
             res.send({status: 'invalid_paytype'});
         }
-        else if(!result.transactionId){
+        else if(!result.transaction){
             res.send({status: 'creation_failed'});
         }
         else{
-            transactions.get(String(result.transactionId), function(err, transaction){
-                res.send({status: (err == null ? 'success' : err), transaction: transaction});
-            });
+            res.send({status: 'success', transaction: result.transaction});
         }
     });
 }
 
 var isPaymentTypeAllowed = function(req, callback){
-    paytypes.getAll(function(err, paytypes){
-        if(err){
-            callback(err, false);
-        }
-        else {
-            for(i=0;i<paytypes.length;i++){
-                var paytype = paytypes[i];
-                if(paytype.name == req.body.type){
-                    callback(null, paytype.allowedForStatus.indexOf(req.body.user.status) != -1);
-                    break;
-                }
-            }
-        }
+    Paytype.findByName(req.body.type, function(err, paytype){
+        if(err){callback(err);return;}
+        callback(null, paytype.isAllowedForStatus(req.body.user.status));
     });
 }
 
@@ -95,43 +93,46 @@ var createTransaction = function(req, callback){
     var products = [];
     for(id in req.body.products)
         products.push(req.body.products[id]);
-    var transaction = {
+    var transaction = new Transaction({
         time: new Date(),
-        user: req.body.user,
+        user: req.body.user._id,
         products: products,
         type: req.body.type,
         invalid: false
-    }
-    transactions.save(transaction, function(err, sum, id){
-        var end = function(err){
-            callback(err, id);
-        }
-        err == null ? decrementProductsAndBalance(transaction, end) : end(err);
+    });
+    transaction.save(function(err,transaction){
+        if(err){callback(err);return;}
+        Transaction.populate(transaction, {path: 'user'}, function(err, transaction){
+            var end = function(err){
+                callback(err, transaction);
+            }
+            err == null ? decrementProductsAndBalance(transaction, end) : end(err);
+        });
     });
 }
 
-var decrementProductsAndBalance = function(transaction, callback){
-    paytypes.get(transaction.type, function(err, paytype){
-        if(err){callback(err);return;}
-        var decrement = function(product, callback){
+var decrementProductsAndBalance = function(transaction, cb){
+    Paytype.findByName(transaction.type, function(err, paytype){
+        if(err){cb(err);return;}
+        var decrement = function(product, cb){
             if(paytype.affectsQuantity){
-                var quantity = -product.quantity;
-                if(paytype.credit)
+                var quantity = product.quantity;
+                if(!paytype.credit)
                     quantity = -quantity;
-                products.incQuantity(product.name, quantity, callback);
+                Product.incrementQuantity(product, quantity, cb);
                 return;
             }
-            callback();
+            cb();
         }
         async.each(transaction.products, decrement, function(err){
-            if(paytype && paytype.affectsBalance == true){
-                var sum = -transactions.getTransactionSum(transaction);
+            if(paytype && paytype.affectsBalance){
+                var sum = -transaction.sum;
                 if(paytype.credit)
                     sum = -sum;
-                users.incrementBalance(transaction.user._id, sum, callback);
+                User.incrementBalance(transaction.user._id, sum, cb);
             }
             else {
-                callback(err);
+                cb(err);
             }
         });
     });

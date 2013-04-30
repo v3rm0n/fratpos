@@ -88,7 +88,7 @@ function PosController($scope, api, $timeout){
     if(!isEmpty($scope.selectedProducts) && $scope.user != null){
       var data = {products: $scope.selectedProducts, type: paytype.name, user: $scope.user};
       api.transaction(data, function(data){
-          if(data.status == 'success'){
+          if(data.status === 'success'){
             updateStatus('Tooted läksid edukalt kirja!', false);
             for(id in $scope.selectedProducts){
               var selectedProduct = $scope.selectedProducts[id];
