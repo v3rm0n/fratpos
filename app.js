@@ -6,14 +6,7 @@ var passport = require('./lib/passport');
 
 //Database
 var db = require('./lib/db');
-db.connect();
-
-// Bootstrap models
-var fs = require('fs');
-var modelsPath = __dirname + '/models';
-fs.readdirSync(modelsPath).forEach(function(file){
-  require(modelsPath+'/'+file);
-});
+db.init();
 
 //Web framework
 var express = require('express'),
@@ -44,6 +37,9 @@ require('./lib/routes')(app);
 
 require('./lib/appcache')(app);
 
-http.createServer(app).listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
-});
+module.exports = app;
+if(!module.parent){
+  http.createServer(app).listen(app.get('port'), function(){
+    console.log('Express server listening on port ' + app.get('port'));
+  });
+}
