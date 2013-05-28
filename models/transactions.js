@@ -58,7 +58,8 @@ var incrementBalance = function(transaction, cb) {
     Paytype.findByName(transaction.type, function(err, paytype){
         if(err){cb(err);return;}
         if(paytype.affectsBalance){
-            users.incrementBalance(transaction.user._id, transaction.sum, cb);
+            var User = mongoose.model('User');
+            User.incrementBalance(transaction.user._id, transaction.sum, cb);
         }
         else{
             cb();
