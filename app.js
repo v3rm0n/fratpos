@@ -1,45 +1,40 @@
-//For config files
-var nconf = require('./lib/nconf');
+/*jslint node: true nomen: true*/
+"use strict";
 
-//For authentication
-var passport = require('./lib/passport');
+var nconf = require('./lib/nconf'),
+    passport = require('./lib/passport'),
+    db = require('./lib/db'),
+    fs = require('fs'),
+    modelsPath = __dirname + '/models',
+    express = require('express'),
+    http = require('http'),
+    path = require('path'),
+    app = express();
 
-//Database
-var db = require('./lib/db');
 db.init();
 
-//Web framework
-var express = require('express'),
-   http = require('http'),
-   path = require('path');
-
-var app = express();
-
-app.configure(function(){
-  app.set('port', nconf.get('server:port'));
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'jade');
-  app.use(express.favicon());
-  app.use(express.logger('dev'));
-  app.use(express.compress());
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(passport.init());
-  app.use(app.router);
-  app.use(express.static(path.join(__dirname, 'public')));
+app.configure(function () {
+    app.set('port', nconf.get('server:port') || 3000);
+    app.set('views', __dirname + '/views');
+    app.set('view engine', 'jade');
+    app.use(express.favicon());
+    app.use(express.logger('dev'));
+    app.use(express.compress());
+    app.use(express.bodyParser());
+    app.use(express.methodOverride());
+    app.use(passport.init());
+    app.use(app.router);
+    app.use(express['static'](path.join(__dirname, 'public')));
 });
 
-app.configure('development', function(){
-  app.use(express.errorHandler());
+app.configure('development', function () {
+    app.use(express.errorHandler());
 });
 
 require('./lib/routes')(app);
 
 require('./lib/appcache')(app);
 
-module.exports = app;
-if(!module.parent){
-  http.createServer(app).listen(app.get('port'), function(){
+http.createServer(app).listen(app.get('port'), function () {
     console.log('Express server listening on port ' + app.get('port'));
-  });
-}
+});

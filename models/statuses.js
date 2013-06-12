@@ -1,8 +1,11 @@
+/*jslint node: true*/
+"use strict";
+
 var mongoose = require('mongoose');
-Schema = mongoose.Schema;
+var Schema = mongoose.Schema;
 
 var StatusSchema = new Schema({
-  name: String
+    name: String
 });
 
 mongoose.model('Status', StatusSchema);
