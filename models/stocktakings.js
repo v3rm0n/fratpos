@@ -9,7 +9,7 @@ var ProductSchema = require('./products');
 
 var StocktakingSchema = new Schema(
     {
-        time: Date,
+        time: {type: Date, required: true},
         users: [UserSchema],
         transactions: [TransactionSchema],
         products: [ProductSchema]

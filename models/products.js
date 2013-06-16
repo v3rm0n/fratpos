@@ -5,9 +5,9 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var ProductSchema = new Schema({
-    name: String,
-    price: Number,
-    quantity: Number
+    name: {type: String, required: true},
+    price: {type: Number, required: true, min: 0},
+    quantity: {type: Number, required: true}
 });
 
 ProductSchema['static']('incrementQuantity', function (product, amount, cb) {

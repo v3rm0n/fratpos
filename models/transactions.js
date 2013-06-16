@@ -8,11 +8,11 @@ var ProductSchema = require('./products');
 
 var TransactionSchema = new Schema(
     {
-        time: Date,
-        user: Schema.Types.Mixed,
-        type: String,
-        products : [ProductSchema],
-        invalid: Boolean
+        time: {type: Date, required: true},
+        user: {type: Schema.Types.Mixed, required: true},
+        type: {type: String, required: true},
+        products : {type: [ProductSchema], required: true},
+        invalid: {type: Boolean, required: true}
     },
     {
         toJSON: {virtuals: true}

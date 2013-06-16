@@ -257,7 +257,7 @@
             }
             var d = $dialog.dialog({resolve: {object: function () {return user; }}});
             d.open('/dialog/user', global.DialogController).then(function (result) {
-                if (result) {
+                if (result && result.firstname && result.lastname) {
                     $http.post('/users/save', {user: result}).success(function (data) {
                         if (userMissing) {
                             $scope.users.push(data);
@@ -343,7 +343,7 @@
         $scope.openProductDialog = function (product) {
             var d = $dialog.dialog({resolve: {object: function () {return product; }}});
             d.open('/dialog/product', global.DialogController).then(function (result) {
-                if (result) {
+                if (result && result.name) {
                     $http.post('/products/save', {product: result}).success(function (data) {
                         if (product === undefined) {
                             $scope.products.push(data);
@@ -368,7 +368,7 @@
         $scope.openPaytypeDialog = function (paytype) {
             var d = $dialog.dialog({resolve: {object: function () {return paytype; }}});
             d.open('/dialog/paytype', global.DialogController).then(function (result) {
-                if (result) {
+                if (result && result.name) {
                     $http.post('/paytypes/save', {paytype: result}).success(function (data) {
                         if (paytype === undefined) {
                             $scope.paytypes.push(data);

@@ -5,11 +5,11 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var PaytypeSchema = new Schema({
-    name: String,
-    affectsBalance: Boolean,
-    affectsQuantity: Boolean,
-    credit: Boolean,
-    allowedForStatus: [{type: String}]
+    name: {type: String, required: true},
+    affectsBalance: {type: Boolean, required: true},
+    affectsQuantity: {type: Boolean, required: true},
+    credit: {type: Boolean, required: true},
+    allowedForStatus: {type: [String], required: true}
 });
 
 PaytypeSchema.method('isAllowedForStatus', function (status) {

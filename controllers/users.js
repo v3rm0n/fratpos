@@ -15,7 +15,7 @@ exports.save = function (req, res) {
         user = {
             firstname: reqUser.firstname,
             lastname: reqUser.lastname,
-            beername: reqUser.beername,
+            beername: reqUser.beername || '',
             status: reqUser.status,
             balance: reqUser.balance || 0
         },

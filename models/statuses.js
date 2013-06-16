@@ -5,7 +5,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var StatusSchema = new Schema({
-    name: String
+    name: {type: String, required: true}
 });
 
 mongoose.model('Status', StatusSchema);

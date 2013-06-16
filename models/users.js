@@ -6,11 +6,11 @@ var Schema = mongoose.Schema;
 
 var UserSchema = new Schema(
     {
-        firstname: String,
-        lastname: String,
-        beername: String,
-        status: String,
-        balance: Number
+        firstname: {type: String, required: true},
+        lastname: {type: String, required: true},
+        beername: {type: String, "default": ''},
+        status: {type: String, required: true},
+        balance: {type: Number, "default": 0}
     },
     {
         toJSON: {virtuals: true}
