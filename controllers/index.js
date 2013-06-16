@@ -98,18 +98,19 @@ var decrementProductsAndBalance = function (transaction, cb) {
 };
 
 var createTransaction = function (req, cb) {
-    var products = [],
-        i,
-        transaction = new Transaction({
-            time: new Date(),
-            user: req.body.user,
-            products: products,
-            type: req.body.type,
-            invalid: false
-        });
-    for (i = 0; i < req.body.products.length; i += 1) {
-        products.push(req.body.products[i]);
+    var products = [], transaction, id;
+    for (id in req.body.products) {
+        if (req.body.products.hasOwnProperty(id)) {
+            products.push(req.body.products[id]);
+        }
     }
+    transaction = new Transaction({
+        time: new Date(),
+        user: req.body.user,
+        products: products,
+        type: req.body.type,
+        invalid: false
+    });
     transaction.save(function (err, transaction) {
         if (err) {cb(err); return; }
         decrementProductsAndBalance(transaction, function (err) {

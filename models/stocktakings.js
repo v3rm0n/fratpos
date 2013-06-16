@@ -7,16 +7,17 @@ var UserSchema = require('./users');
 var TransactionSchema = require('./transactions');
 var ProductSchema = require('./products');
 
-var StocktakingSchema = new Schema({
-    time: Date,
-    users: [UserSchema],
-    transactions: [TransactionSchema],
-    products: [ProductSchema]
-},
+var StocktakingSchema = new Schema(
+    {
+        time: Date,
+        users: [UserSchema],
+        transactions: [TransactionSchema],
+        products: [ProductSchema]
+    },
     {
         toJSON: {virtuals: true}
     }
-    );
+);
 
 StocktakingSchema.virtual('formattedTime').get(function () {
     var time = this.time,

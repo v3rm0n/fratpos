@@ -4,20 +4,22 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var UserSchema = new Schema({
-    firstname: String,
-    lastname: String,
-    beername: String,
-    status: String,
-    balance: Number
-},
+var UserSchema = new Schema(
+    {
+        firstname: String,
+        lastname: String,
+        beername: String,
+        status: String,
+        balance: Number
+    },
     {
         toJSON: {virtuals: true}
-    });
+    }
+);
 
 UserSchema.virtual('label').get(function () {
     var fullName = this.status + ' ' + this.firstname + ' ' + this.lastname +
-        (this.beername !== null && this.beername.length > 0 ? ' (' + this.beername + ')' : '');
+        (this.beername !== undefined && this.beername.length > 0 ? ' (' + this.beername + ')' : '');
     return fullName;
 });
 

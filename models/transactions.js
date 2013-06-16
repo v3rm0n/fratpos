@@ -6,16 +6,18 @@ var Schema = mongoose.Schema;
 var async = require('async');
 var ProductSchema = require('./products');
 
-var TransactionSchema = new Schema({
-    time: Date,
-    user: Schema.Types.Mixed,
-    type: String,
-    products : [ProductSchema],
-    invalid: Boolean
-},
+var TransactionSchema = new Schema(
+    {
+        time: Date,
+        user: Schema.Types.Mixed,
+        type: String,
+        products : [ProductSchema],
+        invalid: Boolean
+    },
     {
         toJSON: {virtuals: true}
-    });
+    }
+);
 
 TransactionSchema.pre('save', function (next) {
     var User = mongoose.model('User');
@@ -36,8 +38,7 @@ TransactionSchema.virtual('formattedTime').get(function () {
 });
 
 TransactionSchema.virtual('sum').get(function () {
-    var sum = 0,
-        i = 0;
+    var sum = 0, i;
     for (i = 0; i < this.products.length; i += 1) {
         sum += Number(this.products[i].price) * Number(this.products[i].quantity);
     }
