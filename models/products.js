@@ -7,7 +7,7 @@ var Schema = mongoose.Schema;
 var ProductSchema = new Schema({
     name: {type: String, required: true},
     price: {type: Number, required: true, min: 0},
-    quantity: {type: Number, required: true}
+    quantity: {type: Number, "default": 0}
 });
 
 ProductSchema['static']('incrementQuantity', function (product, amount, cb) {

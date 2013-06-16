@@ -6,9 +6,9 @@ var Schema = mongoose.Schema;
 
 var PaytypeSchema = new Schema({
     name: {type: String, required: true},
-    affectsBalance: {type: Boolean, required: true},
-    affectsQuantity: {type: Boolean, required: true},
-    credit: {type: Boolean, required: true},
+    affectsBalance: {type: Boolean, "default": false},
+    affectsQuantity: {type: Boolean, "default": false},
+    credit: {type: Boolean, "default": false},
     allowedForStatus: {type: [String], required: true}
 });
 

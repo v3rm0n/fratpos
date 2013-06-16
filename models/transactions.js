@@ -20,12 +20,16 @@ var TransactionSchema = new Schema(
 );
 
 TransactionSchema.pre('save', function (next) {
-    var User = mongoose.model('User');
-    console.log('Finding user by id: ' + this.userid);
-    User.findById(this.userid, function (err, user) {
-        this.user = user;
-        next(err);
-    });
+    if (this.userid) {
+        var User = mongoose.model('User');
+        console.log('Finding user by id: ' + this.userid);
+        User.findById(this.userid, function (err, user) {
+            this.user = user;
+            next(err);
+        });
+    } else {
+        next();
+    }
 });
 
 TransactionSchema.virtual('formattedTime').get(function () {
