@@ -1,5 +1,6 @@
 # korp! kassasüsteem
 [![Build Status](https://travis-ci.org/v3rm0n/fratpos.png)](https://travis-ci.org/v3rm0n/fratpos)
+[![Dependency Status](https://gemnasium.com/v3rm0n/fratpos.png)](https://gemnasium.com/v3rm0n/fratpos)
 
 ## Kirjeldus
 
