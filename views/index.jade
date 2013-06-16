@@ -4,35 +4,34 @@ block content
         .container-fluid(ng-controller='PosController')
             .row-fluid
                 .span12
-                    h2 Kassa
+                    h2= t('pos.title')
             br
             .row-fluid
                 .span12
-                    p Juhiste jaoks vajuta 
-                        a(href='#', ng-click='intro()') siia.
+                    p= t('pos.desc.start')
+                        a(href='#', ng-click='intro()')= t('pos.desc.end')
             .row-fluid
                 .span5
                     .control-group(class='{{user != null && "success" || "error"}}')
-                        .controls(data-step='1',
-                            data-intro='Kõigepealt sisesta kliendi nimi. Alusta trükkimist ning kui näed õiget klienti, vajuta tema nime peal. Punane tähendab, et klienti pole valitud.')
-                            input(type='text', placeholder='Kliendi nimi', ng-model='user',
+                        .controls(data-step='1', data-intro=t('intro.step1'))
+                            input(type='text', placeholder=t('pos.client'), ng-model='user',
                                 typeahead='user as user.label for user in users | filter:$viewValue')
                 .span7
                     .alert(ng-show='status != null', class='{{statusError && "alert-error" || "alert-success"}}')
-                        strong(ng-bind='status') 
+                        strong(ng-bind='status')
                         |  {{statusMessage}}
             .row-fluid
                 .span12
-                    h4 Tooted
-                    p Laos mitteolevaid tooteid ei kuvata. Kuvamiseks vajuta 
-                        a(href='#', ng-click='toggleShowAllProducts()') siia.
-                    table.table.table-bordered.table-hover.table-condensed(data-step='2', data-intro='Kui klient on edukalt valitud(Kliendi nime kast on roheline), siis võid hakata tooteid valima.')
+                    h4= t('pos.products.title')
+                    p= t('pos.products.desc.start')
+                        a(href='#', ng-click='toggleShowAllProducts()')= t('pos.products.desc.end')
+                    table.table.table-bordered.table-hover.table-condensed(data-step='2', data-intro=t('intro.step2'))
                         thead
                             tr
-                                th Toode
-                                th.choosequantity(data-step='3', data-intro='Toote valimiseks ostukorvi vajuta "+". Toote eemaldamiseks ostukorvist vajuta "-".') Kogus
-                                th.quantity Laoseis
-                                th.price Hind
+                                th= t('pos.products.table.name')
+                                th.choosequantity(data-step='3', data-intro=t('intro.step3'))= t('pos.products.table.quantity')
+                                th.quantity= t('pos.products.table.count')
+                                th.price= t('pos.products.table.price')
                         tbody
                             tr(ng-repeat='product in filteredProducts()', class='{{product.quantity <= 0 && "error" || ""}}')
                                 td(ng-bind='product.name')
@@ -41,32 +40,32 @@ block content
                                     span(ng-bind='quantity(product)')
                                     i.gi-circle_minus(ng-click='changeQuantity(product, -1)')
                                 td(ng-bind='product.quantity')
-                                td 
+                                td
                                     span(ng-bind='product.price')
-                                    |  €
+                                    |  #{t('pos.currency')}
                             tr
                                 th
                                 th
                                 th Kokku
-                                th(data-step='4', data-intro='Käesoleva tehingu jaoks valitud toodete kogusummat näed siin.')
+                                th(data-step='4', data-intro=t('intro.step4'))
                                     span(ng-bind='sum()')
-                                    |  €
-                    .btn-group(data-step='5', data-intro='Kui tooted on valitud, siis vali makseviis. Makseviisi nupul vajutades viiakse tehing lõpuni. Need mida vajutada ei saa pole kliendile lubatud.')
+                                    |  #{t('pos.currency')}
+                    .btn-group(data-step='5', data-intro=t('intro.step5'))
                         button.btn.btn-large(ng-repeat='paytype in paytypes', ng-click='pay(paytype)', ng-disabled='isDisabled(paytype)') {{paytype.name}}
             br
             .row-fluid
                 .span12
-                    h4(data-step='6', data-intro='Siin näed viimati sooritatud tehinguid. Kui juhtub, et tehing läks kogemata valesti, siis katkestamiseks vajuta tabelis tehingu reale.') Viimased tehingud
+                    h4(data-step='6', data-intro=t('intro.step6'))= t('pos.transactions.title')
                     table.table.table-bordered.table-hover(ng-show='transactions.length > 0')
                         thead
                             tr
-                                th Aeg
-                                th Nimi
-                                th Summa
-                                th Makseviis
+                                th= t('pos.transactions.table.time')
+                                th= t('pos.transactions.table.user')
+                                th= t('pos.transactions.table.sum')
+                                th= t('pos.transactions.table.type')
                         tbody
                             tr(ng-repeat='transaction in transactions', ng-click='invalidTransaction(transaction)')
                                 td(ng-bind='transaction.formattedTime')
                                 td(ng-bind='transaction.user.label')
-                                td {{transaction.sum}} €
+                                td {{transaction.sum}} #{t('pos.currency')}
                                 td(ng-bind='transaction.type')

@@ -11,17 +11,17 @@ block content
               .nav-collapse.collapse
                 ul.nav(ng-controller='NavController')
                     li
-                        a(href='/') Kassa
+                        a(href='/')= t('admin.menu.pos')
                     li(ng-class='{active: isActive("users")}')
-                        a(href='#users') Kasutajad
+                        a(href='#users')= t('admin.menu.users')
                     li(ng-class='{active: isActive("transactions")}')
-                        a(href='#transactions') Tehingud
+                        a(href='#transactions')= t('admin.menu.transactions')
                     li(ng-class='{active: isActive("products")}')
-                        a(href='#products') Laoseis
+                        a(href='#products')= t('admin.menu.products')
                     li(ng-class='{active: isActive("paytypes")}')
-                        a(href='#paytypes') Makseviisid
+                        a(href='#paytypes')= t('admin.menu.paytypes')
                     li(ng-class='{active: isActive("statuses")}')
-                        a(href='#statuses') Staatused
+                        a(href='#statuses')= t('admin.menu.statuses')
                     li(ng-class='{active: isActive("stocktakings")}')
-                        a(href='#stocktakings') Inventuur
+                        a(href='#stocktakings')= t('admin.menu.stocktakings')
     .container-fluid(ng-view)

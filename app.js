@@ -9,12 +9,15 @@ var nconf = require('./lib/nconf'),
     express = require('express'),
     http = require('http'),
     path = require('path'),
-    app = express();
+    app = express(),
+    i18n = require('i18next');
 
 db.init();
+i18n.init();
 
 app.configure(function () {
     app.set('port', nconf.get('server:port') || 3000);
+    app.use(i18n.handle);
     app.set('views', __dirname + '/views');
     app.set('view engine', 'jade');
     app.use(express.favicon());
@@ -26,6 +29,8 @@ app.configure(function () {
     app.use(app.router);
     app.use(express['static'](path.join(__dirname, 'public')));
 });
+
+i18n.registerAppHelper(app);
 
 app.configure('development', function () {
     app.use(express.errorHandler());

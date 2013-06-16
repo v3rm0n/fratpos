@@ -23,7 +23,8 @@
     "passport": "0.1.x",
     "passport-http": "0.2.x",
     "appcache-node": "0.1.x",
-    "wrench": "1.5.x"
+    "wrench": "1.5.x",
+    "i18next": "1.6.x"
   },
   "devDependencies": {
     "mocha": "*",

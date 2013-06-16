@@ -1,0 +1,52 @@
+{
+    "pos": {
+        "title": "Kassa",
+        "desc": {
+            "start": "Juhiste jaoks vajuta ",
+            "end": "siia."
+        },
+        "client": "Kliendi nimi",
+        "currency": "€",
+        "products": {
+            "title": "Tooted",
+            "desc": {
+                "start": "Laos mitteolevaid tooteid ei kuvata. Kuvamiseks vajuta ",
+                "end": "siia."
+            },
+            "table": {
+                "name": "Toode",
+                "quantity": "Kogus",
+                "count": "Laoseis",
+                "price": "Hind"
+            }
+        },
+        "transactions": {
+            "title": "Viimased tehingud",
+            "table": {
+                "time": "Aeg",
+                "user": "Nimi",
+                "sum": "Summa",
+                "type": "Makseviis"
+            }
+        }
+    },
+    "intro": {
+        "step1": "Kõigepealt sisesta kliendi nimi. Alusta trükkimist ning kui näed õiget klienti, vajuta tema nime peal. Punane tähendab, et klienti pole valitud.",
+        "step2": "Kui klient on edukalt valitud(Kliendi nime kast on roheline), siis võid hakata tooteid valima.",
+        "step3": "Toote valimiseks ostukorvi vajuta '+'. Toote eemaldamiseks ostukorvist vajuta '-'.",
+        "step4": "Käesoleva tehingu jaoks valitud toodete kogusummat näed siin.",
+        "step5": "Kui tooted on valitud, siis vali makseviis. Makseviisi nupul vajutades viiakse tehing lõpuni. Need mida vajutada ei saa pole kliendile lubatud.",
+        "step6": "Siin näed viimati sooritatud tehinguid. Kui juhtub, et tehing läks kogemata valesti, siis katkestamiseks vajuta tabelis tehingu reale."
+    },
+    "admin": {
+        "menu": {
+            "pos": "Kassa",
+            "users": "Kasutajad",
+            "transactions": "Tehingud",
+            "products": "Laoseis",
+            "paytypes": "Makseviisid",
+            "statuses": "Staatused",
+            "stocktakings": "Inventuur"
+        }
+    }
+}
