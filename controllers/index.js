@@ -25,6 +25,7 @@ var invalidateTransaction = function (id, password, res) {
     };
     console.log('Invalidating transaction: ' + id);
     Transaction.findById(id, function (err, transaction) {
+        if (err !== null) { res.send({status: err}); return; }
         if (isTimedOut(transaction)) {
             if (password !== nconf.get('admin:password')) {
                 res.send({status: "Transaction has timed out!"});
