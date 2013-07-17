@@ -36,6 +36,10 @@ app.configure('development', function () {
     app.use(express.errorHandler());
 });
 
+process.on('uncaughtException', function (err) {
+    console.log('Caught exception: ' + err);
+});
+
 require('./lib/routes')(app);
 
 require('./lib/appcache')(app);
