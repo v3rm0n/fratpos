@@ -4,8 +4,6 @@
 
     global.PosController = function ($scope, api, $timeout) {
 
-        api.init();
-
         var getData = function () {
             api.posdata(function (data) {
                 $scope.users = data.users;

@@ -13,7 +13,7 @@ var mongoose = require('mongoose'),
 
 //Kassa
 exports.index = function (req, res) {
-    res.render('index', { title: 'Kassa', manifest: 'app.cache'});
+    res.render('index', { title: 'Kassa'});
 };
 
 var invalidateTransaction = function (id, password, res) {

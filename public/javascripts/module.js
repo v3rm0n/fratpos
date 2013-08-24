@@ -82,158 +82,20 @@
         };
     });
 
-    //Services
-    app.factory('localStorage', function ($window) {
+    app.factory('api', function ($http, $window, $rootScope, $timeout) {
         return {
-            get: function (name) {
-                var items = JSON.parse($window.localStorage.getItem(name)) || [];
-                $window.localStorage.removeItem(name);
-                return items;
-            },
-            save: function (items, name) {
-                $window.localStorage.setItem(name, JSON.stringify(items));
-            },
-            add: function (item, name) {
-                if (item === undefined) {
-                    return;
-                }
-                var items = this.get(name);
-                if (items.indexOf(item) === -1) {
-                    items.push(item);
-                }
-                this.save(items, name);
-            },
-            remove: function (item, name) {
-                var items = this.get(name);
-                if (items.indexOf(item) !== -1) {
-                    items.splice(items.indexOf(item), 1);
-                }
-                this.save(items, name);
-            }
-        };
-    });
-
-    app.factory('api', function ($http, $window, $rootScope, $timeout, localStorage) {
-        return {
-            init: function () {
-                var that = this,
-                    submitInvalidTransactions = function (callback) {
-                        var invalid = localStorage.get('invalidTransactions'),
-                            callbacks = invalid.length;
-                        if (callbacks === 0 && callback !== undefined) {
-                            callback();
-                            return;
-                        }
-                        invalid.forEach(function (transaction) {
-                            that.invalid(transaction, function () {
-                                callbacks -= 1;
-                                if (callbacks === 0 && callback !== undefined) {
-                                    callback();
-                                }
-                            });
-                        });
-                    },
-                    submitTransactions = function (callback) {
-                        var transactions = localStorage.get('transactions'),
-                            callbacks = transactions.length;
-                        if (callbacks === 0 && callback !== undefined) {
-                            callback();
-                            return;
-                        }
-                        transactions.forEach(function (data) {
-                            that.transaction(data, function () {
-                                callbacks -= 1;
-                                if (callbacks === 0 && callback !== undefined) {
-                                    callback();
-                                }
-                            });
-                        });
-                    };
-                $window.addEventListener('online', function () {
-                    $timeout(function () {
-                        submitInvalidTransactions(function () {
-                            submitTransactions(function () {
-                                $rootScope.$broadcast('online');
-                            });
-                        });
-                    }, 1000);
-                });
-                submitInvalidTransactions();
-                submitTransactions();
-            },
             posdata: function (callback) {
-                if ($window.navigator.onLine) {
-                    $http.get('/posdata').success(function (data) {
-                        localStorage.save(data, 'posdata');
-                        callback(data);
-                    });
-                } else {
-                    var posdata = localStorage.get('posdata');
-                    callback(posdata);
-                    localStorage.save(posdata, 'posdata');
-                }
+                $http.get('/posdata').success(callback);
             },
             transaction: function (data, callback) {
-                var saveLocal = function () {
-                    localStorage.add(data, 'transactions');
-                    var formatTime = function (transaction) {
-                        var time = new Date(transaction.time),
-                            hours = time.getHours() > 9 ? time.getHours() : '0' + time.getHours(),
-                            minutes = time.getMinutes() > 9 ? time.getMinutes() : '0' + time.getMinutes(),
-                            date = time.getDate() > 9 ? time.getDate() : '0' + time.getDate(),
-                            month = time.getMonth() + 1 > 9 ? time.getMonth() + 1 : '0' + (time.getMonth() + 1);
-                        transaction.formattedTime = hours + ':' + minutes + ' ' + date + '.' + month + '.' + time.getFullYear();
-                    },
-                        getUserFullName = function (user) {
-                            var fullName = user.status + ' ' + user.firstname + ' ' + user.lastname +
-                                (user.beername !== undefined && user.beername.length > 0 ? ' (' + user.beername + ')' : '');
-                            return fullName;
-                        },
-                        getSum = function (products) {
-                            var sum = 0, id;
-                            for (id in products) {
-                                var product = products[id];
-                                sum += product.price * product.quantity;
-                            }
-                            return sum;
-                        },
-                        transaction = {
-                            time: new Date(),
-                            user: getUserFullName(data.user),
-                            products: data.products,
-                            sum: getSum(data.products),
-                            type: data.type,
-                            invalid: false
-                        };
-                    formatTime(transaction);
-                    callback({status: 'success', transaction: transaction});
-                };
-                if ($window.navigator.onLine) {
-                    $http.post('/transaction', data).success(function (response) {
-                        localStorage.remove(data, 'transactions');
-                        callback(response);
-                    }).error(saveLocal);
-                } else {
-                    saveLocal();
-                }
+                $http.post('/transaction', data).success(callback);
             },
             invalid: function (transaction, password, callback) {
                 if (typeof (password) === 'function') {
                     callback = password;
                     password = undefined;
                 }
-                var saveLocal = function () {
-                    localStorage.add(transaction, 'invalidTransactions');
-                    callback();
-                };
-                if ($window.navigator.onLine) {
-                    $http.post('/transaction/invalid', {id: transaction._id, password: password}).success(function (data) {
-                        localStorage.remove(transaction, 'invalidTransactions');
-                        callback(data);
-                    }).error(saveLocal);
-                } else {
-                    saveLocal();
-                }
+                $http.post('/transaction/invalid', {id: transaction._id, password: password}).success(callback);
             }
         };
     });

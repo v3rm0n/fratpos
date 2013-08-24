@@ -3,7 +3,7 @@
 
 //Admin liides
 exports.index = function (req, res) {
-    res.render('admin', {title: 'Admin', manifest: null});
+    res.render('admin', {title: 'Admin'});
 };
 
 exports.page = function (req, res) {
