@@ -120,7 +120,7 @@
                             $scope.products.forEach(decrementQuantity(selectedProduct, id));
                         }
                         $scope.selectedProducts = {};
-                        $scope.user = undefined;
+                        $scope.user = null;
                         $scope.transactions.unshift(data.transaction);
                     } else {
                         updateStatus('Viga tehingul: ' + data.status, true);
