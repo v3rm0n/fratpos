@@ -15,14 +15,14 @@
   "dependencies": {
     "async": "0.2.x",
     "csv": "0.3.x",
-    "express": "3.3.x",
+    "express": "3.4.x",
     "handlebars": "1.0.x",
-    "jade": "0.33.x",
+    "jade": "0.35.x",
     "mongoose": "3.6.x",
     "nconf": "0.6.x",
     "passport": "0.1.x",
     "passport-http": "0.2.x",
-    "i18next": "1.6.x"
+    "i18next": "1.7.x"
   },
   "devDependencies": {
     "mocha": "*",
