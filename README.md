@@ -4,7 +4,7 @@
 
 ## Description
 
-Tegemist on kassasüsteemiga üliõpilaskoproratsioonidele. Kassa võimaldab lihtsalt ja kiirelt kasutajatel osta erinevaid tooteid erinevatel viisidel. Kuigi süsteem on algselt mõeldud korporatsioonidele ei tohiks olla ühtegi takistust, miks seda ei võiks ka mujal kasutada.
+Very simple an primitive point of sale system for student fraternities (can be use elsewhere).
 
 ## Features
 The system has two main views: **PoS** and **admin**.
