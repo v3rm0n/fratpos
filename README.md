@@ -1,66 +1,63 @@
-# korp! kassasüsteem
+# Fraternity Point of Sale system
 [![Build Status](https://travis-ci.org/v3rm0n/fratpos.png)](https://travis-ci.org/v3rm0n/fratpos)
 [![Dependency Status](https://gemnasium.com/v3rm0n/fratpos.png)](https://gemnasium.com/v3rm0n/fratpos)
 
-## Kirjeldus
+## Description
 
 Tegemist on kassasüsteemiga üliõpilaskoproratsioonidele. Kassa võimaldab lihtsalt ja kiirelt kasutajatel osta erinevaid tooteid erinevatel viisidel. Kuigi süsteem on algselt mõeldud korporatsioonidele ei tohiks olla ühtegi takistust, miks seda ei võiks ka mujal kasutada.
 
-## Võimalused
-Kassasüsteemil on kaks põhilist vaadet: **kassa** ning **admin**.
+## Features
+The system has two main views: **PoS** and **admin**.
 
-### Kassa
-Kassa võimaldab teha järgmisi tegevusi:
+### Point of Sale
+Point of Sale has following features:
 
-* Vaadata kasutusjuhendit
-* Valida kasutaja
-* Lisada tehingule tooted
-* Valida makseviis
+* Read the manual
+* Choose the client
+* Add products to the transaction
+* Choose the type of the payment
 
-Pärast makseviisi valikut läheb tehing kirja ning seda kuvatakse kassas **"Viimased tehingud"** tabelis.
+After choosing the payment type the transaction is complete and the transaction is shown in the **Latest transactions** table.
 
 ### Admin
-Admin võimaldab teha järgmisi tegevusi:
+Admin has following features:
 
-* Vaadata/muuta kasutajaid
-* Vaadata tehinguid
-* Vaadata/muuta makseviise
-* Vaadata/muuta kasutaja staatuseid
-* Vaadata/muuta toodete laoseisu
-* Teha inventuuri
+* Manage users
+* Manage transactions
+* Manage payment types
+* Manage user statuses
+* Manage product quantities
+* Stocktaking
 
-#### Inventuur
-Inventuuri saab teha admin menüüpuntist ***Inventuur***
+#### What does stocktaking mean?
+When you press the button ***Stocktaking*** the following happens:
 
-#### Mida inventuur tähendab?
-Vajutades nuppu ***Inventuur*** tehakse järgmist:
+* All the users with nonzero balance
+* Al the transaction
+* All the products
 
-* Leitakse kõik kasutajad kelle saldo ei ole 0
-* Leitakse kõik tehingud
-* Leitakse kõik tooted
+are saved to a new structure called stocktaking and:
 
-Seejärel salvestatakse kõik see info inventuuri ning:
+* Balances are reset
+* Transactions are removed
 
-* Nullitakse kõikide kasutajate saldod
-* Eemaldatakse kõik tehingud
+Stocktaking can be seen as a ***HTML*** or downloades as a ***CSV*** file.
 
-Inventuuri infot saab igal ajal kuvada ***HTML'ina*** või alla laadida ***CSV'na***
+## PoS setup
+To setup the Point of Sale system you will need to install [Node.js](http://nodejs.org/) and [MongoDB](http://www.mongodb.org/).
+The configuration of the system is in the  **config.json** file.
 
-## Kassa ülesseadmine
-Kassa kasutamiseks on vajalik installeerida [Node.js](http://nodejs.org/) ja [MongoDB](http://www.mongodb.org/).
-Kassa seadistus asub juurkaustas **config.json** failis.
-
-### config.json lahtiseletatuna
-**config.json** failis on järgmised konfiparameetrid:
+### config.json
+**config.json** file contains following configuration:
 
 ```
 {
-  //Serveri konfiguratsioon
+  //Server configuration
   "server": {
-  	//Port millel veebiserverit jooksutatakse
+  	//Server port
     "port": 3000
   },
-  //Andmebaasi konfiguratsioon
+  //Database configuration
   "database": {
     "name": "posdb",
     "host": "localhost",
@@ -68,35 +65,34 @@ Kassa seadistus asub juurkaustas **config.json** failis.
     "username": "",
     "password": ""
   },
-  //Admin liidese kasutaja info
+  //Admin user info
   "admin": {
-  	//Kui authenticate on true, siis küsitakse parooli
+  	//If authenticate is true then the admin interface needs authentication
     "authenticate": true,
     "realm": "admin",
     "username": "admin",
     "password": ""
   },
-  //Kassa kasutaja info
+  //PoS user info
   "posuser": {
-  	//Kui authenticate on false, siis parooli ei küsita
     "authenticate": false,
     "realm": "pos",
     "username": "posuser",
     "password": ""
   },
-  //Tehingute tagasivõtmise maksimaalne aeg enne kui küsitakse admin parooli (sekundites)
+  //Time is seconds during which the client can delete the transaction.
   "timeout": 300
 }
 ```
-Kui **kassa** või **admin** kasutajal on **authenticate** parameetri väärtuseks **true**, siis küsitakse kasutaja käest parooli (Autentimine kasutab [HTTP Digest](http://en.wikipedia.org/wiki/Digest_access_authentication) autenti). Vaikimisi kassa kasutamisel parooli ei küsita, kuid admini käest küsitakse.
 
-**NB!** Kui kassa on internetist ligipääsetav tuleks alati paroolid ära seadistada!
+**NB!** If the PoS system is accessible over the internet you should always turn on authentication!
 
-Kui seadistus on paigas, tuleb sõtluvuste allatõmbamiseks: `npm install`  ning seejärel käivitamiseks `npm start` või kasutada [node-supervisor](https://github.com/isaacs/node-supervisor) pluginat: `npm install supervisor -g` ning seejärel: `supervisor app.js` või Linuxis taustal jooksutamiseks: `nohup supervisor app.js &`
+If the configuration is done, the dependencies can be downloaded using `npm install` and then `npm start` will start the application.
+Alternatively use [node-supervisor](https://github.com/isaacs/node-supervisor) plugin `npm install supervisor -g` then run `supervisor app.js` or in Linux background `nohup supervisor app.js &`.
 
 
-## Tehnoloogiad
-Hetkel on antud projektis kasutusel järgmised tehnoloogiad.
+## Technologies
+This project contains the following technologies.
 
 ### Backend
 * Node.js <http://nodejs.org/>
