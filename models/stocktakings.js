@@ -10,9 +10,9 @@ var ProductSchema = require('./products');
 var StocktakingSchema = new Schema(
     {
         time: {type: Date, required: true},
-        users: [UserSchema],
-        transactions: [TransactionSchema],
-        products: [ProductSchema]
+        users: {type: [UserSchema]},
+        transactions: {type: [TransactionSchema]},
+        products: {type: [ProductSchema]}
     },
     {
         toJSON: {virtuals: true}
@@ -64,5 +64,7 @@ StocktakingSchema.virtual('sums').get(function () {
 StocktakingSchema.method('getPrevious', function (cb) {
     this.model('Stocktaking').findOne().where('time').lt(this.time).sort({time: -1}).exec(cb);
 });
+
+module.exports = StocktakingSchema;
 
 mongoose.model('Stocktaking', StocktakingSchema);

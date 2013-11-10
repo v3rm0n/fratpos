@@ -69,7 +69,7 @@ var updateProductQuantities = function (transaction, cb) {
     async.each(transaction.products, Product.incrementQuantity.bind(Product), cb);
 };
 
-TransactionSchema.method('invalidate', function (cb) {
+TransactionSchema.method('markInvalid', function (cb) {
     var transaction = this;
     console.log('Marking transaction ' + transaction.id + ' invalid');
     this.update({invalid: true}, function (err) {

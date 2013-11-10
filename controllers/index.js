@@ -34,7 +34,7 @@ var invalidateTransaction = function (id, password, res) {
         }
         console.log('Transaction already invalid: ' + transaction.invalid);
         if (!transaction.invalid) {
-            transaction.invalidate(function (err) {
+            transaction.markInvalid(function (err) {
                 res.send({status: err === null ? 'success' : err});
             });
         } else {
