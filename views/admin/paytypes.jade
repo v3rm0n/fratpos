@@ -1,22 +1,22 @@
 .row-fluid(ng-controller='PaytypesController', ng-show='paytypes != null')
     .span12
-        h1 Makseviisid
-        p(ng-hide='paytypes.length > 0') Makseviise ei ole. Lisamiseks vajuta nuppu "Lisa makseviis"
+        h1= t('admin.paytypes.title')
+        p(ng-hide='paytypes.length > 0')= t('admin.paytypes.desc')
         table.table.table-bordered.table-hover(ng-show='paytypes.length > 0')
             thead
                 tr
-                    th Nimetus
-                    th Mõjutab saldot
-                    th Mõjutab laoseisu
-                    th Kreedit
-                    th Lubatud staatusele
+                    th= t('admin.paytypes.table.name')
+                    th= t('admin.paytypes.table.affectsbalance')
+                    th= t('admin.paytypes.table.affectsquantity')
+                    th= t('admin.paytypes.table.credit')
+                    th= t('admin.paytypes.table.allowedfor')
                     th
             tbody
-                tr(ng-repeat='paytype in paytypes') 
+                tr(ng-repeat='paytype in paytypes')
                     td(ng-bind='paytype.name')
-                    td(ng-bind-template='{{paytype.affectsBalance && "Jah" || "Ei"}}')
-                    td(ng-bind-template='{{paytype.affectsQuantity && "Jah" || "Ei"}}')
-                    td(ng-bind-template='{{paytype.credit && "Jah" || "Ei"}}')
+                    td(ng-bind-template="{{paytype.affectsBalance && \"#{t('common.yes')}\" || \"#{t('common.no')}\"}}")
+                    td(ng-bind-template="{{paytype.affectsQuantity && \"#{t('common.yes')}\" || \"#{t('common.no')}\"}}")
+                    td(ng-bind-template="{{paytype.credit && \"#{t('common.yes')}\" || \"#{t('common.no')}\"}}")
                     td(ng-bind='paytype.allowedForStatus')
-                    td: a.btn.btn-danger(ng-click='deletePaytype(paytype)') Kustuta
-        button.btn.btn-large(ng-click='openPaytypeDialog()') Lisa makseviis
+                    td: a.btn.btn-danger(ng-click='deletePaytype(paytype)')= t('common.delete')
+        button.btn.btn-large(ng-click='openPaytypeDialog()')= t('admin.paytypes.add')

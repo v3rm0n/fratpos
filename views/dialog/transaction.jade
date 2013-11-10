@@ -2,11 +2,11 @@
     button.close(type='button', data-dismiss='modal', aria-hidden='true', ng-click='close()') ×
     h2 Tehingu info
 .modal-body
-  p Aeg: 
+  p Aeg:
     strong(ng-bind='object.formattedTime')
-  p Nimi: 
+  p Nimi:
     strong(ng-bind='object.user.label')
-  p Makseviis: 
+  p Makseviis:
     strong(ng-bind='object.type')
   h3 Tooted
   table.table.table-bordered.table-condensed
@@ -16,9 +16,9 @@
               th Hind
               th Kogus
       tbody
-          tr(ng-repeat='product in object.products') 
+          tr(ng-repeat='product in object.products')
               td(ng-bind='product.name')
-              td(ng-bind-template='{{product.price}} €')
+              td {{product.price}} #{t('common.currency')}
               td(ng-bind='product.quantity')
 .modal-footer
     button.btn(data-dismiss='modal', aria-hidden='true', ng-click='close()') Sulge
