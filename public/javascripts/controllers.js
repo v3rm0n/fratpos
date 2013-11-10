@@ -153,6 +153,21 @@
                 });
             }
         };
+
+        $scope.showAllTransactions = false;
+
+        $scope.toggleTransactions = function (show) {
+            $scope.showAllTransactions = show;
+        };
+
+        $scope.filteredTransactions = function () {
+            var transactions = $scope.transactions || [];
+            if ($scope.showAllTransactions || transactions.length <= 5) {
+                return transactions;
+            } else {
+                return transactions.slice(0, 5);
+            }
+        };
     };
 
     global.NavController = function ($scope, $location) {

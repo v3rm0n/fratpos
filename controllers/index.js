@@ -54,7 +54,7 @@ exports.invalid = function (req, res) {
 
 exports.posdata = function (req, res) {
     async.parallel({
-        transactions: function (cb) {Transaction.find({invalid: false}, cb); },
+        transactions: function (cb) {Transaction.find({invalid: false}, null, {sort: {time: -1}}, cb); },
         products: function (cb) {Product.find(cb); },
         paytypes: function (cb) {Paytype.find(cb); },
         users: function (cb) {User.find(cb); }

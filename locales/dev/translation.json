@@ -35,7 +35,9 @@
                 "user": "Nimi",
                 "sum": "Summa",
                 "type": "Makseviis"
-            }
+            },
+            "more": "Näita kõiki",
+            "less": "Näita vähem"
         }
     },
     "intro": {

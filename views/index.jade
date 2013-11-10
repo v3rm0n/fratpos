@@ -42,14 +42,14 @@ block content
                                 td(ng-bind='product.quantity')
                                 td
                                     span(ng-bind='product.price')
-                                    |  #{t('pos.currency')}
+                                    |  #{t('common.currency')}
                             tr
                                 th
                                 th
                                 th Kokku
                                 th(data-step='4', data-intro=t('intro.step4'))
                                     span(ng-bind='sum()')
-                                    |  #{t('pos.currency')}
+                                    |  #{t('common.currency')}
                     .btn-group(data-step='5', data-intro=t('intro.step5'))
                         button.btn.btn-large(ng-repeat='paytype in paytypes', ng-click='pay(paytype)', ng-disabled='isDisabled(paytype)') {{paytype.name}}
             br
@@ -64,8 +64,18 @@ block content
                                 th= t('pos.transactions.table.sum')
                                 th= t('pos.transactions.table.type')
                         tbody
-                            tr(ng-repeat='transaction in transactions', ng-click='invalidTransaction(transaction)')
+                            tr(ng-repeat='transaction in filteredTransactions()', ng-click='invalidTransaction(transaction)')
                                 td(ng-bind='transaction.formattedTime')
                                 td(ng-bind='transaction.user.label')
-                                td {{transaction.sum}} #{t('pos.currency')}
+                                td {{transaction.sum}} #{t('common.currency')}
                                 td(ng-bind='transaction.type')
+                            tr(ng-hide='showAllTransactions', ng-click='toggleTransactions(true)')
+                                td(colspan="4", style='text-align:center')
+                                    i.icon-arrow-down
+                                    | #{t('pos.transactions.more')}
+                                    i.icon-arrow-down
+                            tr(ng-show='showAllTransactions', ng-click='toggleTransactions(false)')
+                                td(colspan="4", style='text-align:center')
+                                    i.icon-arrow-up
+                                    | #{t('pos.transactions.less')}
+                                    i.icon-arrow-up
