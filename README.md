@@ -4,7 +4,7 @@
 
 ## Description
 
-Very simple an primitive point of sale system for student fraternities (can be use elsewhere).
+Very simple and primitive point of sale system for student fraternities (can be use elsewhere).
 
 ## Features
 The system has two main views: **PoS** and **admin**.
