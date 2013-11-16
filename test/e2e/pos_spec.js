@@ -26,11 +26,8 @@ var invalidateTransaction = function () {
 };
 
 describe('Point of sale interface', function () {
-  it('should greet the named user', function () {
     browser.get('/');
-
-    createTransaction();
-
-    invalidateTransaction();
-  });
+    it('should greate a transaction', createTransaction);
+    it('should invalidate a transaction', invalidateTransaction);
+    });
 });
