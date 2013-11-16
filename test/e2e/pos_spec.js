@@ -1,3 +1,6 @@
+/*jslint node: true */
+"use strict";
+
 var createTransaction = function () {
     //Search for user
     element(by.model('user')).sendKeys('reb!');

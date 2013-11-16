@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "start": "node app.js",
-    "test": "node test/run.js"
+    "test": "./test/run.sh"
   },
   "repository": {
     "type": "git",
