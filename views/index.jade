@@ -13,7 +13,7 @@ block content
             .row-fluid
                 .span5
                     .control-group(class='{{user != null && "success" || "error"}}')
-                        .controls(data-step='1', data-intro=t('intro.step1'))
+                        #userinput.controls(data-step='1', data-intro=t('intro.step1'))
                             input(type='text', placeholder=t('pos.client'), ng-model='user',
                                 typeahead='user as user.label for user in users | filter:$viewValue')
                 .span7

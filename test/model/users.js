@@ -22,11 +22,11 @@ describe('Users', function () {
             done();
         });
     });
-    
+
     afterEach(function (done) {
-        User.remove({}, done);
+        User.remove({firstname: testuser.firstname}, done);
     });
-    
+
     it('should find users', function (done) {
         User.findOne({firstname: testuser.firstname}, function (err, user) {
             user.firstname.should.equal('Test');
@@ -34,7 +34,7 @@ describe('Users', function () {
             done();
         });
     });
-    
+
     it('should reset user balances', function (done) {
         User.resetBalances(function (err) {
             User.findOne({firstname: testuser.firstname}, function (err, user) {
@@ -43,7 +43,7 @@ describe('Users', function () {
             });
         });
     });
-    
+
     it('should increment user balance', function (done) {
         User.incrementBalance(testuser._id, 1, function (err) {
             User.findOne({firstname: testuser.firstname}, function (err, user) {

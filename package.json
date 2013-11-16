@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "start": "node app.js",
-    "test": "make test"
+    "test": "node test/run.js"
   },
   "repository": {
     "type": "git",
@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "mocha": "*",
+    "protractor": "*",
     "should": "*"
   },
   "engines": {

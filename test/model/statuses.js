@@ -17,16 +17,16 @@ describe('Statuses', function () {
             done();
         });
     });
-    
+
     afterEach(function (done) {
-        Status.remove({}, done);
+        Status.remove({name: "!reb"}, done);
     });
-    
+
     it('should find statuses', function (done) {
         Status.findOne({name: "!reb"}, function (err, status) {
             status.name.should.equal("!reb");
             done();
         });
     });
-    
+
 });

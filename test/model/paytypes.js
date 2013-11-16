@@ -21,20 +21,20 @@ describe('Paytypes', function () {
             done();
         });
     });
-    
+
     afterEach(function (done) {
-        Paytype.remove({}, done);
+        Paytype.remove({name: testpaytype.name}, done);
     });
-    
+
     it('should find paytypes', function (done) {
-        Paytype.find({}, function (err, paytypes) {
+        Paytype.find({name: testpaytype.name}, function (err, paytypes) {
             paytypes.length.should.equal(1);
             paytypes[0].isAllowedForStatus('!reb').should.equal(true);
             paytypes[0].isAllowedForStatus('!vil').should.equal(false);
             done();
         });
     });
-    
+
     it('should find paytype by name', function (done) {
         Paytype.findByName(testpaytype.name, function (err, paytype) {
             paytype.name.should.equal(testpaytype.name);

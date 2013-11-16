@@ -19,19 +19,19 @@ describe('Products', function () {
             done();
         });
     });
-    
+
     afterEach(function (done) {
-        Product.remove({}, done);
+        Product.remove({name: testproduct.name}, done);
     });
-    
+
     it('should find products', function (done) {
-        Product.find({}, function (err, products) {
+        Product.find({name: testproduct.name}, function (err, products) {
             products.length.should.equal(1);
             products[0].name.should.equal(testproduct.name);
             done();
         });
     });
-    
+
     it('should increment product quantity', function (done) {
         Product.incrementQuantity(testproduct, 5, function (err) {
             Product.findOne({name: testproduct.name}, function (err, product) {
@@ -40,5 +40,5 @@ describe('Products', function () {
             });
         });
     });
-    
+
 });
