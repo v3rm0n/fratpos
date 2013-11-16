@@ -29,5 +29,4 @@ describe('Point of sale interface', function () {
     browser.get('/');
     it('should greate a transaction', createTransaction);
     it('should invalidate a transaction', invalidateTransaction);
-    });
 });
