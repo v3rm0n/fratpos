@@ -176,7 +176,7 @@
         };
     };
 
-    global.DialogController = function ($scope, $http, dialog, object) {
+    global.DialogController = function ($scope, $http, $modalInstance, object) {
 
         $scope.object = object || {};
 
@@ -198,15 +198,15 @@
         };
 
         $scope.close = function () {
-            dialog.close();
+            $modalInstance.close();
         };
 
         $scope.save = function (object) {
-            dialog.close(object);
+            $modalInstance.close(object);
         };
     };
 
-    global.UsersController = function ($scope, $http, $dialog) {
+    global.UsersController = function ($scope, $http, $modal) {
 
         $http.get('/users').success(function (data) {
             $scope.users = data;
@@ -254,8 +254,12 @@
         };
 
         $scope.openBalanceDialog = function (user) {
-            var d = $dialog.dialog({resolve: {object: function () { return user; }}});
-            d.open('/dialog/balance', global.DialogController).then(function (result) {
+            var d = $modal.open({
+                templateUrl: '/dialog/balance',
+                controller: global.DialogController,
+                resolve: {object: function () { return user; }}
+            });
+            d.result.then(function (result) {
                 if (result) {
                     $http.post('/users/save', {user: result});
                 }
@@ -268,8 +272,12 @@
                 user = {};
                 user.status = '';
             }
-            var d = $dialog.dialog({resolve: {object: function () {return user; }}});
-            d.open('/dialog/user', global.DialogController).then(function (result) {
+            var d = $modal.open({
+                templateUrl: '/dialog/user',
+                controller: global.DialogController,
+                resolve: {object: function () {return user; }}
+            });
+            d.result.then(function (result) {
                 if (result && result.firstname && result.lastname) {
                     $http.post('/users/save', {user: result}).success(function (data) {
                         if (userMissing) {
@@ -281,7 +289,7 @@
         };
     };
 
-    global.TransactionsController = function ($scope, $http, $dialog) {
+    global.TransactionsController = function ($scope, $http, $modal) {
         $http.get('/transactions').success(function (data) {
             $scope.transactions = data;
         });
@@ -300,8 +308,12 @@
         };
 
         $scope.openDialog = function (transaction) {
-            var d = $dialog.dialog({resolve: {object: function () { return transaction; }}});
-            d.open('/dialog/transaction', global.DialogController).then(function (result) {
+            var d = $modal.open({
+                templateUrl: '/dialog/transaction',
+                controller: global.DialogController,
+                resolve: {object: function () { return transaction; }}
+            });
+            d.result.then(function (result) {
                 if (result) {
                     $http.post('/transaction/invalid/admin', {id: result._id}).success(function (data) {
                         result.invalid = true;
@@ -311,7 +323,7 @@
         };
     };
 
-    global.ProductsController = function ($scope, $http, $dialog) {
+    global.ProductsController = function ($scope, $http, $modal) {
         $http.get('/products').success(function (data) {
             $scope.products = data;
         });
@@ -354,9 +366,13 @@
         };
 
         $scope.openProductDialog = function (product) {
-            var d = $dialog.dialog({resolve: {object: function () {return product; }}});
-            d.open('/dialog/product', global.DialogController).then(function (result) {
-                if (result && result.name) {
+            var d = $modal.open({
+                templateUrl: '/dialog/product',
+                controller: global.DialogController,
+                resolve: {object: function () {return product; }}
+            });
+            d.result.then(function (result) {
+                if (result && result.name && result.price) {
                     $http.post('/products/save', {product: result}).success(function (data) {
                         if (product === undefined) {
                             $scope.products.push(data);
@@ -367,7 +383,7 @@
         };
     };
 
-    global.PaytypesController = function ($scope, $http, $dialog) {
+    global.PaytypesController = function ($scope, $http, $modal) {
         $http.get('/paytypes').success(function (data) {
             $scope.paytypes = data;
         });
@@ -379,8 +395,12 @@
         };
 
         $scope.openPaytypeDialog = function (paytype) {
-            var d = $dialog.dialog({resolve: {object: function () {return paytype; }}});
-            d.open('/dialog/paytype', global.DialogController).then(function (result) {
+            var d = $modal.open({
+                templateUrl: '/dialog/paytype',
+                controller: global.DialogController,
+                resolve: {object: function () {return paytype; }}
+            });
+            d.result.then(function (result) {
                 if (result && result.name) {
                     $http.post('/paytypes/save', {paytype: result}).success(function (data) {
                         if (paytype === undefined) {
@@ -392,7 +412,7 @@
         };
     };
 
-    global.StatusesController = function ($scope, $http, $dialog) {
+    global.StatusesController = function ($scope, $http, $modal) {
         $http.get('/statuses').success(function (data) {
             $scope.statuses = data;
         });
@@ -404,8 +424,12 @@
         };
 
         $scope.openStatusDialog = function (status) {
-            var d = $dialog.dialog({resolve: {object: function () {return status; }}});
-            d.open('/dialog/status', global.DialogController).then(function (result) {
+            var d = $modal.open({
+                templateUrl: '/dialog/status',
+                controller: global.DialogController,
+                resolve: {object: function () {return status; }}
+            });
+            d.result.then(function (result) {
                 if (result) {
                     $http.post('/statuses/save', {status: result}).success(function (data) {
                         if (status === undefined) {

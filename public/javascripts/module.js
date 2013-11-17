@@ -3,8 +3,8 @@
     "use strict";
 
     //Main module
-    var app = global.angular.module('fratpos', ['ui.bootstrap'])
-        .config(function ($routeProvider) {
+    var app = global.angular.module('fratpos', ['ui.bootstrap', 'ngRoute'])
+        .config(['$routeProvider', function ($routeProvider) {
             $routeProvider
                 .when('/users', {templateUrl: "/admin/users"})
                 .when('/transactions', {templateUrl: "/admin/transactions"})
@@ -13,7 +13,7 @@
                 .when('/statuses', {templateUrl: "/admin/statuses"})
                 .when('/stocktakings', {templateUrl: "/admin/stocktakings"})
                 .otherwise({redirectTo: "/users"});
-        });
+        }]);
 
     //Directives
 
