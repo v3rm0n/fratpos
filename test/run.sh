@@ -4,7 +4,7 @@ echo "Setting up DB"
 mongo test/setup/setupdb.js
 
 
-if [ ! -z "$TRAVIS" ]; then
+if [ "$TRAVIS" = "" ]; then
     echo "Starting test server"
     node app.js --server:port 3102 --database:name postest &
     TESTPID=$(echo $!)
@@ -17,7 +17,7 @@ echo "Running mocha tests"
 echo "Running protractor tests"
 ./node_modules/.bin/protractor test/conf/protractor.js
 
-if [ ! -z "$TRAVIS" ]; then
+if [ "$TRAVIS" = "" ]; then
     echo "Killing testserver"
     kill $TESTPID
 fi
