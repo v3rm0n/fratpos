@@ -3,6 +3,7 @@
 "use strict";
 
 var mongoose = require('../mongoose');
+var should = require('should');
 var Status = mongoose.model('Status');
 
 describe('Statuses', function () {
@@ -13,6 +14,7 @@ describe('Statuses', function () {
             name: "!reb"
         });
         status.save(function (err, status) {
+            should.not.exist(err);
             teststatus = status;
             done();
         });
@@ -25,6 +27,17 @@ describe('Statuses', function () {
     it('should find statuses', function (done) {
         Status.findOne({name: "!reb"}, function (err, status) {
             status.name.should.equal("!reb");
+            done();
+        });
+    });
+
+    it('should fail when name is missing', function (done) {
+        var status = new Status({
+            name: null
+        });
+        status.save(function (err, status) {
+            should.exist(err);
+            err.message.should.equal('Validation failed');
             done();
         });
     });

@@ -3,6 +3,7 @@
 "use strict";
 
 var mongoose = require('../mongoose');
+var should = require('should');
 var User = mongoose.model('User');
 
 describe('Users', function () {
@@ -50,6 +51,39 @@ describe('Users', function () {
                 user.balance.should.equal(6);
                 done();
             });
+        });
+    });
+
+    it('should fail when firstname is missing', function (done) {
+        var user = new User({
+            lastname: "Last",
+            status: "vil!"
+        });
+        user.save(function (err, user) {
+            should.exist(err);
+            done();
+        });
+    });
+
+    it('should fail when lastname is missing', function (done) {
+        var user = new User({
+            firstname: "First",
+            status: "vil!"
+        });
+        user.save(function (err, user) {
+            should.exist(err);
+            done();
+        });
+    });
+
+    it('should fail when status is missing', function (done) {
+        var user = new User({
+            firstname: "First",
+            lastname: "Last"
+        });
+        user.save(function (err, user) {
+            should.exist(err);
+            done();
         });
     });
 });

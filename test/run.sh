@@ -9,7 +9,7 @@ mongo test/setup/setupdb.js
 
 if [ "$TRAVIS" = "" ]; then
     echo "Starting test server"
-    node app.js --server:port 3102 --database:name postest &
+    node app.js --server:port 3102 --database:name postest --admin:authenticate false &
     TESTPID=$(echo $!)
     echo "Test server started with pid $TESTPID"
     #Alway stop the server when the script exits

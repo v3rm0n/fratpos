@@ -41,4 +41,5 @@ describe('Paytypes', function () {
             done();
         });
     });
+
 });

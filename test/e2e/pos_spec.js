@@ -30,6 +30,7 @@ var invalidateTransaction = function () {
 
 describe('Point of sale interface', function () {
     browser.get('/');
+    browser. waitForAngular();
     it('should greate a transaction', createTransaction);
     it('should invalidate a transaction', invalidateTransaction);
 });

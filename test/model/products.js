@@ -3,6 +3,7 @@
 "use strict";
 
 var mongoose = require('../mongoose');
+var should = require('should');
 var Product = mongoose.model('Product');
 
 describe('Products', function () {
@@ -38,6 +39,40 @@ describe('Products', function () {
                 product.quantity.should.equal(15);
                 done();
             });
+        });
+    });
+
+    it('should fail when name is missing', function (done) {
+        var product = new Product({
+            price: 2.56,
+            quantity: 10
+        });
+        product.save(function (err, product) {
+            should.exist(err);
+            done();
+        });
+    });
+
+    it('should fail when price is missing', function (done) {
+        var product = new Product({
+            name: "Testproduct",
+            quantity: 10
+        });
+        product.save(function (err, product) {
+            should.exist(err);
+            done();
+        });
+    });
+
+    it('should default to 0 when quantity is missing', function (done) {
+        var product = new Product({
+            name: "Testproduct",
+            price: 2.56
+        });
+        product.save(function (err, product) {
+            should.not.exist(err);
+            product.quantity.should.equal(0);
+            done();
         });
     });
 
