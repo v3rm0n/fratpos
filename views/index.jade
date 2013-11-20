@@ -28,7 +28,7 @@ block content
                     h4= t('pos.products.title')
                     p= t('pos.products.desc.start')
                         a(href='#', ng-click='toggleShowAllProducts()')= t('pos.products.desc.end')
-                    table.table.table-bordered.table-hover.table-condensed(data-step='2', data-intro=t('intro.step2'))
+                    table.table.table-bordered.table-hover.table-condensed.table-striped(data-step='2', data-intro=t('intro.step2'))
                         thead
                             tr
                                 th= t('pos.products.table.name')
@@ -46,13 +46,11 @@ block content
                                 td
                                     span(ng-bind='product.price')
                                     |  #{t('common.currency')}
-                            tr
-                                th
-                                th
-                                th Kokku
-                                th(data-step='4', data-intro=t('intro.step4'))
-                                    span(ng-bind='sum()')
-                                    |  #{t('common.currency')}
+                    .well.well-large(data-step='4', data-intro=t('intro.step4'))
+                        h1
+                            | #{t('pos.products.sum') }
+                            span(ng-bind='sum()')
+                            | #{ t('common.currency')}
                     .btn-group(data-step='5', data-intro=t('intro.step5'))
                         button.btn.btn-large(ng-repeat='paytype in paytypes', ng-click='pay(paytype)', ng-disabled='isDisabled(paytype)') {{paytype.name}}
             br

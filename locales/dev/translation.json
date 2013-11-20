@@ -26,7 +26,8 @@
                 "quantity": "Kogus",
                 "count": "Laoseis",
                 "price": "Hind"
-            }
+            },
+            "sum": "Summa: "
         },
         "transactions": {
             "title": "Viimased tehingud",
