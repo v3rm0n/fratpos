@@ -9,7 +9,8 @@ var mongoose = require('mongoose'),
     Transaction = mongoose.model('Transaction'),
     Product = mongoose.model('Product'),
     Paytype = mongoose.model('Paytype'),
-    User = mongoose.model('User');
+    User = mongoose.model('User'),
+    Feedback = mongoose.model('Feedback');
 
 //Kassa
 exports.index = function (req, res) {
@@ -135,4 +136,20 @@ exports.transaction = function (req, res) {
             res.send({status: 'success', transaction: result.transaction});
         }
     });
+};
+
+exports.feedback = function (req, res) {
+    var feedback = new Feedback({
+        time: new Date(),
+        content: req.body.content
+    });
+    feedback.save(function (err, feedback) {
+        if (err) {res.send({status: err}); return; }
+        console.log('Feedback saved');
+        res.send({status: 'success'});
+    });
+};
+
+exports.feedbackDialog = function (req, res) {
+    res.render('dialog/feedback');
 };

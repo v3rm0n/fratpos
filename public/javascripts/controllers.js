@@ -2,7 +2,7 @@
 (function (global) {
     "use strict";
 
-    global.PosController = function ($scope, api, $timeout) {
+    global.PosController = function ($scope, api, $timeout, $modal, $http) {
 
         var getData = function () {
             api.posdata(function (data) {
@@ -168,6 +168,24 @@
                 return transactions.slice(0, 5);
             }
         };
+
+        $scope.openFeedbackDialog = function (feedback) {
+            var d = $modal.open({
+                templateUrl: '/dialog/feedback',
+                controller: global.DialogController,
+                resolve: {
+                    object: function () {return feedback; },
+                    statuses: function () {return []; }
+                }
+            });
+            d.result.then(function (result) {
+                if (result) {
+                    $http.post('/feedback', result).success(function () {
+                        updateStatus('Tagasiside edastatud!', false);
+                    });
+                }
+            });
+        };
     };
 
     global.NavController = function ($scope, $location) {
@@ -176,24 +194,25 @@
         };
     };
 
-    global.DialogController = function ($scope, $http, $modalInstance, object) {
+    global.DialogController = function ($scope, $http, $modalInstance, object, statuses) {
 
         $scope.object = object || {};
+        $scope.statuses = statuses || [];
 
-        $http.get('/statuses').success(function (data) {
-            $scope.statuses = data;
-            if ($scope.object.status === '' && $scope.statuses.length > 0) {
-                $scope.object.status = $scope.statuses[0].name;
-            }
-        });
+        if ($scope.object.status === '' && $scope.statuses.length > 0) {
+            $scope.object.status = $scope.statuses[0].name;
+        }
 
         $scope.updateForStatus = function (status) {
+            console.log(status);
             var allowed = $scope.object.allowedForStatus || [];
-            if (allowed.indexOf(status.name) === -1 && status.checked) {
+            if (allowed.indexOf(status.name) === -1 && !status.checked) {
+                console.log('pushed');
                 allowed.push(status.name);
-            } else if (!status.checked) {
+            } else if (status.checked) {
                 allowed.splice(allowed.indexOf(status.name), 1);
             }
+            console.log('setting to ' + allowed);
             $scope.object.allowedForStatus = allowed;
         };
 
@@ -257,7 +276,10 @@
             var d = $modal.open({
                 templateUrl: '/dialog/balance',
                 controller: global.DialogController,
-                resolve: {object: function () { return user; }}
+                resolve: {
+                    object: function () {return user; },
+                    statuses: function () {return []; }
+                }
             });
             d.result.then(function (result) {
                 if (result) {
@@ -272,19 +294,24 @@
                 user = {};
                 user.status = '';
             }
-            var d = $modal.open({
-                templateUrl: '/dialog/user',
-                controller: global.DialogController,
-                resolve: {object: function () {return user; }}
-            });
-            d.result.then(function (result) {
-                if (result && result.firstname && result.lastname) {
-                    $http.post('/users/save', {user: result}).success(function (data) {
-                        if (userMissing) {
-                            $scope.users.push(data);
-                        }
-                    });
-                }
+            $http.get('/statuses').success(function (statuses) {
+                var d = $modal.open({
+                    templateUrl: '/dialog/user',
+                    controller: global.DialogController,
+                    resolve: {
+                        object: function () {return user; },
+                        statuses: function () {return statuses; }
+                    }
+                });
+                d.result.then(function (result) {
+                    if (result && result.firstname && result.lastname) {
+                        $http.post('/users/save', {user: result}).success(function (data) {
+                            if (userMissing) {
+                                $scope.users.push(data);
+                            }
+                        });
+                    }
+                });
             });
         };
     };
@@ -311,7 +338,10 @@
             var d = $modal.open({
                 templateUrl: '/dialog/transaction',
                 controller: global.DialogController,
-                resolve: {object: function () { return transaction; }}
+                resolve: {
+                    object: function () {return transaction; },
+                    statuses: function () {return []; }
+                }
             });
             d.result.then(function (result) {
                 if (result) {
@@ -369,7 +399,10 @@
             var d = $modal.open({
                 templateUrl: '/dialog/product',
                 controller: global.DialogController,
-                resolve: {object: function () {return product; }}
+                resolve: {
+                    object: function () {return product; },
+                    statuses: function () {return []; }
+                }
             });
             d.result.then(function (result) {
                 if (result && result.name && result.price) {
@@ -395,19 +428,24 @@
         };
 
         $scope.openPaytypeDialog = function (paytype) {
-            var d = $modal.open({
-                templateUrl: '/dialog/paytype',
-                controller: global.DialogController,
-                resolve: {object: function () {return paytype; }}
-            });
-            d.result.then(function (result) {
-                if (result && result.name) {
-                    $http.post('/paytypes/save', {paytype: result}).success(function (data) {
-                        if (paytype === undefined) {
-                            $scope.paytypes.push(data);
-                        }
-                    });
-                }
+            $http.get('/statuses').success(function (statuses) {
+                var d = $modal.open({
+                    templateUrl: '/dialog/paytype',
+                    controller: global.DialogController,
+                    resolve: {
+                        object: function () {return paytype; },
+                        statuses: function () {return statuses; }
+                    }
+                });
+                d.result.then(function (result) {
+                    if (result && result.name) {
+                        $http.post('/paytypes/save', {paytype: result}).success(function (data) {
+                            if (paytype === undefined) {
+                                $scope.paytypes.push(data);
+                            }
+                        });
+                    }
+                });
             });
         };
     };
@@ -427,7 +465,10 @@
             var d = $modal.open({
                 templateUrl: '/dialog/status',
                 controller: global.DialogController,
-                resolve: {object: function () {return status; }}
+                resolve: {
+                    object: function () {return status; },
+                    statuses: function () {return []; }
+                }
             });
             d.result.then(function (result) {
                 if (result) {
@@ -461,6 +502,18 @@
                     $scope.stocktakings.push(data);
                 });
             }
+        };
+    };
+
+    global.FeedbackController = function ($scope, $http) {
+        $http.get('/feedbacks').success(function (data) {
+            $scope.feedbacks = data;
+        });
+
+        $scope.deleteFeedback = function (feedback) {
+            $http.post('/feedbacks/remove', {id: feedback._id}).success(function () {
+                $scope.feedbacks = $scope.feedbacks.filter(function (u) {return feedback._id !== u._id; });
+            });
         };
     };
 }(this));

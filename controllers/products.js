@@ -6,6 +6,7 @@ var Product = mongoose.model('Product');
 
 exports.all = function (req, res) {
     Product.find(function (err, products) {
+        if (err) {res.send({status: err}); return; }
         res.send(products);
     });
 };

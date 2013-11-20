@@ -17,6 +17,10 @@
         addPaytype = function (paytype) {
             print("Inserting paytype " + paytype.name);
             db.paytypes.insert(paytype);
+        },
+        addFeedback = function (feedback) {
+            print("Inserting feedback " + feedback);
+            db.feedbacks.insert({time: new Date(), content: feedback});
         };
 
     //Clear all
@@ -51,6 +55,11 @@
     addProduct({"name" : "A.Le.Coq Pilsner", "price" : 1, "quantity" : 55 });
     addProduct({"name" : "A.Le.Coq Special", "price" : 1, "quantity" : 28 });
     print("Products added");
+
+    print("Adding feedback");
+    addFeedback("first");
+    addFeedback("second and longer");
+    print("Feedback added");
 
     print("Database setup finished!");
 }(this.Mongo, this.print));

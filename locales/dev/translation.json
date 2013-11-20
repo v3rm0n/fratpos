@@ -38,7 +38,8 @@
             },
             "more": "Näita kõiki",
             "less": "Näita vähem"
-        }
+        },
+        "feedback": "Tagasiside"
     },
     "intro": {
         "step1": "Kõigepealt sisesta kliendi nimi. Alusta trükkimist ning kui näed õiget klienti, vajuta tema nime peal. Punane tähendab, et klienti pole valitud.",
@@ -56,7 +57,8 @@
             "products": "Laoseis",
             "paytypes": "Makseviisid",
             "statuses": "Staatused",
-            "stocktakings": "Inventuur"
+            "stocktakings": "Inventuur",
+            "feedback": "Tagasiside"
         },
         "paytypes": {
             "title": "Makseviisid",
@@ -131,6 +133,15 @@
             "edit": "Muuda kasutajat",
             "editbalance": "Muuda saldot",
             "add": "Lisa kasutaja"
+        },
+        "feedback": {
+            "title": "Tagasiside",
+            "desc": "Tagasisidet ei ole jäetud",
+            "table": {
+                "user": "Kasutaja",
+                "content": "Sisu",
+                "time": "Aeg"
+            }
         }
     },
     "stocktaking": {

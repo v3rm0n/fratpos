@@ -6,6 +6,7 @@ var Status = mongoose.model('Status');
 
 exports.all = function (req, res) {
     Status.find(function (err, statuses) {
+        if (err) {res.send({status: err}); return; }
         res.send(statuses);
     });
 };
@@ -13,6 +14,7 @@ exports.all = function (req, res) {
 exports.save = function (req, res) {
     var status = new Status(req.body.status);
     status.save(function (err, status) {
+        if (err) {res.send({status: err}); return; }
         res.send(status);
     });
 };

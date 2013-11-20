@@ -7,9 +7,12 @@ block content
                     h2= t('pos.title')
             br
             .row-fluid
-                .span12
+                .span10
                     p= t('pos.desc.start')
                         a(href='#', ng-click='intro()')= t('pos.desc.end')
+                .span2
+                    button#feedbackBtn.btn(ng-click='openFeedbackDialog()')= t('pos.feedback')
+
             .row-fluid
                 .span5
                     .control-group(class='{{user != null && "success" || "error"}}')

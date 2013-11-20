@@ -1,4 +1,5 @@
 /*jslint node: true */
+/*global element, it, by, expect, browser, describe*/
 "use strict";
 
 var createTransaction = function () {
@@ -28,9 +29,16 @@ var invalidateTransaction = function () {
     });
 };
 
+var leaveFeedback = function () {
+    element(by.id('feedbackBtn')).click();
+    element(by.id('content')).sendKeys('testt');
+    element(by.id('saveFeedback')).click();
+};
+
 describe('Point of sale interface', function () {
     browser.get('/');
-    browser. waitForAngular();
+    browser.waitForAngular();
     it('should greate a transaction', createTransaction);
     it('should invalidate a transaction', invalidateTransaction);
+    it('should leave feedback', leaveFeedback);
 });

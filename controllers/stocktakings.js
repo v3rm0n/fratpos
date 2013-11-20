@@ -53,6 +53,7 @@ exports.html = function (req, res) {
             });
         }
     ], function (err, result) {
+        if (err) {res.send({status: err}); return; }
         res.render('stocktaking', { title: 'Inventuur', manifest: null, stocktaking: result.stocktaking, previous: result.previous});
     });
 };

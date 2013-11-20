@@ -24,4 +24,6 @@ block content
                         a(href='#statuses')= t('admin.menu.statuses')
                     li(ng-class='{active: isActive("stocktakings")}')
                         a(href='#stocktakings')= t('admin.menu.stocktakings')
+                    li(ng-class='{active: isActive("feedback")}')
+                        a(href='#feedback')= t('admin.menu.feedback')
     .container-fluid(ng-view)
