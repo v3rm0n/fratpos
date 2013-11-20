@@ -1,6 +1,12 @@
 {
   "server": {
-    "port": 3000
+    "port": 3000,
+    "ssl": {
+        "use": "false",
+        "ca": "certs/ca.crt",
+        "cert": "certs/server.crt",
+        "key": "certs/server.key"
+    }
   },
   "database": {
     "name": "posdb",
@@ -10,13 +16,13 @@
     "password": ""
   },
   "admin": {
-    "authenticate": true,
+    "authenticate": "true",
     "realm": "admin",
     "username": "admin",
     "password": ""
   },
-  "posuser": {
-    "authenticate": false,
+  "pos": {
+    "authenticate": "false",
     "realm": "pos",
     "username": "posuser",
     "password": ""
