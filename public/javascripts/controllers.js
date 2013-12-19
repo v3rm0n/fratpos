@@ -103,23 +103,14 @@
             if (!isEmpty($scope.selectedProducts) && $scope.user !== undefined) {
                 var data = {products: $scope.selectedProducts, type: paytype.name, user: $scope.user};
                 api.transaction(data, function (data) {
+                    var productId;
                     if (data.status === 'success') {
                         updateStatus('Tooted läksid edukalt kirja!', false);
-                        var id,
-                            decrementQuantity = function (selectedProduct, id) {
-                                return function (product) {
-                                    if (product._id === id) {
-                                        product.quantity -= selectedProduct.quantity;
-                                    }
-                                };
-                            };
-                        for (id in $scope.selectedProducts) {
-                            var selectedProduct = $scope.selectedProducts[id];
-                            $scope.products.forEach(decrementQuantity(selectedProduct, id));
-                        }
-                        $scope.selectedProducts = {};
                         $scope.user = null;
-                        $scope.transactions.unshift(data.transaction);
+                        for (productId in $scope.selectedProducts) {
+                            $scope.selectedProducts[productId].quantity = 0;
+                        }
+                        getData();
                     } else {
                         updateStatus('Viga tehingul: ' + data.status, true);
                     }
@@ -135,7 +126,7 @@
                 api.invalid(transaction, function (data) {
                     var handleSuccess = function () {
                         updateStatus('Tehing tagasi võetud!', false);
-                        $scope.transactions = $scope.transactions.filter(function (item) {return item._id !== transaction._id; });
+                        getData();
                     };
                     var handlePassword = function (data) {
                         if (data.status && data.status !== "success") {
@@ -204,15 +195,12 @@
         }
 
         $scope.updateForStatus = function (status) {
-            console.log(status);
             var allowed = $scope.object.allowedForStatus || [];
             if (allowed.indexOf(status.name) === -1 && !status.checked) {
-                console.log('pushed');
                 allowed.push(status.name);
             } else if (status.checked) {
                 allowed.splice(allowed.indexOf(status.name), 1);
             }
-            console.log('setting to ' + allowed);
             $scope.object.allowedForStatus = allowed;
         };
 

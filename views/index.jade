@@ -52,7 +52,7 @@ block content
                             span(ng-bind='sum()')
                             | #{ t('common.currency')}
                     .btn-group(data-step='5', data-intro=t('intro.step5'))
-                        button.btn.btn-large(ng-repeat='paytype in paytypes', ng-click='pay(paytype)', ng-disabled='isDisabled(paytype)') {{paytype.name}}
+                        button.btn.btn-large(ng-repeat='paytype in paytypes', ng-click='pay(paytype)', ng-disabled='isDisabled(paytype)', disabled) {{paytype.name}}
             br
             .row-fluid
                 .span12
