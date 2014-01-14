@@ -53,6 +53,8 @@
             var newQuantity = selectedProduct.quantity + quantity;
             if (newQuantity >= 0) {
                 selectedProduct.quantity = newQuantity;
+            } else {
+                delete $scope.selectedProducts[product._id];
             }
         };
 
