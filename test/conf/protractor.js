@@ -52,7 +52,7 @@ if (process.env.SAUCE_USERNAME !== undefined) {
 } else {
     config.seleniumServerJar = './selenium/selenium-server-standalone-2.37.0.jar';
     config.seleniumPort = null;
-    config.chromeDriver = './selenium/chromedriver';
+    config.chromeDriver = '../../selenium/chromedriver';
     config.seleniumArgs = [];
     config.seleniumAddress = 'http://localhost:4444/wd/hub';
 }
