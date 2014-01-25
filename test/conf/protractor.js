@@ -45,11 +45,17 @@ var config = {
 };
 
 if (process.env.SAUCE_USERNAME !== undefined) {
-  // If sauceUser and sauceKey are specified, seleniumServerJar will be ignored.
-  // The tests will be run remotely using SauceLabs.
+    console.log('Using Sauce Labs selenium server');
+    // If sauceUser and sauceKey are specified, seleniumServerJar will be ignored.
+    // The tests will be run remotely using SauceLabs.
     config.sauceUser = process.env.SAUCE_USERNAME;
     config.sauceKey = process.env.SAUCE_ACCESS_KEY;
+    config.capabilities = {
+        'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
+        'build': process.env.TRAVIS_BUILD_NUMBER
+    };
 } else {
+    console.log('Using local selenium server');
     config.seleniumServerJar = './selenium/selenium-server-standalone-2.37.0.jar';
     config.seleniumPort = null;
     config.chromeDriver = '../../selenium/chromedriver';
