@@ -8,11 +8,9 @@ var nconf = require('./lib/nconf'),
     modelsPath = __dirname + '/models',
     express = require('express'),
     http = require('http'),
-    https = require('https'),
     path = require('path'),
     app = express(),
-    i18n = require('i18next'),
-    useSsl = nconf.get('server:ssl:use');
+    i18n = require('i18next');
 
 db.init();
 i18n.init();
@@ -44,24 +42,6 @@ process.on('uncaughtException', function (err) {
 
 require('./lib/routes')(app);
 
-if (useSsl === 'true') {
-    var options = {
-        // The Server's SSL Key
-        key: fs.readFileSync(nconf.get('server:ssl:key')),
-        // The Server's Cert
-        cert: fs.readFileSync(nconf.get('server:ssl:cert')),
-        // The CA (us in this case)
-        ca: fs.readFileSync(nconf.get('server:ssl:ca')),
-        // Ask for the client's cert
-        requestCert: true,
-        // Don't automatically reject
-        rejectUnauthorized: false
-    };
-    https.createServer(options, app).listen(app.get('port'), function () {
-        console.log('Express ssl server listening on port ' + app.get('port'));
-    });
-} else {
-    http.createServer(app).listen(app.get('port'), function () {
-        console.log('Express server listening on port ' + app.get('port'));
-    });
-}
+http.createServer(app).listen(app.get('port'), function () {
+    console.log('Express server listening on port ' + app.get('port'));
+});
