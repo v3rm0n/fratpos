@@ -1,6 +1,6 @@
 {
   "name": "fratpos",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "Maido Käära <maidokaara@gmail.com>",
   "description": "Custom PoS solution for student fraternities",
   "private": true,
