@@ -16,6 +16,7 @@ if [ "$TRAVIS" = "" ]; then
     trap "kill $TESTPID" EXIT
 fi
 
+
 echo "Running mocha tests"
 ./node_modules/.bin/mocha test/model/*.js
 
