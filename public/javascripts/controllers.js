@@ -109,9 +109,7 @@
                     if (data.status === 'success') {
                         updateStatus('Tooted läksid edukalt kirja!', false);
                         $scope.user = null;
-                        for (productId in $scope.selectedProducts) {
-                            $scope.selectedProducts[productId].quantity = 0;
-                        }
+                        $scope.selectedProducts = {};
                         getData();
                     } else {
                         updateStatus('Viga tehingul: ' + data.status, true);
