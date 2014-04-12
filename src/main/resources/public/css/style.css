@@ -1,0 +1,32 @@
+.admin.container {
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+
+.table th.choosequantity{
+  width: 30%;
+}
+
+.table th.quantity{
+  width: 10%;
+}
+
+.table th.price{
+  width: 10%;
+}
+
+.userform span.glyphicon.form-control-feedback {
+    top: 0px;
+}
+
+.userform {
+    min-height: 55px;
+}
+
+.userform.search-only .form-control {
+  padding-left: 40px;
+}
+
+.admin .table-hover tbody tr {
+    cursor: pointer;
+}

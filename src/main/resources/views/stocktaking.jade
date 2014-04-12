@@ -1,0 +1,100 @@
+extends layout
+
+block content
+    .container
+        .row
+            .col-md-12
+                h1 Inventuur
+        .row
+            .col-md-12
+                p Loomise aeg:  #{stocktaking.formattedTime}
+        if stocktaking.users.length > 0
+            .row
+                .col-md-12
+                    h2 Muutunud saldod
+                    table.table.table-bordered.table-hover
+                        thead
+                            tr
+                                th Staatus
+                                th Eesnimi
+                                th Perenimi
+                                th Õllenimi
+                                th Saldo
+                        tbody
+                            each user in stocktaking.users
+                                tr
+                                    td #{user.status}
+                                    td #{user.firstname}
+                                    td #{user.lastname}
+                                    td #{user.beername}
+                                    td #{user.balance} €
+                        tfoot
+                            tr
+                                th
+                                th
+                                th
+                                th Kokku
+                                th #{stocktaking.balancesSum} €
+        if stocktaking.transactions.length > 0
+            .row
+                .col-md-12
+                    h2 Tehingud
+                    table.table.table-bordered.table-hover
+                        thead
+                            tr
+                                th Aeg
+                                th Nimi
+                                th Summa
+                                th Makseviis
+                        tbody
+                            each transaction in stocktaking.transactions
+                                tr(class='#{transaction.invalid ? "error" : ""}')
+                                    td #{transaction.formattedTime}
+                                    td #{transaction.user.label}
+                                    td #{transaction.sum} €
+                                    td #{transaction.type}
+            .row
+                .col-md-3
+                    table.table.table-bordered.table-hover
+                        thead
+                            tr
+                                th Makseviis
+                                th Kokku
+                        tbody
+                            each sum,paytype in stocktaking.sums
+                                tr
+                                    td #{paytype}
+                                    td #{sum} €
+                        tfoot
+                            tr
+                                th Kokku
+                                th #{stocktaking.transactionsSum} €
+        if stocktaking.products.length > 0
+            .row
+                .col-md-12
+                    h2 Laoseis
+                    table.table.table-bordered.table-hover
+                        thead
+                            tr
+                                th Toode
+                                th Hind
+                                th Kogus
+                        tbody
+                            each product in stocktaking.products
+                                tr
+                                    td #{product.name}
+                                    td #{product.price} €
+                                    td #{product.quantity}
+                        tfoot
+                            tr
+                                th
+                                th Kokku
+                                th #{stocktaking.productsQuantity}
+        if previous
+            .row
+                .col-md-12
+                    h1 Võrdlus eelmise inventuuriga
+                    p Loomise aeg:  #{previous.formattedTime}
+                    p Laoseisu muutus: #{stocktaking.productsQuantity - previous.productsQuantity} (Laoseis eelmine inventuur: #{previous.productsQuantity})
+                    p
+                        a(href='/stocktakings/html/#{previous._id}') Vaata eelmist

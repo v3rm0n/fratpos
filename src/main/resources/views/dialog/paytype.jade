@@ -1,0 +1,41 @@
+.modal
+    .modal-dialog
+        .modal-content
+            .modal-header
+                button.close(type='button', ng-click='$hide()') &times;
+                h4.modal-title Lisa/Muuda makseviisi
+            .modal-body
+                p.bg-danger(ng-show='error') Viga salvestamisel. Kontrolli andmete korrektsust!
+                form.form-horizontal(role='form', ng-submit='save(paytype)')
+                    .form-group
+                        label.control-label.col-sm-2(for='paytypeName') Nimetus
+                        .col-sm-5
+                            input.form-control#paytypeName(type='text', placeholder='Nimetus', ng-model='paytype.name', focus-me)
+                    .form-group
+                        .col-sm-2
+                        .col-sm-5
+                            .checkbox
+                                input#affectsBalance(type='checkbox', ng-model='paytype.affectsBalance', icheck)
+                                label(for='affectsBalance') Mõjutab saldot
+                    .form-group
+                        .col-sm-2
+                        .col-sm-5
+                            .checkbox
+                                input#affectsQuantity(type='checkbox', ng-model='paytype.affectsQuantity', icheck)
+                                label(for='affectsQuantity') Mõjutab laoseisu
+                    .form-group
+                        .col-sm-2
+                        .col-sm-5
+                            .checkbox
+                                input#credit(type='checkbox', ng-model='paytype.credit', icheck)
+                                label(for='credit') Kreedit
+                    br
+                    .form-group
+                        label.control-label.col-sm-2 Lubatud staatustele
+                        .col-sm-5
+                            .checkbox(ng-repeat='status in statuses')
+                                input(type='checkbox', id='{{status.id}}', ng-model='allowedForStatus[$index]', ng-true-value='{{status}}', icheck)
+                                label(for='{{status.id}}') {{status.name}}
+            .modal-footer
+                button.btn.btn-danger(ng-show='paytype.id !== undefined', ng-click='delete(paytype)') Kustuta
+                button.btn.btn-success(ng-click='save(paytype)') Salvesta

@@ -1,0 +1,26 @@
+.modal
+    .modal-dialog
+        .modal-content
+            .modal-header
+                button.close(type='button', ng-click='$hide()') &times;
+                h4.modal-title Lisa/Muuda toodet
+            .modal-body
+                p.bg-danger(ng-show='error') Viga salvestamisel. Kontrolli andmete korrektsust!
+                form.form-horizontal(role='form', ng-submit='save(product)')
+                    .form-group
+                        label.control-label.col-sm-2(for='inputName') Nimi
+                        .col-sm-7
+                            input.form-control#inputName(type='text', placeholder='Toote nimi',ng-model='product.name', focus-me)
+                    .form-group
+                        label.control-label.col-sm-2(for='inputPrice') Hind
+                        .col-sm-3
+                            .input-group
+                                input.form-control#inputPrice(type='number', placeholder='0.0', ng-model='product.price')
+                                span.input-group-addon #{t.message('common.currency')}
+                    .form-group
+                        label.control-label.col-sm-2(for='inputQty') Laoseis
+                        .col-sm-2
+                            input.form-control#inputQty(type='number', placeholder='0', ng-model='product.quantity')
+            .modal-footer
+                button.btn.btn-danger(ng-show='product.id !== undefined', ng-click='delete(product)') Kustuta
+                button.btn.btn-success(ng-click='save(product)') Salvesta

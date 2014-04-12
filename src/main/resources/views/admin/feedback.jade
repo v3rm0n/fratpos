@@ -1,0 +1,15 @@
+.row(ng-controller='FeedbackController', ng-show='feedbacks != null')
+    .col-md-12
+        br
+        p(ng-hide='feedbacks.length > 0')= t.message('admin.feedback.desc')
+        table.table.table-bordered.table-hover(ng-show='feedbacks.length > 0')
+            thead
+                tr
+                    th= t.message('admin.feedback.table.time')
+                    th= t.message('admin.feedback.table.content')
+                    th
+            tbody
+                tr(ng-repeat='feedback in feedbacks')
+                    td(ng-bind='feedback.formattedTime')
+                    td(ng-bind='feedback.content')
+                    td: a.btn.btn-danger(ng-click='deleteFeedback(feedback)')= t.message('common.delete')
