@@ -9,14 +9,20 @@ block content
             .col-md-6
                 button.btn.btn-info.pull-right(ng-click='openFeedbackDialog()')= t.message('pos.feedback')
         .row
-            .col-md-3
-                .form-search.search-only.userform.has-feedback(ng-class='isUserSelected() ? "has-success" : "has-error"')
+            .col-md-4
+                .form-search.userform.has-feedback.search-only.has-error(ng-hide='isUserSelected()')
                     i.search-icon.glyphicon.glyphicon-search
+                    input.form-control.search-query#usernotselected(type='text', placeholder=t.message('pos.client'),
+                        ng-model='user', data-animation="am-flip-x", ng-options='user as user.label for user in users | filter:$viewValue', bs-typeahead, focus-me)
+                    span.glyphicon.glyphicon-remove.form-control-feedback
+                .form-search.userform.has-feedback.input-group.has-success(ng-show='isUserSelected()', ng-cloak)
                     input.form-control.search-query(type='text', placeholder=t.message('pos.client'),
-                        ng-model='user', data-animation="am-flip-x", ng-options='user as user.label for user in users | filter:$viewValue', bs-typeahead)
-                    span.glyphicon.form-control-feedback(ng-class='isUserSelected() ? "glyphicon-ok" : "glyphicon-remove"')
-            .col-md-7
-                .alert(ng-show='status != null', class='{{statusError && "alert-error" || "alert-success"}}')
+                        ng-model='user', data-animation="am-flip-x", ng-options='user as user.label for user in users | filter:$viewValue', bs-typeahead, ng-click='clear()')
+                    span.input-group-btn
+                        button.btn.btn-primary(data-type='last', ng-click='openInfoDialog(user)') Info
+
+            .col-md-6
+                .alert(ng-show='status != null', class='{{statusError ? "alert-danger" : "alert-success"}}', ng-cloak)
                     strong(ng-bind='status')
                     |  {{statusMessage}}
             .col-md-2
@@ -63,7 +69,7 @@ block content
                             th= t.message('pos.transactions.table.sum')
                             th= t.message('pos.transactions.table.type')
                     tbody
-                        tr(ng-repeat='transaction in filteredTransactions()', ng-click='invalidTransaction(transaction)')
+                        tr(ng-repeat='transaction in filteredTransactions()', ng-click='openTransactionDialog(transaction)')
                             td(ng-bind='transaction.formattedTime')
                             td(ng-bind='transaction.user.label')
                             td {{transaction.sum}} #{t.message('common.currency')}

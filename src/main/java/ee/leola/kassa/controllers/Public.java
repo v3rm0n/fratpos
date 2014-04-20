@@ -20,7 +20,7 @@ public class Public extends Controller {
 
     @GET
     @Path("/js/{file}")
-    @Produces("application/javascript")
+    @Produces("application/javascript; charset=UTF-8")
     public Response getJavascript(@PathParam("file") String file) throws URISyntaxException {
         log.debug("Getting javascript file {}", file);
         return file("/public/js/" + file);
@@ -28,6 +28,7 @@ public class Public extends Controller {
 
     @GET
     @Path("/css/{file}")
+    @Produces("text/css; charset=UTF-8")
     public Response getCSS(@PathParam("file") String file) throws URISyntaxException {
         log.debug("Getting css file {}", file);
         return file("/public/css/" + file);

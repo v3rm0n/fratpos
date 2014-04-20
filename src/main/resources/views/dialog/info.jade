@@ -1,0 +1,24 @@
+.modal
+    .modal-dialog
+        .modal-content
+            .modal-header
+                button.close(type='button', ng-click='$hide()') &times;
+                h4.modal-title(ng-bind-template='{{user.label + " ("+user.balance+")"}}')
+            .modal-body
+                .panel.panel-info
+                    .panel-heading
+                        h3.panel-title Tarbimine
+                    .panel-body
+                        .row(ng-show='stat.popularProducts.length > 0')
+                            .col-md-6
+                                ol
+                                    li(ng-repeat='product in stat.popularProducts')
+                                        | {{product.product.name}}
+                                        span.badge.pull-right(style='background-color: {{colors[$index]}}') {{product.count}}
+
+                            .col-md-6
+                                canvas#userchart(width='300', height='155')
+                        .row(ng-hide='stat.popularProducts.length > 0')
+                            .col-md-12
+                                p Valitud kasutajal ei ole käesoleval perioodil ühtegi tehingut.
+                br

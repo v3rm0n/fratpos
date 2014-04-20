@@ -5,6 +5,7 @@ import com.avaje.ebean.Query;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 /**
@@ -13,13 +14,12 @@ import java.util.Set;
 @Entity
 public class Paytype extends Model {
 
+    @NotNull
     private String name;
 
     private boolean affectsBalance;
 
     private boolean affectsQuantity;
-
-    private boolean credit;
 
     @ManyToMany
     private Set<Status> allowedForStatus;
@@ -50,14 +50,6 @@ public class Paytype extends Model {
 
     public void setAffectsQuantity(boolean affectsQuantity) {
         this.affectsQuantity = affectsQuantity;
-    }
-
-    public boolean isCredit() {
-        return credit;
-    }
-
-    public void setCredit(boolean credit) {
-        this.credit = credit;
     }
 
     public Set<Status> getAllowedForStatus() {

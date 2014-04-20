@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import ee.leola.kassa.helpers.Json;
 
 import javax.persistence.Entity;
-import javax.validation.constraints.NotNull;
 import java.io.IOException;
 
 /**
@@ -14,7 +13,6 @@ import java.io.IOException;
 @Entity
 public class Status extends Model {
 
-    @NotNull
     private String name;
 
     public Status() {

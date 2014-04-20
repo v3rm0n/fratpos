@@ -4,6 +4,7 @@ import com.avaje.ebean.Ebean;
 import com.avaje.ebean.Query;
 
 import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -14,6 +15,7 @@ import java.util.Date;
 @Entity
 public class Feedback extends Model {
 
+    @NotNull
     private String content;
 
     private Date created = new Date();
@@ -37,6 +39,10 @@ public class Feedback extends Model {
 
     public void setCreated(Date created) {
         this.created = created;
+    }
+
+    public static Query<Feedback> find() {
+        return Ebean.find(Feedback.class);
     }
 
 }

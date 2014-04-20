@@ -15,6 +15,8 @@ public class TransactionProduct extends Product {
     @JsonIgnore
     private Transaction transaction;
 
+    private Long productId;
+
     public TransactionProduct() {
     }
 
@@ -30,5 +32,13 @@ public class TransactionProduct extends Product {
 
     public void setTransaction(Transaction transaction) {
         this.transaction = transaction;
+    }
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
     }
 }

@@ -7,6 +7,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -24,12 +25,14 @@ public class Transaction extends Model {
 
     private Date created = new Date();
 
+    @NotNull
     @ManyToOne
     private User user;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "transaction")
     private Set<TransactionProduct> products;
 
+    @NotNull
     @ManyToOne
     private Paytype paytype;
 

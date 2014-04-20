@@ -19,6 +19,10 @@
     top: 0px;
 }
 
+.userform span.input-group-btn {
+    top: -10px;
+}
+
 .userform {
     min-height: 55px;
 }
@@ -29,4 +33,8 @@
 
 .admin .table-hover tbody tr {
     cursor: pointer;
+}
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
 }

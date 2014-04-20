@@ -2,10 +2,11 @@ package ee.leola.kassa.models;
 
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.Query;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 /**
  * Created by vermon on 23/03/14.
@@ -13,16 +14,18 @@ import javax.persistence.ManyToOne;
 @Entity
 public class User extends Model {
 
+    @NotNull
     private String firstName;
-
+    @NotNull
     private String lastName;
 
     private String beerName;
 
+    @NotNull
     @ManyToOne
     private Status status;
 
-    private int balance;
+    private BigDecimal balance = BigDecimal.ZERO;
 
     public String getLabel() {
         String fullName = this.status.getName() + ' ' + this.firstName + ' ' + this.lastName +
@@ -66,11 +69,11 @@ public class User extends Model {
         this.status = status;
     }
 
-    public int getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
 
-    public void setBalance(int balance) {
+    public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
 

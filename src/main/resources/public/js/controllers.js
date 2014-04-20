@@ -22,6 +22,13 @@
             return angular.isObject($scope.user);
         };
 
+        $scope.clear = function () {
+            $scope.user = null;
+            $timeout(function() {
+                angular.element('#usernotselected').focus();
+            });
+        };
+
         $scope.selectedProducts = {};
 
         $scope.showAllProducts = false;
@@ -176,6 +183,53 @@
                     d.hide();
                 }).error(function () {
                     modalScope.error = true;
+                });
+            };
+        };
+
+        $scope.openInfoDialog = function (user) {
+
+            var modalScope = $scope.$new();
+            modalScope.user = user;
+
+            var d = $modal({
+                template: '/dialog/info',
+                scope: modalScope
+            });
+
+            d.$promise.then(function() {
+                $http.get('/stat/' + user.id).success(function (stat) {
+                    modalScope.stat = stat;
+                    var colors = ['#4A89DC', '#37BC9B', '#3BAFDA', '#DA4453', '#8CC152', '#434A54', '#E9573F', '#D770AD', '#967ADC', '#F6BB42'];
+                    modalScope.colors = colors;
+
+                    var data = [], i;
+
+                    for(i = 0; (i < 10) && (i < stat.popularProducts.length); i++) {
+                        data.push({value: stat.popularProducts[i].count, color: colors[i]});
+                    }
+
+                    var ctx = document.getElementById("userchart").getContext("2d");
+                    new Chart(ctx).Doughnut(data);
+                });
+            });
+
+        };
+
+        $scope.openTransactionDialog = function (transaction) {
+
+            var modalScope = $scope.$new();
+            modalScope.transaction = transaction;
+
+            var d = $modal({
+                template: '/dialog/transaction',
+                scope: modalScope
+            });
+
+            modalScope.invalidate = function(transaction) {
+                $http.post('/transaction/invalid/' + transaction.id).success(function (data) {
+                    getData();
+                    d.hide();
                 });
             };
         };
@@ -397,11 +451,13 @@
                 modalScope.paytype = paytype;
                 modalScope.statuses = statuses;
                 modalScope.checked = {};
+                modalScope.allowedForStatus = {};
 
                 if (paytype !== undefined) {
-                    modalScope.allowedForStatus = paytype.allowedForStatus;
-                } else {
-                    modalScope.allowedForStatus = [];
+                modalScope.allowedForStatus
+                    paytype.allowedForStatus.forEach(function (status) {
+                        modalScope.allowedForStatus[status.id] = true;
+                    });
                 }
 
                 var d = $modal({
@@ -410,7 +466,20 @@
                 });
 
                 modalScope.save = function (p) {
-                    p.allowedForStatus = modalScope.allowedForStatus.filter(function(n){ return n != null; });
+                    if(p !== undefined) {
+                        p.allowedForStatus = [];
+                        var selected, i;
+                        for (selected in modalScope.allowedForStatus) {
+                            if (modalScope.allowedForStatus[selected]) {
+                                for (i = 0; i < statuses.length; i++) {
+                                    var status = statuses[i];
+                                    if(status.id === parseInt(selected)){
+                                        p.allowedForStatus.push(status);
+                                    }
+                                }
+                            }
+                        }
+                    }
                     $http.post('/paytype', p).success(function (data) {
                         modalScope.error = false;
                         if (paytype === undefined) {
@@ -466,12 +535,14 @@
                 $http.delete('/status/' + status.id).success(function () {
                     $scope.statuses = $scope.statuses.filter(function (u) {return status.id !== u.id; });
                     d.hide();
+                }).error(function (data) {
+                    modalScope.error = true;
                 });
             };
         };
     };
 
-    global.StocktakingController = function ($scope, $http, $window) {
+    global.StocktakingController = function ($scope, $http, $window, $location) {
         $http.get('/stocktaking').success(function (data) {
             $scope.stocktakings = data;
         });
@@ -481,7 +552,7 @@
         };
 
         $scope.view = function (stocktaking) {
-            $window.open('/stocktaking/html/' + stocktaking.id);
+            $location.url('/stocktaking/' + stocktaking.id);
         };
 
         $scope.stocktaking = function () {
@@ -492,6 +563,22 @@
                 });
             }
         };
+    };
+
+    global.StocktakingViewController = function($scope, $http, $location, $routeParams){
+
+        $http.get('/stocktaking/' + $routeParams.id).success(function (data) {
+            $scope.stocktaking = data;
+        });
+
+        $http.get('/stocktaking/' + ($routeParams.id - 1)).success(function (data) {
+            $scope.previous = data;
+        });
+
+        $scope.back = function () {
+            $location.url('/stocktakings');
+        };
+
     };
 
     global.FeedbackController = function ($scope, $http) {

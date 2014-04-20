@@ -34,7 +34,7 @@ public class Index extends JadeController {
     @GET
     @Path("/posdata")
     @Produces("text/json")
-    public Response posdata() {
+    public Response getPosData() {
         log.debug("Getting POS data");
         ObjectNode result = Json.newObject();
         result.put("users", Json.toJson(User.find().findList()));
@@ -44,4 +44,15 @@ public class Index extends JadeController {
         return ok(result);
     }
 
+    @GET
+    @Path("/admin")
+    public Response admin() {
+        return ok(render("admin", "title", "Admin"));
+    }
+
+    @GET
+    @Path("/admin/{page}")
+    public Response page(@PathParam("page") String page) {
+        return ok(render("admin/" + page));
+    }
 }

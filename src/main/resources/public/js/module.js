@@ -12,6 +12,7 @@
                 .when('/paytypes', {templateUrl: "/admin/paytypes"})
                 .when('/statuses', {templateUrl: "/admin/statuses"})
                 .when('/stocktakings', {templateUrl: "/admin/stocktakings"})
+                .when('/stocktaking/:id', {templateUrl: "/admin/stocktaking", controller: "StocktakingViewController"})
                 .when('/feedback', {templateUrl: "/admin/feedback"})
                 .otherwise({redirectTo: "/users"});
         }]);

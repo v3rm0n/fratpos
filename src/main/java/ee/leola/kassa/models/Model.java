@@ -45,7 +45,7 @@ public abstract class Model {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return ReflectionToStringBuilder.toString(this);
     }
 

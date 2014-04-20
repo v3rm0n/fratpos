@@ -4,6 +4,7 @@ import com.avaje.ebean.Ebean;
 import com.avaje.ebean.Query;
 
 import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 /**
@@ -12,9 +13,11 @@ import java.math.BigDecimal;
 @Entity
 public class Product extends Model {
 
+    @NotNull
     private String name;
 
-    private BigDecimal price;
+    @NotNull
+    private BigDecimal price = BigDecimal.ZERO;
 
     private int quantity;
 
@@ -44,6 +47,12 @@ public class Product extends Model {
 
     public static Query<Product> find() {
         return Ebean.find(Product.class);
+    }
+
+    public static void incrementQuantity(Long id, int increment) {
+        Product p = byId(Product.class, id);
+        p.setQuantity(p.getQuantity() + increment);
+        p.save();
     }
 
 }

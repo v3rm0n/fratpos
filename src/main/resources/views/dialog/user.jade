@@ -5,6 +5,7 @@
                 button.close(type='button', ng-click='$hide()') &times;
                 h4.modal-title Lisa/Muuda kasutajat
             .modal-body
+                p.bg-danger(ng-show='error') Viga salvestamisel. Kontrolli andmete korrektsust!
                 form.form-horizontal(role='form', ng-submit='save(user)')
                     .form-group
                         label.control-label.col-sm-2(for='inputStatus') Staatus

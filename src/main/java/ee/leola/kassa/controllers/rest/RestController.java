@@ -12,6 +12,7 @@ import javax.ws.rs.core.Response;
 /**
  * Created by vermon on 06/04/14.
  */
+@Produces("text/json")
 public abstract class RestController<T extends Model> extends Controller {
 
     private static final Logger log = LoggerFactory.getLogger(RestController.class);
@@ -22,6 +23,13 @@ public abstract class RestController<T extends Model> extends Controller {
     public Response all() {
         log.info("Getting all objects of type {}", getModelClass());
         return ok(Json.toJson(Model.find(getModelClass()).findList()));
+    }
+
+    @GET
+    @Path("/{id}")
+    public Response get(@PathParam("id") Long id) {
+        T model = Model.byId(getModelClass(), id);
+        return ok(model.toJson());
     }
 
     @POST
