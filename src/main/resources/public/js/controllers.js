@@ -501,10 +501,10 @@
             });
         };
 
-        $scope.statuses = function(paytype) {
+        $scope.statuses = function (paytype) {
             return paytype.allowedForStatus.reduce(function(prev, curr) {
                 return prev + curr.name + ", ";
-            }, "");
+            }, "").slice(0, -2);
         };
     };
 
