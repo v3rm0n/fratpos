@@ -27,3 +27,12 @@ block content
                     li(ng-class='{active: isActive("feedback")}')
                         a(href='#feedback')= t.message('admin.menu.feedback')
     .container.admin(ng-view)
+block afterScript
+    script.
+        $(function() {
+            $('.nav a').on('click', function(){
+                if($('.navbar-toggle').css('display') !='none'){
+                    $(".navbar-toggle").trigger( "click" );
+                }
+            });
+        });

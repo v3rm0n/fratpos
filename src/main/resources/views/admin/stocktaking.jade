@@ -4,6 +4,9 @@
 .row
     .col-md-12
         p Loomise aeg:  {{stocktaking.formattedTime}}
+.row
+    .col-md-12
+        button.btn.btn-success(ng-click='download(stocktaking)') Laadi alla
 .row(ng-show='stocktaking.users.length > 0')
     .col-md-12
         h4 Muutunud saldod

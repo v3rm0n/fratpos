@@ -542,14 +542,10 @@
         };
     };
 
-    global.StocktakingController = function ($scope, $http, $window, $location) {
+    global.StocktakingController = function ($scope, $http, $location) {
         $http.get('/stocktaking').success(function (data) {
             $scope.stocktakings = data;
         });
-
-        $scope.download = function (stocktaking) {
-            $window.open('/stocktaking/csv/' + stocktaking.id);
-        };
 
         $scope.view = function (stocktaking) {
             $location.url('/stocktaking/' + stocktaking.id);
@@ -565,7 +561,7 @@
         };
     };
 
-    global.StocktakingViewController = function($scope, $http, $location, $routeParams){
+    global.StocktakingViewController = function($scope, $http, $location, $routeParams, $window){
 
         $http.get('/stocktaking/' + $routeParams.id).success(function (data) {
             $scope.stocktaking = data;
@@ -577,6 +573,10 @@
 
         $scope.back = function () {
             $location.url('/stocktakings');
+        };
+
+        $scope.download = function (stocktaking) {
+            $window.open('/stocktaking/csv/' + stocktaking.id);
         };
 
     };

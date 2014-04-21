@@ -4,9 +4,9 @@ block content
     .container(ng-controller='PosController')
         br
         .row
-            .col-md-6
+            .col-md-6.col-xs-6
                 h3= t.message('pos.title')
-            .col-md-6
+            .col-md-6.col-xs-6
                 button.btn.btn-info.pull-right(ng-click='openFeedbackDialog()')= t.message('pos.feedback')
         .row
             .col-md-4
@@ -20,13 +20,9 @@ block content
                         ng-model='user', data-animation="am-flip-x", ng-options='user as user.label for user in users | filter:$viewValue', bs-typeahead, ng-click='clear()')
                     span.input-group-btn
                         button.btn.btn-primary(data-type='last', ng-click='openInfoDialog(user)') Info
-
-            .col-md-6
-                .alert(ng-show='status != null', class='{{statusError ? "alert-danger" : "alert-success"}}', ng-cloak)
-                    strong(ng-bind='status')
-                    |  {{statusMessage}}
-            .col-md-2
+            .col-md-8
                 button.btn.pull-right(href='#', ng-click='toggleShowAllProducts()', ng-show='haveZeroQuantity()')= t.message('pos.products.show.all')
+        br.visible-xs
         .row
             .col-md-12
                 table.table.table-bordered.table-hover.table-condensed.table-striped
@@ -48,11 +44,15 @@ block content
                                 span(ng-bind='product.price')
                                 |  #{t.message('common.currency')}
         .row
-            .col-md-12
+            .col-md-4
                 h2
                     | #{t.message('pos.products.sum') }
                     span(ng-bind='sum()')
                     |  #{t.message('common.currency')}
+            .col-md-8
+                .alert(ng-show='status != null', class='{{statusError ? "alert-danger" : "alert-success"}}', ng-cloak)
+                    strong(ng-bind='status')
+                    |  {{statusMessage}}
         .row
             .col-md-12
                 .btn-group

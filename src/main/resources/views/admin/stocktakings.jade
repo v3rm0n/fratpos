@@ -10,15 +10,10 @@
                     th Saldo summa
                     th Tehingute summa
                     th Laoseis
-                    th
             tbody
-                tr(ng-repeat='stocktaking in stocktakings')
+                tr(ng-repeat='stocktaking in stocktakings', ng-click='view(stocktaking)')
                     td(ng-bind='stocktaking.formattedTime')
                     td {{stocktaking.balancesSum}} €
                     td {{stocktaking.transactionsSum}} €
                     td {{stocktaking.productsQuantity}}
-                    td
-                        button.btn.btn-success(ng-click='download(stocktaking)') Laadi alla
-                        &nbsp;
-                        button.btn(ng-click='view(stocktaking)') Vaata
         button.btn.btn-danger(ng-click='stocktaking()') Inventuur
