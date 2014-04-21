@@ -54,7 +54,7 @@
         $scope.changeQuantity = function (product, quantity) {
             var selectedProduct = $scope.selectedProducts[product.id];
             if (selectedProduct === undefined) {
-                selectedProduct = global.angular.copy(product);
+                selectedProduct = angular.copy(product);
                 selectedProduct.quantity = 0;
                 $scope.selectedProducts[product.id] = selectedProduct;
             }
@@ -136,18 +136,6 @@
                 });
             } else {
                 updateStatus('Palun vali toode ja kasutaja enne maksmist', true);
-            }
-        };
-
-        $scope.invalidTransaction = function (transaction) {
-            var confirmed = global.confirm('Kas oled kindel, et tahad selle tehingu tagasi võtta?');
-            if (confirmed) {
-                api.invalid(transaction, function () {
-                    updateStatus('Tehing tagasi võetud!', false);
-                    getData();
-                }, function () {
-                    updateStatus('Tehingu tegemisest on möödunud liiga kaua!', true);
-                });
             }
         };
 
@@ -552,7 +540,7 @@
         };
 
         $scope.stocktaking = function () {
-            var confirmed = global.confirm('Oled kindel, et tahad teha inventuuri? Kasutajate saldod nullitakse ja tehingud eemaldatakse.');
+            var confirmed = $window.confirm('Oled kindel, et tahad teha inventuuri? Kasutajate saldod nullitakse ja tehingud eemaldatakse.');
             if (confirmed) {
                 $http.post('/stocktaking/generate').success(function (data) {
                     $scope.stocktakings.push(data);
