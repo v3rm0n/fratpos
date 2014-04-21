@@ -229,7 +229,7 @@
         };
     };
 
-    global.UsersController = function ($scope, $http, $modal) {
+    global.UsersController = function ($scope, $http, $modal, $window) {
 
         $http.get('/user').success(function (data) {
             $scope.users = data;
@@ -306,10 +306,13 @@
                 };
 
                 modalScope.delete = function (user) {
-                    $http.delete('/user/' + user.id).success(function () {
-                        $scope.users = $scope.users.filter(function (u) {return user.id !== u.id; });
-                    });
-                    d.hide();
+                    var confirmed = $window.confirm('Oled kindel, et tahad kasutaja kustutada?');
+                    if (confirmed) {
+                        $http.delete('/user/' + user.id).success(function () {
+                            $scope.users = $scope.users.filter(function (u) {return user.id !== u.id; });
+                        });
+                        d.hide();
+                    }
                 };
 
             });
@@ -353,7 +356,7 @@
         };
     };
 
-    global.ProductsController = function ($scope, $http, $modal) {
+    global.ProductsController = function ($scope, $http, $modal, $window) {
         $http.get('/product').success(function (data) {
             $scope.products = data;
         });
@@ -412,25 +415,23 @@
             };
 
             modalScope.delete = function (product) {
-                $http.delete('/product/' + product.id).success(function () {
-                    $scope.products = $scope.products.filter(function (u) {return product.id !== u.id; });
-                });
-                d.hide();
+                var confirmed = $window.confirm('Oled kindel, et tahad toote kustutada?');
+                if (confirmed) {
+                    $http.delete('/product/' + product.id).success(function () {
+                        $scope.products = $scope.products.filter(function (u) {return product.id !== u.id; });
+                    });
+                    d.hide();
+                }
             };
 
         };
     };
 
-    global.PaytypesController = function ($scope, $http, $modal) {
+    global.PaytypesController = function ($scope, $http, $modal, $window) {
+
         $http.get('/paytype').success(function (data) {
             $scope.paytypes = data;
         });
-
-        $scope.deletePaytype = function (paytype) {
-            $http.delete('/paytype/' + paytype.id).success(function () {
-                $scope.paytypes = $scope.paytypes.filter(function (u) {return paytype.id !== u.id; });
-            });
-        };
 
         $scope.openPaytypeDialog = function (paytype) {
             $http.get('/status').success(function (statuses) {
@@ -479,11 +480,14 @@
                     });
                 };
 
-                modalScope.delete = function (spaytypetatus) {
-                    $http.delete('/paytype/' + paytype.id).success(function () {
-                        $scope.paytypes = $scope.paytypes.filter(function (u) {return paytype.id !== u.id; });
-                        d.hide();
-                    });
+                modalScope.delete = function (paytype) {
+                    var confirmed = $window.confirm('Oled kindel, et tahad makseviisi kustutada?');
+                    if (confirmed) {
+                        $http.delete('/paytype/' + paytype.id).success(function () {
+                            $scope.paytypes = $scope.paytypes.filter(function (u) {return paytype.id !== u.id; });
+                            d.hide();
+                        });
+                    }
                 };
 
             });
@@ -496,7 +500,7 @@
         };
     };
 
-    global.StatusesController = function ($scope, $http, $modal) {
+    global.StatusesController = function ($scope, $http, $modal, $window) {
         $http.get('/status').success(function (data) {
             $scope.statuses = data;
         });
@@ -520,17 +524,20 @@
                 });
             };
             modalScope.delete = function (status) {
-                $http.delete('/status/' + status.id).success(function () {
-                    $scope.statuses = $scope.statuses.filter(function (u) {return status.id !== u.id; });
-                    d.hide();
-                }).error(function (data) {
-                    modalScope.error = true;
-                });
+                var confirmed = $window.confirm('Oled kindel, et tahad staatuse kustutada?');
+                if (confirmed) {
+                    $http.delete('/status/' + status.id).success(function () {
+                        $scope.statuses = $scope.statuses.filter(function (u) {return status.id !== u.id; });
+                        d.hide();
+                    }).error(function (data) {
+                        modalScope.error = true;
+                    });
+                }
             };
         };
     };
 
-    global.StocktakingController = function ($scope, $http, $location) {
+    global.StocktakingController = function ($scope, $http, $location, $window) {
         $http.get('/stocktaking').success(function (data) {
             $scope.stocktakings = data;
         });
