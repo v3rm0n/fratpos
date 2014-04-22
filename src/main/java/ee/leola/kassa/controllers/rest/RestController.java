@@ -33,8 +33,20 @@ public abstract class RestController<T extends Model> extends Controller {
     }
 
     @POST
-    public Response save(T model) {
-        log.info("Saving new object {}", model);
+    public Response create(T model) {
+        log.info("Creating new object {}", model);
+        if (model.getId() != null) {
+            model.update();
+        } else {
+            model.save();
+        }
+        return ok(model.toJson());
+    }
+
+    @POST
+    @Path("/{id}")
+    public Response update(T model) {
+        log.info("Updating object {}", model);
         if (model.getId() != null) {
             model.update();
         } else {

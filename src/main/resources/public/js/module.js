@@ -1,9 +1,9 @@
 /*jslint es5: true nomen: true forin: true vars: true*/
-(function (global) {
+(function (angular, $, Chart) {
     "use strict";
 
     //Main module
-    var app = global.angular.module('fratpos', ['ngRoute', 'mgcrea.ngStrap'])
+    var app = angular.module('fratpos', ['ngRoute', 'mgcrea.ngStrap', 'ngResource'])
         .config(['$routeProvider', function ($routeProvider) {
             $routeProvider
                 .when('/users', {templateUrl: "/admin/users"})
@@ -17,29 +17,30 @@
                 .otherwise({redirectTo: "/users"});
         }]);
 
+    //Nice looking checkboxes and radio buttons
     app.directive('icheck', ['$timeout', function ($timeout) {
         return {
             require: 'ngModel',
-            link: function($scope, element, $attrs, ngModel) {
-                return $timeout(function() {
+            link: function ($scope, element, $attrs, ngModel) {
+                return $timeout(function () {
                     var value;
-                    value = $attrs['value'];
+                    value = $attrs.value;
 
-                    $scope.$watch($attrs['ngModel'], function(newValue){
+                    $scope.$watch($attrs.ngModel, function (newValue) {
                         $(element).iCheck('update');
-                    })
+                    });
 
                     return $(element).iCheck({
                         checkboxClass: 'icheckbox_flat',
                         radioClass: 'iradio_flat'
-                    }).on('ifChanged', function(event) {
-                        if ($(element).attr('type') === 'checkbox' && $attrs['ngModel']) {
-                            $scope.$apply(function() {
+                    }).on('ifChanged', function (event) {
+                        if ($(element).attr('type') === 'checkbox' && $attrs.ngModel) {
+                            $scope.$apply(function () {
                                 return ngModel.$setViewValue(event.target.checked);
                             });
                         }
-                        if ($(element).attr('type') === 'radio' && $attrs['ngModel']) {
-                            return $scope.$apply(function() {
+                        if ($(element).attr('type') === 'radio' && $attrs.ngModel) {
+                            return $scope.$apply(function () {
                                 return ngModel.$setViewValue(value);
                             });
                         }
@@ -49,33 +50,53 @@
         };
     }]);
 
-    app.directive('focusMe', function($timeout) {
-      return {
-        link: function(scope, element, attrs) {
-            $timeout(function() {
-                element[0].focus();
-            });
-        }
-      };
-    });
-
-    app.factory('api', function ($http, $window, $rootScope, $timeout) {
+    //Focuses an input element after rendering
+    app.directive('focusMe', function ($timeout) {
         return {
-            posdata: function (callback) {
-                $http.get('/posdata').success(callback);
-            },
-            transaction: function (data, success, error) {
-                $http.post('/transaction', data).success(success).error(error);
-            },
-            invalid: function (transaction, password, success, error) {
-                if (typeof (password) === 'function') {
-                    error = success;
-                    success = password;
-                    password = undefined;
-                }
-                $http.post('/transaction/invalid/' + transaction.id, {password: password}).success(success).error(error);
+            link: function (scope, element) {
+                $timeout(function () {
+                    element[0].focus();
+                });
             }
         };
     });
 
-}(this));
+    //Draws a doughnut chart on canvas
+    app.directive('doughnutChart', function ($timeout) {
+        return {
+            link: function (scope, element, attrs) {
+                scope.$watch(attrs.doughnutChart, function (value) {
+                    if (value) {
+                        var ctx = element[0].getContext("2d");
+                        new Chart(ctx).Doughnut(value);
+                    }
+                });
+            }
+        };
+    });
+
+    //Backend API
+    app.factory('api', function ($http, $resource) {
+        return {
+            posdata: function () {
+                return $http.get('/posdata');
+            },
+            invalidate: function (transaction) {
+                return $http.post('/transaction/invalid/' + transaction.id);
+            },
+            stat: function (user) {
+                return $http.get('/stat/' + user.id);
+            },
+            User: $resource('/user/:id', {id: '@id'}),
+            Product: $resource('/product/:id', {id: '@id'}),
+            Status: $resource('/status/:id', {id: '@id'}),
+            Paytype: $resource('/paytype/:id', {id: '@id'}),
+            Transaction: $resource('/transaction/:id', {id: '@id'}, {
+                invalidate: {url: '/transaction/invalid/:id', method: 'POST'}
+            }),
+            Feedback: $resource('/feedback/:id', {id: '@id'}),
+            Stocktaking: $resource('/stocktaking/:id', {id: '@id'})
+        };
+    });
+
+}(this.angular, this.jQuery, this.Chart));

@@ -31,8 +31,15 @@ public class Stocktakings extends RestController<Stocktaking> {
     }
 
     @POST
-    @Path("/generate")
-    public Response generate() {
+    @Path("/{id}")
+    @Override
+    public Response update(Stocktaking s) {
+        return Response.status(Response.Status.METHOD_NOT_ALLOWED).build();
+    }
+
+    @POST
+    @Override
+    public Response create(Stocktaking s) {
         Stocktaking stocktaking = new Stocktaking();
 
         Set<User> users = User.find().where("balance <> 0").findSet();

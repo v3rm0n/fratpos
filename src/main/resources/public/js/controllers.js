@@ -1,11 +1,13 @@
 /*jslint es5: true nomen: true forin: true vars: true*/
-(function (global) {
+(function (angular) {
     "use strict";
 
-    global.PosController = function ($scope, api, $timeout, $modal, $http) {
+    var app = angular.module('fratpos');
+
+    app.controller('PosController', function ($scope, api, $timeout, $modal) {
 
         var getData = function () {
-            api.posdata(function (data) {
+            api.posdata().success(function (data) {
                 $scope.users = data.users;
                 $scope.transactions = data.transactions;
                 $scope.products = data.products;
@@ -24,7 +26,7 @@
 
         $scope.clear = function () {
             $scope.user = null;
-            $timeout(function() {
+            $timeout(function () {
                 angular.element('#usernotselected').focus();
             });
         };
@@ -44,8 +46,8 @@
             return $scope.products.filter(function (product) { return product.quantity > 0; });
         };
 
-        $scope.haveZeroQuantity = function() {
-            if($scope.products === undefined) {
+        $scope.haveZeroQuantity = function () {
+            if ($scope.products === undefined) {
                 return false;
             }
             return $scope.products.some(function (product) { return product.quantity <= 0; });
@@ -87,7 +89,7 @@
         $scope.isDisabled = function (paytype) {
             if ($scope.user) {
                 var i, status;
-                for (i = 0; i < paytype.allowedForStatus.length; i++) {
+                for (i = 0; i < paytype.allowedForStatus.length; i += 1) {
                     status = paytype.allowedForStatus[i];
                     if ($scope.user.status !== undefined && status.name === $scope.user.status.name) {
                         return false;
@@ -125,15 +127,14 @@
                 return true;
             };
             if (!isEmpty($scope.selectedProducts) && $scope.user !== undefined) {
-                var data = {products: productsArray($scope.selectedProducts), paytype: paytype, user: $scope.user};
-                api.transaction(data, function (data) {
+                var transaction = new api.Transaction({products: productsArray($scope.selectedProducts), paytype: paytype, user: $scope.user});
+                transaction.$save(function () {
                     updateStatus('Tooted läksid edukalt kirja!', false);
                     $scope.user = null;
                     $scope.selectedProducts = {};
                     getData();
-                }, function (data) {
-                    updateStatus('Viga tehingul: ' + data, true);
                 });
+
             } else {
                 updateStatus('Palun vali toode ja kasutaja enne maksmist', true);
             }
@@ -154,10 +155,10 @@
             }
         };
 
-        $scope.openFeedbackDialog = function (feedback) {
+        $scope.openFeedbackDialog = function () {
 
             var modalScope = $scope.$new();
-            modalScope.feedback = feedback;
+            modalScope.feedback = new api.Feedback();
 
             var d = $modal({
                 template: '/dialog/feedback',
@@ -165,11 +166,11 @@
             });
 
             modalScope.save = function (feedback) {
-                $http.post('/feedback', feedback).success(function () {
-                modalScope.error = false;
+                feedback.$save(function () {
+                    modalScope.error = false;
                     updateStatus('Tagasiside edastatud!', false);
                     d.hide();
-                }).error(function () {
+                }, function () {
                     modalScope.error = true;
                 });
             };
@@ -185,21 +186,18 @@
                 scope: modalScope
             });
 
-            d.$promise.then(function() {
-                $http.get('/stat/' + user.id).success(function (stat) {
-                    modalScope.stat = stat;
-                    var colors = ['#4A89DC', '#37BC9B', '#3BAFDA', '#DA4453', '#8CC152', '#434A54', '#E9573F', '#D770AD', '#967ADC', '#F6BB42'];
-                    modalScope.colors = colors;
+            api.stat(user).success(function (stat) {
+                modalScope.stat = stat;
+                var colors = ['#4A89DC', '#37BC9B', '#3BAFDA', '#DA4453', '#8CC152', '#434A54', '#E9573F', '#D770AD', '#967ADC', '#F6BB42'];
+                modalScope.colors = colors;
 
-                    var data = [], i;
+                var data = [], i;
 
-                    for(i = 0; (i < 10) && (i < stat.popularProducts.length); i++) {
-                        data.push({value: stat.popularProducts[i].count, color: colors[i]});
-                    }
+                for (i = 0; (i < 10) && (i < stat.popularProducts.length); i += 1) {
+                    data.push({value: stat.popularProducts[i].count, color: colors[i]});
+                }
 
-                    var ctx = document.getElementById("userchart").getContext("2d");
-                    new Chart(ctx).Doughnut(data);
-                });
+                modalScope.chartdata = data;
             });
 
         };
@@ -214,26 +212,24 @@
                 scope: modalScope
             });
 
-            modalScope.invalidate = function(transaction) {
-                $http.post('/transaction/invalid/' + transaction.id).success(function (data) {
+            modalScope.invalidate = function (transaction) {
+                api.invalidate(transaction).success(function () {
                     getData();
                     d.hide();
                 });
             };
         };
-    };
+    });
 
-    global.NavController = function ($scope, $location) {
+    app.controller('NavController', function ($scope, $location) {
         $scope.isActive = function (page) {
             return $location.path() === '/' + page;
         };
-    };
+    });
 
-    global.UsersController = function ($scope, $http, $modal, $window) {
+    app.controller('UsersController', function ($scope, $modal, $window, api) {
 
-        $http.get('/user').success(function (data) {
-            $scope.users = data;
-        });
+        $scope.users = api.User.query();
 
         $scope.filteredUsers = function () {
             var users = $scope.users;
@@ -272,19 +268,17 @@
 
         $scope.openUserDialog = function (user) {
 
-            $http.get('/status').success(function (statuses) {
+            api.Status.query(function (statuses) {
 
                 var modalScope = $scope.$new();
-                modalScope.user = user;
+                modalScope.user = angular.copy(user) || new api.User();
                 modalScope.statuses = statuses;
 
-                if(user !== undefined) {
-                    var i;
-                    for(i = 0; i < statuses.length; i++) {
-                        if(statuses[i].id === user.status.id){
-                            user.status = statuses[i];
-                            break;
-                        }
+                var i;
+                for (i = 0; i < statuses.length; i += 1) {
+                    if (modalScope.user.status === undefined || (user && statuses[i].id === user.status.id)) {
+                        modalScope.user.status = statuses[i];
+                        break;
                     }
                 }
 
@@ -293,14 +287,14 @@
                     scope: modalScope
                 });
 
-                modalScope.save = function (u) {
-                    $http.post('/user', u).success(function (data) {
+                modalScope.save = function (user) {
+                    user.$save(function () {
                         modalScope.error = false;
-                        if (user === undefined) {
-                            $scope.users.push(data);
-                        }
+                        api.User.query(function (users) {
+                            $scope.users = users;
+                        });
                         d.hide();
-                    }).error(function () {
+                    }, function () {
                         modalScope.error = true;
                     });
                 };
@@ -308,21 +302,22 @@
                 modalScope.delete = function (user) {
                     var confirmed = $window.confirm('Oled kindel, et tahad kasutaja kustutada?');
                     if (confirmed) {
-                        $http.delete('/user/' + user.id).success(function () {
+                        user.$remove(function () {
                             $scope.users = $scope.users.filter(function (u) {return user.id !== u.id; });
+                            d.hide();
+                        }, function () {
+                            modalScope.error = true;
                         });
-                        d.hide();
                     }
                 };
 
             });
         };
-    };
+    });
 
-    global.TransactionsController = function ($scope, $http, $modal) {
-        $http.get('/transaction').success(function (data) {
-            $scope.transactions = data;
-        });
+    app.controller('TransactionsController', function ($scope, api, $modal) {
+
+        $scope.transactions = api.Transaction.query();
 
         $scope.totalSum = function () {
             var transactions = $scope.transactions;
@@ -347,19 +342,18 @@
                 scope: modalScope
             });
 
-            modalScope.invalidate = function(transaction) {
-                $http.post('/transaction/invalid/admin/' + transaction.id).success(function (data) {
+            modalScope.invalidate = function (transaction) {
+                transaction.$invalidate(function () {
                     transaction.invalid = true;
                     d.hide();
                 });
             };
         };
-    };
+    });
 
-    global.ProductsController = function ($scope, $http, $modal, $window) {
-        $http.get('/product').success(function (data) {
-            $scope.products = data;
-        });
+    app.controller('ProductsController', function ($scope, api, $modal, $window) {
+
+        $scope.products = api.Product.query();
 
         $scope.totalProducts = function () {
             if ($scope.products !== undefined) {
@@ -395,21 +389,19 @@
         $scope.openProductDialog = function (product) {
 
             var modalScope = $scope.$new();
-            modalScope.product = product;
+            modalScope.product = angular.copy(product) || new api.Product();
 
             var d = $modal({
                 template: '/dialog/product',
                 scope: modalScope
             });
 
-            modalScope.save = function (p) {
-                $http.post('/product', p).success(function (data) {
+            modalScope.save = function (product) {
+                product.$save(function (data) {
                     modalScope.error = false;
-                    if (product === undefined) {
-                        $scope.products.push(data);
-                    }
+                    $scope.products = api.Product.query();
                     d.hide();
-                }).error(function () {
+                }, function () {
                     modalScope.error = true;
                 });
             };
@@ -417,33 +409,32 @@
             modalScope.delete = function (product) {
                 var confirmed = $window.confirm('Oled kindel, et tahad toote kustutada?');
                 if (confirmed) {
-                    $http.delete('/product/' + product.id).success(function () {
+                    product.$remove(function () {
                         $scope.products = $scope.products.filter(function (u) {return product.id !== u.id; });
+                        d.hide();
+                    }, function () {
+                        modalScope.error = true;
                     });
-                    d.hide();
                 }
             };
 
         };
-    };
+    });
 
-    global.PaytypesController = function ($scope, $http, $modal, $window) {
+    app.controller('PaytypesController', function ($scope, api, $modal, $window) {
 
-        $http.get('/paytype').success(function (data) {
-            $scope.paytypes = data;
-        });
+        $scope.paytypes = api.Paytype.query();
 
         $scope.openPaytypeDialog = function (paytype) {
-            $http.get('/status').success(function (statuses) {
+            api.Status.query(function (statuses) {
 
                 var modalScope = $scope.$new();
-                modalScope.paytype = paytype;
+                modalScope.paytype = angular.copy(paytype) || new api.Paytype();
                 modalScope.statuses = statuses;
                 modalScope.checked = {};
                 modalScope.allowedForStatus = {};
 
                 if (paytype !== undefined) {
-                modalScope.allowedForStatus
                     paytype.allowedForStatus.forEach(function (status) {
                         modalScope.allowedForStatus[status.id] = true;
                     });
@@ -455,27 +446,27 @@
                 });
 
                 modalScope.save = function (p) {
-                    if(p !== undefined) {
+                    if (p !== undefined) {
                         p.allowedForStatus = [];
                         var selected, i;
                         for (selected in modalScope.allowedForStatus) {
                             if (modalScope.allowedForStatus[selected]) {
-                                for (i = 0; i < statuses.length; i++) {
+                                for (i = 0; i < statuses.length; i += 1) {
                                     var status = statuses[i];
-                                    if(status.id === parseInt(selected)){
+                                    if (status.id === parseInt(selected, 10)) {
                                         p.allowedForStatus.push(status);
                                     }
                                 }
                             }
                         }
                     }
-                    $http.post('/paytype', p).success(function (data) {
+                    p.$save(function (data) {
                         modalScope.error = false;
                         if (paytype === undefined) {
                             $scope.paytypes.push(data);
                         }
                         d.hide();
-                    }).error(function (data) {
+                    }, function () {
                         modalScope.error = true;
                     });
                 };
@@ -483,9 +474,11 @@
                 modalScope.delete = function (paytype) {
                     var confirmed = $window.confirm('Oled kindel, et tahad makseviisi kustutada?');
                     if (confirmed) {
-                        $http.delete('/paytype/' + paytype.id).success(function () {
+                        paytype.$remove(function () {
                             $scope.paytypes = $scope.paytypes.filter(function (u) {return paytype.id !== u.id; });
                             d.hide();
+                        }, function () {
+                            modalScope.error = true;
                         });
                     }
                 };
@@ -494,53 +487,51 @@
         };
 
         $scope.statuses = function (paytype) {
-            return paytype.allowedForStatus.reduce(function(prev, curr) {
+            return paytype.allowedForStatus.reduce(function (prev, curr) {
                 return prev + curr.name + ", ";
             }, "").slice(0, -2);
         };
-    };
+    });
 
-    global.StatusesController = function ($scope, $http, $modal, $window) {
-        $http.get('/status').success(function (data) {
-            $scope.statuses = data;
-        });
+    app.controller('StatusesController', function ($scope, api, $modal, $window) {
+
+        $scope.statuses = api.Status.query();
 
         $scope.openStatusDialog = function (status) {
+
             var modalScope = $scope.$new();
+            modalScope.status = angular.copy(status) || new api.Status();
+
             var d = $modal({
                 template: '/dialog/status',
                 scope: modalScope
             });
-            modalScope.status = status;
             modalScope.save = function (s) {
-                $http.post('/status', s).success(function (data) {
+                s.$save(function (data) {
                     modalScope.error = false;
-                    if (status === undefined) {
-                        $scope.statuses.push(data);
-                    }
+                    $scope.statuses = api.Status.query();
                     d.hide();
-                }).error(function (data) {
+                }, function () {
                     modalScope.error = true;
                 });
             };
             modalScope.delete = function (status) {
                 var confirmed = $window.confirm('Oled kindel, et tahad staatuse kustutada?');
                 if (confirmed) {
-                    $http.delete('/status/' + status.id).success(function () {
+                    status.$remove(function () {
                         $scope.statuses = $scope.statuses.filter(function (u) {return status.id !== u.id; });
                         d.hide();
-                    }).error(function (data) {
+                    }, function () {
                         modalScope.error = true;
                     });
                 }
             };
         };
-    };
+    });
 
-    global.StocktakingController = function ($scope, $http, $location, $window) {
-        $http.get('/stocktaking').success(function (data) {
-            $scope.stocktakings = data;
-        });
+    app.controller('StocktakingController', function ($scope, api, $location, $window) {
+
+        $scope.stocktakings = api.Stocktaking.query();
 
         $scope.view = function (stocktaking) {
             $location.url('/stocktaking/' + stocktaking.id);
@@ -549,21 +540,20 @@
         $scope.stocktaking = function () {
             var confirmed = $window.confirm('Oled kindel, et tahad teha inventuuri? Kasutajate saldod nullitakse ja tehingud eemaldatakse.');
             if (confirmed) {
-                $http.post('/stocktaking/generate').success(function (data) {
+                var stocktaking = new api.Stocktaking();
+                stocktaking.$save(function (data) {
                     $scope.stocktakings.push(data);
                 });
             }
         };
-    };
+    });
 
-    global.StocktakingViewController = function($scope, $http, $location, $routeParams, $window){
+    app.controller('StocktakingViewController', function ($scope, api, $location, $routeParams, $window) {
 
-        $http.get('/stocktaking/' + $routeParams.id).success(function (data) {
-            $scope.stocktaking = data;
-        });
+        $scope.stocktaking = api.Stocktaking.get({id: $routeParams.id});
 
-        $http.get('/stocktaking/' + ($routeParams.id - 1)).success(function (data) {
-            $scope.previous = data;
+        var previous = api.Stocktaking.get({id: $routeParams.id - 1}, function () {
+            $scope.previous = previous;
         });
 
         $scope.back = function () {
@@ -574,17 +564,17 @@
             $window.open('/stocktaking/csv/' + stocktaking.id);
         };
 
-    };
+    });
 
-    global.FeedbackController = function ($scope, $http) {
-        $http.get('/feedback').success(function (data) {
-            $scope.feedbacks = data;
-        });
+    app.controller('FeedbackController', function ($scope, api) {
+
+        $scope.feedbacks = api.Feedback.query();
 
         $scope.deleteFeedback = function (feedback) {
-            $http.delete('/feedback/' + feedback.id).success(function () {
+            feedback.$remove(function () {
                 $scope.feedbacks = $scope.feedbacks.filter(function (u) {return feedback.id !== u.id; });
             });
         };
-    };
-}(this));
+    });
+
+}(this.angular));

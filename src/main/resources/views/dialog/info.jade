@@ -40,7 +40,7 @@
                                         span.badge.pull-right(style='background-color: {{colors[$index]}}') {{product.count}}
 
                             .col-md-6
-                                canvas#userchart(width='300', height='155')
+                                canvas(width='300', height='155', doughnut-chart='chartdata')
                         .row(ng-hide='stat.popularProducts.length > 0')
                             .col-md-12
                                 p Valitud kasutajal ei ole käesoleval perioodil ühtegi tehingut.

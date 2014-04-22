@@ -43,7 +43,7 @@ public class RestControllerTest {
     public void testSave() {
         Feedback f = new Feedback();
         f.setContent("test2");
-        controller.save(f);
+        controller.create(f);
         Assert.assertEquals(2, Feedback.find().findRowCount());
     }
 

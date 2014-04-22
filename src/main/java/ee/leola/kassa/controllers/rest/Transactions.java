@@ -62,7 +62,15 @@ public class Transactions extends RestController<Transaction> {
     }
 
     @POST
-    public Response save(Transaction transaction) {
+    @Path("/{id}")
+    @Override
+    public Response update(Transaction transaction) {
+        return Response.status(Response.Status.METHOD_NOT_ALLOWED).build();
+    }
+
+    @POST
+    @Override
+    public Response create(Transaction transaction) {
         log.info("Saving new transaction {}", transaction);
 
         //Decrement product quantities
