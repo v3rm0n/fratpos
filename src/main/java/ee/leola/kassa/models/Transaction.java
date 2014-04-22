@@ -94,6 +94,6 @@ public class Transaction extends Model {
     }
 
     public static List<Transaction> allValid() {
-        return find().where("invalid = FALSE").findList();
+        return find().where("invalid = FALSE").orderBy().desc("created").findList();
     }
 }
