@@ -2,3 +2,7 @@
 target
 kassa.iml
 rebel.xml
+.gradle
+build
+kassa.iws
+kassa.ipr
