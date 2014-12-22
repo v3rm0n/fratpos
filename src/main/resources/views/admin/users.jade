@@ -20,7 +20,7 @@
                         th(ng-click='sort("balance")') Saldo
                 tbody
                     tr(ng-repeat='user in filteredUsers()', ng-click='openUserDialog(user)')
-                        td(ng-bind='user.status.name')
+                        td(ng-bind='user.status')
                         td(ng-bind='user.firstName')
                         td(ng-bind='user.lastName')
                         td(ng-bind='user.beerName')

@@ -10,7 +10,7 @@
                     .form-group
                         label.control-label.col-sm-2(for='inputStatus') Staatus
                         .col-sm-3
-                            select.form-control(ng-model='user.status', ng-options='status.name for status in statuses', required, focus-me)
+                            select.form-control(ng-model='user.status', ng-options='status.name as status.name for status in statuses', required, focus-me)
                     .form-group
                         label.control-label.col-sm-2(for='inputFirstname') Eesnimi
                         .col-sm-5

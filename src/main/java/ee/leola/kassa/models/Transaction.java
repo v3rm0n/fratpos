@@ -2,6 +2,7 @@ package ee.leola.kassa.models;
 
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.Query;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -37,7 +38,7 @@ public class Transaction extends Model {
     private Paytype paytype;
 
     public String getFormattedTime() {
-        DateFormat df = new SimpleDateFormat("hh:mm dd.MM.YYYY");
+        DateFormat df = new SimpleDateFormat("HH:mm dd.MM.YYYY");
         return df.format(created);
     }
 
@@ -75,6 +76,11 @@ public class Transaction extends Model {
 
     public Paytype getPaytype() {
         return paytype;
+    }
+
+    @JsonProperty("paytype")
+    public String getPaytypeName() {
+        return paytype.getName();
     }
 
     public void setPaytype(Paytype paytype) {

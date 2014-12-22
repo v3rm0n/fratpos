@@ -14,23 +14,22 @@ import java.util.stream.Collectors;
  */
 public class Json {
 
+    private static final ObjectMapper mapper = new ObjectMapper();
+
+
     public static ObjectNode newObject() {
-        ObjectMapper mapper = new ObjectMapper();
         return mapper.createObjectNode();
     }
 
     public static ArrayNode newArray() {
-        ObjectMapper mapper = new ObjectMapper();
         return mapper.createArrayNode();
     }
 
     public static JsonNode toJson(Object obj) {
-        ObjectMapper mapper = new ObjectMapper();
         return mapper.convertValue(obj, JsonNode.class);
     }
 
     public static JsonNode toJson(String str) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
         return mapper.readTree(str);
     }
 }

@@ -14,7 +14,7 @@
                     tr(ng-repeat='transaction in transactions', ng-class='{danger: transaction.invalid}', ng-click='openDialog(transaction)')
                         td(ng-bind='transaction.formattedTime')
                         td(ng-bind='transaction.user.label')
-                        td(ng-bind='transaction.paytype.name')
+                        td(ng-bind='transaction.paytype')
                         td {{transaction.sum}} €
                 tfoot
                     tr

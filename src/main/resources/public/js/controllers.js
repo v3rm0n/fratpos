@@ -91,7 +91,7 @@
                 var i, status;
                 for (i = 0; i < paytype.allowedForStatus.length; i += 1) {
                     status = paytype.allowedForStatus[i];
-                    if ($scope.user.status !== undefined && status.name === $scope.user.status.name) {
+                    if ($scope.user.status !== undefined && status.name === $scope.user.status) {
                         return false;
                     }
                 }

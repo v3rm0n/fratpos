@@ -73,7 +73,7 @@ block content
                             td(ng-bind='transaction.formattedTime')
                             td(ng-bind='transaction.user.label')
                             td {{transaction.sum}} #{t.message('common.currency')}
-                            td(ng-bind='transaction.paytype.name')
+                            td(ng-bind='transaction.paytype')
                         tr(ng-hide='showAllTransactions', ng-click='toggleTransactions(true)')
                             td(colspan="4", style='text-align:center')
                                 span.glyphicon.glyphicon-arrow-down

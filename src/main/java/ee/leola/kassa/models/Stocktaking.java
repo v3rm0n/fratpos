@@ -33,7 +33,7 @@ public class Stocktaking extends Model {
     private String transactions;
 
     public String getFormattedTime() {
-        DateFormat df = new SimpleDateFormat("hh:mm dd.MM.YYYY");
+        DateFormat df = new SimpleDateFormat("HH:mm dd.MM.YYYY");
         return df.format(created);
     }
 
@@ -52,8 +52,10 @@ public class Stocktaking extends Model {
         BigDecimal sum = BigDecimal.ZERO;
         if (transactions != null) {
             for (JsonNode transaction : Json.toJson(transactions)) {
-                BigDecimal transactionSum = BigDecimal.valueOf(transaction.findValue("sum").asDouble());
-                sum = sum.add(transactionSum);
+                if (!transaction.get("invalid").asBoolean()) {
+                    BigDecimal transactionSum = BigDecimal.valueOf(transaction.findValue("sum").asDouble());
+                    sum = sum.add(transactionSum);
+                }
             }
         }
         return sum;
@@ -75,7 +77,7 @@ public class Stocktaking extends Model {
         if (transactions != null) {
             for (JsonNode transaction : Json.toJson(transactions)) {
                 if (!transaction.get("invalid").asBoolean()) {
-                    String type = transaction.get("paytype").get("name").asText();
+                    String type = transaction.get("paytype").asText();
                     BigDecimal sum = sums.get(type);
                     if (sum == null) {
                         sum = BigDecimal.ZERO;

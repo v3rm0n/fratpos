@@ -2,6 +2,8 @@ package ee.leola.kassa.helpers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.Lists;
+import ee.leola.kassa.models.Status;
+import ee.leola.kassa.models.User;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -23,6 +25,16 @@ public class JsonTest {
     public void testStringToJson() throws IOException {
         JsonNode node = Json.toJson("{\"test\": \"value\"}");
         Assert.assertEquals("{\"test\":\"value\"}", node.toString());
+    }
+
+    @Test
+    public void testStatusAsName() {
+        User user = new User();
+        Status status = new Status();
+        status.setName("reb!");
+        user.setStatus(status);
+        JsonNode userJson = Json.toJson(user);
+        Assert.assertEquals("reb!", userJson.get("status").asText());
     }
 
     private static class TestModel {

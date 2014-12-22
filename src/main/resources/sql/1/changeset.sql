@@ -20,7 +20,7 @@ create table paytype (
 create table product (
   id                        bigint auto_increment not null,
   name                      varchar(255) not null,
-  price                     decimal(38) not null,
+  price                     decimal(38,2) not null,
   quantity                  integer not null,
   constraint pk_product primary key (id))
 ;
@@ -52,7 +52,7 @@ create table transaction (
 create table transaction_product (
   id                        bigint auto_increment not null,
   name                      varchar(255) not null,
-  price                     decimal(38) not null,
+  price                     decimal(38,2) not null,
   quantity                  integer not null,
   transaction_id            bigint not null,
   product_id                bigint not null,
@@ -65,7 +65,7 @@ create table user (
   last_name                 varchar(255) not null,
   beer_name                 varchar(255),
   status_id                 bigint not null,
-  balance                   decimal(38) not null,
+  balance                   decimal(38,2) not null,
   constraint pk_user primary key (id))
 ;
 

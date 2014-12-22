@@ -20,7 +20,7 @@
                     th Saldo
             tbody
                 tr(ng-repeat='user in stocktaking.users')
-                    td {{user.status.name}}
+                    td {{user.status}}
                     td {{user.firstName}}
                     td {{user.lastName}}
                     td {{user.beerName}}
@@ -47,7 +47,7 @@
                     td {{transaction.formattedTime}}
                     td {{transaction.user.label}}
                     td {{transaction.sum}} €
-                    td {{transaction.paytype.name}}
+                    td {{transaction.paytype}}
 .row
     .col-md-3
         table.table.table-bordered.table-hover

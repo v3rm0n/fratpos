@@ -30,7 +30,7 @@ public class Stocktakings extends RestController<Stocktaking> {
         template.append("Kasutajad\nStaatus,Eesnimi,Perenimi,Õllenimi,Saldo\n");
         stocktaking.getUsers().forEach(user -> {
             template.append(String.format("%s,%s,%s,%s,%s\n",
-                    user.get("status").get("name").asText(),
+                    user.get("status").asText(),
                     user.get("firstName").asText(),
                     user.get("lastName").asText(),
                     user.get("beerName").asText(),
@@ -44,7 +44,7 @@ public class Stocktakings extends RestController<Stocktaking> {
                     transaction.get("formattedTime").asText(),
                     transaction.get("user").get("label").asText(),
                     transaction.get("sum").asText(),
-                    transaction.get("paytype").get("name").asText(),
+                    transaction.get("paytype").asText(),
                     transaction.get("invalid").asBoolean() ? "Jah" : "Ei"));
         });
         template.append(",Summa,").append(stocktaking.getTransactionsSum()).append("\n\n");

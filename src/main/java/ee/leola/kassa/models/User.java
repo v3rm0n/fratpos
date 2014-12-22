@@ -2,6 +2,7 @@ package ee.leola.kassa.models;
 
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.Query;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -63,6 +64,11 @@ public class User extends Model {
 
     public Status getStatus() {
         return status;
+    }
+
+    @JsonProperty("status")
+    public String getStatusName() {
+        return status.getName();
     }
 
     public void setStatus(Status status) {
