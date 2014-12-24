@@ -8,9 +8,7 @@ import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
 
-/**
- * Created by vermon on 23/03/14.
- */
+
 @Entity
 public class Paytype extends Model {
 

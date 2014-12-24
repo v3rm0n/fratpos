@@ -9,25 +9,23 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
-/**
- * Created by vermon on 06/04/14.
- */
 @Produces("text/json")
 public abstract class RestController<T extends Model> extends Controller {
 
-    private static final Logger log = LoggerFactory.getLogger(RestController.class);
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     protected abstract Class<T> getModelClass();
 
     @GET
     public Response all() {
-        log.info("Getting all objects of type {}", getModelClass());
+        log.info("Getting all objects");
         return ok(Json.toJson(Model.find(getModelClass()).findList()));
     }
 
     @GET
     @Path("/{id}")
     public Response get(@PathParam("id") Long id) {
+        log.info("Getting object by id {}", id);
         T model = Model.byId(getModelClass(), id);
         return ok(model.toJson());
     }
@@ -58,8 +56,13 @@ public abstract class RestController<T extends Model> extends Controller {
     @DELETE
     @Path("/{id}")
     public Response delete(@PathParam("id") Long id) {
-        log.info("Deleting object of type {} with id {}", getModelClass(), id);
-        Model.delete(getModelClass(), id);
+        log.info("Deleting object with id {}", id);
+        try {
+            Model.delete(getModelClass(), id);
+        } catch (Exception e) {
+            String error = String.format("Could not delete object of type %s and id %d", getModelClass().toString(), id);
+            throw new RestException(error, e);
+        }
         return ok();
     }
 }

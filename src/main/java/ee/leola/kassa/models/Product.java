@@ -7,9 +7,6 @@ import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
-/**
- * Created by vermon on 23/03/14.
- */
 @Entity
 public class Product extends Model {
 

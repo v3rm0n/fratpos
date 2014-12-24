@@ -9,9 +9,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-/**
- * Created by vermon on 30/03/14.
- */
 public class Controller {
 
     private static final Logger log = LoggerFactory.getLogger(Controller.class);

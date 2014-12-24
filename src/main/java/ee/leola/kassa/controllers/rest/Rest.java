@@ -1,17 +1,10 @@
 package ee.leola.kassa.controllers.rest;
 
-import com.google.common.collect.Sets;
 import ee.leola.kassa.models.*;
 
 import javax.ws.rs.Path;
-import java.util.Set;
 
-/**
- * Created by vermon on 12/04/14.
- */
 public class Rest {
-
-    public static Set<Class<?>> controllers = Sets.newHashSet(Feedbacks.class, Paytypes.class, Products.class, Statuses.class, Users.class);
 
     @Path("/feedback")
     public static class Feedbacks extends RestController<Feedback> {

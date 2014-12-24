@@ -8,9 +8,6 @@ import ee.leola.kassa.helpers.Json;
 import javax.persistence.Entity;
 import java.io.IOException;
 
-/**
- * Created by vermon on 23/03/14.
- */
 @Entity
 public class Status extends Model {
 

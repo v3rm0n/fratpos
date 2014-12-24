@@ -15,9 +15,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by vermon on 23/03/14.
- */
 @Entity
 public class Stocktaking extends Model {
 

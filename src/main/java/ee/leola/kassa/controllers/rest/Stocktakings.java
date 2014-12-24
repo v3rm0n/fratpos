@@ -8,9 +8,6 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.Set;
 
-/**
- * Created by vermon on 06/04/14.
- */
 @Path("/stocktaking")
 public class Stocktakings extends RestController<Stocktaking> {
 

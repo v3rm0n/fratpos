@@ -16,9 +16,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created by vermon on 23/03/14.
- */
 @Entity
 public class Transaction extends Model {
 

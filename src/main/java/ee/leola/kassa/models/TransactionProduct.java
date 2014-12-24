@@ -5,9 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
-/**
- * Created by vermon on 24/03/14.
- */
 @Entity
 public class TransactionProduct extends Product {
 

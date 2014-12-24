@@ -11,9 +11,6 @@ import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import java.util.List;
 
-/**
- * Created by vermon on 20/04/14.
- */
 @Entity
 @Sql
 public class PopularProduct {

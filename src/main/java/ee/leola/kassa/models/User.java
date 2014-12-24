@@ -9,9 +9,6 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
-/**
- * Created by vermon on 23/03/14.
- */
 @Entity
 public class User extends Model {
 

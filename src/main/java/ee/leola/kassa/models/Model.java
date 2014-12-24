@@ -10,9 +10,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
-/**
- * Created by vermon on 30/03/14.
- */
 @MappedSuperclass
 public abstract class Model {
 

@@ -133,6 +133,7 @@
                     $scope.user = null;
                     $scope.selectedProducts = {};
                     getData();
+                    $scope.$broadcast("paid");
                 });
 
             } else {
@@ -234,7 +235,7 @@
         $scope.filteredUsers = function () {
             var users = $scope.users;
             if ($scope.filter !== undefined && $scope.filter.length > 0) {
-                users = users.filter(function (user) {return user.label.toLowerCase().indexOf($scope.filter) !== -1; });
+                users = users.filter(function (user) {return user.label.toLowerCase().indexOf($scope.filter.toLowerCase()) !== -1; });
             }
             if ($scope.sortfield !== undefined) {
                 var sort = function (a, b) {
@@ -462,9 +463,7 @@
                     }
                     p.$save(function (data) {
                         modalScope.error = false;
-                        if (paytype === undefined) {
-                            $scope.paytypes.push(data);
-                        }
+                        $scope.paytypes = api.Paytype.query();
                         d.hide();
                     }, function () {
                         modalScope.error = true;

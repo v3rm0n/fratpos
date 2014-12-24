@@ -10,9 +10,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 
-/**
- * Created by vermon on 06/04/14.
- */
 @Path("/transaction")
 public class Transactions extends RestController<Transaction> {
 

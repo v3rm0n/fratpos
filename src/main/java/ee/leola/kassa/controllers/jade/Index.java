@@ -26,9 +26,10 @@ public class Index extends JadeController {
     }
 
     @GET
-    @Path("/dialog/{dialog}")
-    public Response dialog(@PathParam("dialog") String dialog) {
-        return ok(render("dialog/" + dialog));
+    @Path("/dialog/{modal}")
+    public Response modal(@PathParam("modal") String modal) {
+        log.debug("Opening modal {}", modal);
+        return ok(render("dialog/" + modal));
     }
 
     @GET
@@ -53,6 +54,7 @@ public class Index extends JadeController {
     @GET
     @Path("/admin/{page}")
     public Response page(@PathParam("page") String page) {
+        log.debug("Opening admin page {}", page);
         return ok(render("admin/" + page));
     }
 }

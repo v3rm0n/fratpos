@@ -9,9 +9,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Created by vermon on 23/03/14.
- */
 @Entity
 public class Feedback extends Model {
 
@@ -21,7 +18,7 @@ public class Feedback extends Model {
     private Date created = new Date();
 
     public String getFormattedTime() {
-        DateFormat df = new SimpleDateFormat("hh:mm dd.MM.YYYY");
+        DateFormat df = new SimpleDateFormat("HH:mm dd.MM.YYYY");
         return df.format(created);
     }
 

@@ -75,6 +75,18 @@
         };
     });
 
+    app.directive("scrollToViewWhen", function ($timeout) {
+        return {
+            link: function(scope, element, attrs) {
+                scope.$on(attrs.scrollToViewWhen, function () {
+                    $timeout(function () {
+                        angular.element(element)[0].scrollIntoView();
+                    });
+                });
+            }
+        };
+    });
+
     //Backend API
     app.factory('api', function ($http, $resource) {
         return {

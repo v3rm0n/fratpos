@@ -1,13 +1,9 @@
 package ee.leola.kassa;
 
 import com.avaje.ebean.config.GlobalProperties;
-import com.google.common.collect.Sets;
-import ee.leola.kassa.controllers.Public;
-import ee.leola.kassa.controllers.Statistics;
-import ee.leola.kassa.controllers.jade.Index;
-import ee.leola.kassa.controllers.rest.Rest;
-import ee.leola.kassa.controllers.rest.Stocktakings;
-import ee.leola.kassa.controllers.rest.Transactions;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import ee.leola.kassa.controllers.rest.RestException;
+import ee.leola.kassa.helpers.Json;
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
@@ -27,11 +23,7 @@ import javax.ws.rs.ext.Provider;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.URI;
-import java.util.Set;
 
-/**
- * Created by vermon on 30/03/14.
- */
 public class Server {
 
     private static final Logger log = LoggerFactory.getLogger(Server.class);
@@ -47,13 +39,20 @@ public class Server {
         SLF4JBridgeHandler.install();
         log.info("Starting server");
         URI baseUri = UriBuilder.fromUri("http://localhost/").port(8080).build();
-        Set<Class<?>> classes = Sets.newHashSet(Index.class, Public.class, Stocktakings.class, Transactions.class,
-                Statistics.class, LogAllExceptionMapper.class);
-        classes.addAll(Rest.controllers);
-        ResourceConfig config = new ResourceConfig(classes);
-        Closeable server = SimpleContainerFactory.create(baseUri, config);
+        Closeable server = SimpleContainerFactory.create(baseUri, new ResourceConfig().packages(Server.class.getPackage().toString()));
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                try {
+                    log.info("Stopping server");
+                    server.close();
+                } catch (IOException e) {
+                    log.error("Could not stop server", e);
+                }
+            }
+        });
         log.info("Server started");
     }
+
 
     public static void initDB() throws LiquibaseException {
         ResourceAccessor ra = new ClassLoaderResourceAccessor();
@@ -62,18 +61,31 @@ public class Server {
         String dbURL = GlobalProperties.get("datasource." + defaultDS + ".databaseUrl", null);
         String username = GlobalProperties.get("datasource." + defaultDS + ".username", null);
         String password = GlobalProperties.get("datasource." + defaultDS + ".password", null);
+        log.info("Connecting to DB {}", dbURL);
         Database db = DatabaseFactory.getInstance().openDatabase(dbURL, username, password, ra);
         Liquibase liquibase = new Liquibase("sql/changelog.xml", ra, db);
         liquibase.update("");
     }
 
     @Provider
-    public static class LogAllExceptionMapper implements ExceptionMapper<Throwable> {
+    public static class GenericExceptionMapper implements ExceptionMapper<Throwable> {
 
         @Override
         public Response toResponse(Throwable e) {
             log.error(e.getMessage(), e);
-            return Response.serverError().entity(e).build();
+            ObjectNode error = Json.newObject();
+            error.put("error", "Internal server error");
+            return Response.serverError().entity(error).build();
+        }
+    }
+
+    @Provider
+    public static class RestExceptionMapper implements ExceptionMapper<RestException> {
+
+        @Override
+        public Response toResponse(RestException e) {
+            log.error(e.getMessage(), e);
+            return Response.serverError().entity(Json.toJson(e)).build();
         }
     }
 
