@@ -7,7 +7,7 @@ block content
             .col-md-6.col-xs-6
                 h3= t.message('pos.title')
             .col-md-6.col-xs-6
-                button.btn.btn-info.pull-right(ng-click='openFeedbackDialog()')= t.message('pos.feedback')
+                button#feedback-btn.btn.btn-info.pull-right(ng-click='openFeedbackDialog()')= t.message('pos.feedback')
         .row
             .col-md-4
                 .form-search.userform.has-feedback.search-only.has-error(ng-hide='isUserSelected()')

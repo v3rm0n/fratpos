@@ -1,9 +1,11 @@
-package ee.leola.kassa.controllers.rest
+package integration.ee.leola.kassa.rest
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.ArrayNode
 import ee.leola.kassa.Server
 import ee.leola.kassa.models.Feedback
+import ee.leola.kassa.controllers.rest.Rest
+import ee.leola.kassa.controllers.rest.RestController
 import spock.lang.Specification
 
 /**

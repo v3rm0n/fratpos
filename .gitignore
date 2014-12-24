@@ -1,8 +1,10 @@
 .idea
 target
-*.iml
 rebel.xml
 .gradle
 build
+*.iml
 *.iws
 *.ipr
+*.ids
+phantomjsdriver.log

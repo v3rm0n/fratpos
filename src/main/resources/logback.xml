@@ -7,10 +7,10 @@
         </layout>
     </appender>
 
-    <logger name="ee.leola.kassa" level="TRACE"/>
+    <logger name="ee.leola.kassa" level="DEBUG"/>
 
 
-    <root level="TRACE">
+    <root level="INFO">
         <appender-ref ref="STDOUT"/>
     </root>
 
