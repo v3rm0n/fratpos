@@ -1,41 +1,36 @@
 package ee.leola.kassa.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 @Entity
-public class TransactionProduct extends Product {
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class TransactionProduct extends Model {
 
-    @ManyToOne
-    @JsonIgnore
-    private Transaction transaction;
+	@NotNull
+	private String name;
 
-    private Long productId;
+	@NotNull
+	private BigDecimal price = BigDecimal.ZERO;
 
-    public TransactionProduct() {
-    }
+	private Integer quantity;
 
-    public TransactionProduct(Product product, Integer quantity) {
-        setQuantity(quantity);
-        setName(product.getName());
-        setPrice(product.getPrice());
-    }
+	@OneToOne
+	private Product product;
 
-    public Transaction getTransaction() {
-        return transaction;
-    }
+	public TransactionProduct() {
+	}
 
-    public void setTransaction(Transaction transaction) {
-        this.transaction = transaction;
-    }
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
+	public TransactionProduct(Product product, Integer quantity) {
+		setQuantity(quantity);
+		setName(product.getName());
+		setPrice(product.getPrice());
+		setProduct(product);
+	}
 }

@@ -48,8 +48,7 @@ Stocktaking can be seen as a ***HTML*** or downloaded as a ***CSV*** file.
 This project contains the following technologies.
 
 ### Backend
-* JAX-RS <https://jax-rs-spec.java.net/>
-* Ebean <http://www.avaje.org/ebean/introduction.html>
+* Spring Boot <http://projects.spring.io/spring-boot/>
 * Jade <http://jade-lang.com/>
 
 ### Frontend

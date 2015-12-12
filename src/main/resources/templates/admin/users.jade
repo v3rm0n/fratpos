@@ -1,0 +1,35 @@
+.row(ng-controller='UsersController', ng-show='users != null')
+    br
+    .col-md-12
+        p(ng-hide='users.length > 0') Kasutajaid ei ole. Uue kasutaja lisamiseks vajuta nuppu Lisa kasutaja.
+    .col-md-3
+        div(ng-show='users.length > 0')
+            .form-search.search-only
+                i.search-icon.glyphicon.glyphicon-search
+                input.form-control.search-query(type='text', placeholder='Kasutaja nimi', ng-model='filter')
+            br
+    .col-md-12
+        div(ng-show='users.length > 0')
+            table.table.table-bordered.table-hover
+                thead
+                    tr
+                        th(ng-click='sort("status.name")') Staatus
+                        th(ng-click='sort("firstName")') Eesnimi
+                        th(ng-click='sort("lastName")') Perenimi
+                        th(ng-click='sort("beerName")') Õllenimi
+                        th(ng-click='sort("balance")') Saldo
+                tbody
+                    tr(ng-repeat='user in filteredUsers()', ng-click='openUserDialog(user)')
+                        td(ng-bind='user.status.name')
+                        td(ng-bind='user.firstName')
+                        td(ng-bind='user.lastName')
+                        td(ng-bind='user.beerName')
+                        td(ng-bind-template='{{user.balance}} €')
+                tfoot
+                    tr
+                        th
+                        th
+                        th
+                        th Kokku
+                        th(ng-bind-template='{{totalBalance()}} €')
+        button.btn.btn-primary(ng-click='openUserDialog()') Lisa kasutaja

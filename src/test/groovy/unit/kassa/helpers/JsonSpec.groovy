@@ -7,9 +7,6 @@ import ee.leola.kassa.models.Status
 import ee.leola.kassa.models.User
 import spock.lang.Specification
 
-/**
- * Created by vermon on 08/10/14.
- */
 class JsonSpec extends Specification {
 
     def "object to JSON"() {

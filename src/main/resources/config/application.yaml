@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: fratpos
+  datasource:
+    url: jdbc:mysql://192.168.99.100:32770/fratpos?characterEncoding=UTF-8
+    driver-class-name: com.mysql.jdbc.Driver
+    username: fratpos
+    password: fratpos
+    initial-size: 1
+    validation-query: SELECT 1
+    test-on-borrow: true
+    test-while-idle: true
