@@ -9,6 +9,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -16,13 +17,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class JadeConfig extends WebMvcConfigurerAdapter {
+public class ViewConfiguration extends WebMvcConfigurerAdapter {
 
 	@Autowired
 	private ResourceLoader resourceLoader;
 
 	@Autowired
 	private MessageSource messageSource;
+
+	@Override
+	public void addViewControllers(ViewControllerRegistry registry) {
+		registry.addViewController("/").setViewName("index");
+		registry.addViewController("/admin").setViewName("admin");
+	}
 
 	@Override
 	public void configureViewResolvers(ViewResolverRegistry registry) {

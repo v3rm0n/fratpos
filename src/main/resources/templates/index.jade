@@ -1,5 +1,8 @@
 extends layout
 
+block title
+    title= t.message('pos.title')
+
 block content
     .container(ng-controller='PosController', ng-cloak, scroll-to-view-when="paid")
         br
