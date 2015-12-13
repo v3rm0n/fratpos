@@ -16,6 +16,10 @@ apply plugin: 'spring-boot'
 apply plugin: 'groovy'
 apply plugin: 'jacoco'
 
+springBoot {
+    executable = true
+}
+
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
