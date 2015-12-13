@@ -63,7 +63,7 @@ block content
         .row
             .col-md-12
                 .btn-group
-                    button.btn.btn-lg(ng-repeat='paytype in paytypes', ng-click='pay(paytype)', ng-disabled='isDisabled(paytype)', disabled) {{paytype.name}}
+                    button.btn.btn-lg.btn-primary(ng-repeat='paytype in paytypes', ng-click='pay(paytype)', ng-disabled='isDisabled(paytype)', disabled) {{paytype.name}}
         br
         .row
             .col-md-12

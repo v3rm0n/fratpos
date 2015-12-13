@@ -3,6 +3,8 @@ package ee.leola.kassa.controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import ee.leola.kassa.helpers.Json;
+import ee.leola.kassa.models.Product;
+import ee.leola.kassa.models.Transaction;
 import ee.leola.kassa.repository.PaytypeRepository;
 import ee.leola.kassa.repository.ProductRepository;
 import ee.leola.kassa.repository.TransactionRepository;
@@ -13,6 +15,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
+
+import static java.util.Comparator.comparing;
 
 @Controller
 public class ViewController {
@@ -39,9 +45,13 @@ public class ViewController {
 	public JsonNode getPosData() {
 		ObjectNode result = Json.newObject();
 		result.set("users", Json.toJson(userRepository.findAll()));
-		result.set("products", Json.toJson(productRepository.findAll()));
+		List<Product> products = productRepository.findAll();
+		products.sort(comparing(Product::getName));
+		result.set("products", Json.toJson(products));
 		result.set("paytypes", Json.toJson(paytypeRepository.findAll()));
-		result.set("transactions", Json.toJson(transactionRepository.findByInvalidFalse()));
+		List<Transaction> transactions = transactionRepository.findByInvalidFalse();
+		transactions.sort(comparing(Transaction::getCreated).reversed());
+		result.set("transactions", Json.toJson(transactions));
 		return result;
 	}
 
