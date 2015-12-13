@@ -55,7 +55,7 @@ dependencies {
 	providedRuntime 'org.projectlombok:lombok:1.16.6'
 
 	runtime 'mysql:mysql-connector-java'
-	compile 'org.liquibase:liquibase-core'
+	compile 'org.flywaydb:flyway-core'
 
 	compile 'de.neuland-bfi:spring-jade4j:1.1.3'
 

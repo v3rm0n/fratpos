@@ -10,7 +10,9 @@ import javax.persistence.Lob;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Entity
 @Data
@@ -87,8 +89,8 @@ public class Stocktaking extends Model {
 		return sums;
 	}
 
-	public List<JsonNode> getUsers() {
-		return Collections.singletonList(Json.toJson(users));
+	public JsonNode getUsers() {
+		return Json.toJson(users);
 	}
 
 	public JsonNode getProducts() {

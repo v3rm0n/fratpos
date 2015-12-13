@@ -1,7 +1,3 @@
---liquibase formatted SQL
-
---changeset vermon:1
-
 CREATE TABLE feedback (
 	id      BIGINT AUTO_INCREMENT NOT NULL,
 	content VARCHAR(1024)         NOT NULL,
@@ -50,17 +46,17 @@ CREATE TABLE transaction (
 );
 
 CREATE TABLE transaction_product (
-	id             BIGINT AUTO_INCREMENT NOT NULL,
-	name           VARCHAR(255)          NOT NULL,
-	price          DECIMAL(38, 2)        NOT NULL,
-	quantity       INTEGER               NOT NULL,
-	product_id     BIGINT                NOT NULL,
+	id         BIGINT AUTO_INCREMENT NOT NULL,
+	name       VARCHAR(255)          NOT NULL,
+	price      DECIMAL(38, 2)        NOT NULL,
+	quantity   INTEGER               NOT NULL,
+	product_id BIGINT                NOT NULL,
 	CONSTRAINT pk_transaction_product PRIMARY KEY (id)
 );
 
 CREATE TABLE transaction_transaction_product (
-	transaction_id BIGINT NOT NULL,
-	transaction_product_id  BIGINT NOT NULL,
+	transaction_id         BIGINT NOT NULL,
+	transaction_product_id BIGINT NOT NULL,
 	CONSTRAINT pk_transaction_transaction_product PRIMARY KEY (transaction_id, transaction_product_id)
 );
 
@@ -80,6 +76,7 @@ CREATE TABLE paytype_status (
 	status_id  BIGINT NOT NULL,
 	CONSTRAINT pk_paytype_status PRIMARY KEY (paytype_id, status_id)
 );
+
 ALTER TABLE transaction ADD CONSTRAINT fk_transaction_user_1 FOREIGN KEY (user_id) REFERENCES user (id)
 	ON DELETE RESTRICT
 	ON UPDATE RESTRICT;
