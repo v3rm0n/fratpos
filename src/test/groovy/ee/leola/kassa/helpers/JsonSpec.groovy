@@ -2,7 +2,7 @@ package ee.leola.kassa.helpers
 
 import com.fasterxml.jackson.databind.JsonNode
 import ee.leola.kassa.models.Status
-import ee.leola.kassa.models.User
+import ee.leola.kassa.user.model.User
 import spock.lang.Specification
 
 class JsonSpec extends Specification {

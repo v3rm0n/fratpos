@@ -1,0 +1,163 @@
+<section class="content-header">
+	<h1>Inventuur</h1>
+</section>
+<section class="content">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="box">
+				<div class="box-body">
+					<span>Loomise aeg:  {{stocktaking.formattedTime}}</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row" ng-if="stocktaking.users.length > 0">
+		<div class="col-md-12">
+			<div class="box">
+				<div class="box-header">
+					<h3 class="box-title">Muutunud saldod</h3>
+				</div>
+				<div class="box-body">
+					<div>
+						<table class="table table-bordered table-hover">
+							<thead>
+							<tr>
+								<th>Staatus</th>
+								<th>Eesnimi</th>
+								<th>Perenimi</th>
+								<th>Õllenimi</th>
+								<th>Saldo</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr ng-repeat="user in stocktaking.users">
+								<td>{{user.status.name}}</td>
+								<td>{{user.firstName}}</td>
+								<td>{{user.lastName}}</td>
+								<td>{{user.beerName}}</td>
+								<td>{{user.balance}} €</td>
+							</tr>
+							</tbody>
+							<tfoot>
+							<tr>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th>Kokku</th>
+								<th>{{stocktaking.balancesSum}} €</th>
+							</tr>
+							</tfoot>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row" ng-if="stocktaking.transactions.length > 0">
+		<div class="col-md-12">
+			<div class="box">
+				<div class="box-header">
+					<h3 class="box-title">Tehingud</h3>
+				</div>
+				<div class="box-body">
+					<table class="table table-bordered table-hover">
+						<thead>
+						<tr>
+							<th>Aeg</th>
+							<th>Nimi</th>
+							<th>Summa</th>
+							<th>Makseviis</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="transaction in stocktaking.transactions" class="{{transaction.invalid ? &quot;danger&quot; : &quot;&quot;}}">
+							<td>{{transaction.formattedTime}}</td>
+							<td>{{transaction.user.label}}</td>
+							<td>{{transaction.sum}} €</td>
+							<td>{{transaction.paytype}}</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+			<div class="box">
+				<div class="box-header">
+					<h3 class="box-title">Makseviisid</h3>
+				</div>
+				<div class="box-body">
+					<table class="table table-bordered table-hover">
+						<thead>
+						<tr>
+							<th>Makseviis</th>
+							<th>Kokku</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="(type, sum) in stocktaking.sums">
+							<td>{{type}}</td>
+							<td>{{sum}} €</td>
+						</tr>
+						</tbody>
+						<tfoot>
+						<tr>
+							<th>Kokku</th>
+							<th>{{stocktaking.transactionsSum}} €</th>
+						</tr>
+						</tfoot>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6" ng-if="stocktaking.products.length > 0">
+			<div class="box">
+				<div class="box-header">
+					<h3 class="box-title">Laoseis</h3>
+				</div>
+				<div class="box-body">
+					<table class="table table-bordered table-hover">
+						<thead>
+						<tr>
+							<th>Toode</th>
+							<th>Hind</th>
+							<th>Kogus</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="product in stocktaking.products">
+							<td>{{product.name}}</td>
+							<td>{{product.price}} €</td>
+							<td>{{product.quantity}}</td>
+						</tr>
+						</tbody>
+						<tfoot>
+						<tr>
+							<th></th>
+							<th>Kokku</th>
+							<th>{{stocktaking.productsQuantity}}</th>
+						</tr>
+						</tfoot>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row" ng-if="previous">
+		<div class="col-md-12">
+			<div class="box">
+				<div class="box-header">
+					<h3 class="box-title">Võrdlus eelmise inventuuriga</h3>
+				</div>
+				<div class="box-body">
+					<p>Loomise aeg:  {{previous.formattedTime}}</p>
+					<p>Laoseisu muutus: {{stocktaking.productsQuantity - previous.productsQuantity}} (Laoseis eelmine inventuur: {{previous.productsQuantity}})</p>
+					<p><a ng-href="#stocktaking/{{previous.id}}">Vaata eelmist</a></p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<button ng-click="back()" class="btn btn-primary">Tagasi</button>
+</section>

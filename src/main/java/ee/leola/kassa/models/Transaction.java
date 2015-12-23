@@ -1,6 +1,7 @@
 package ee.leola.kassa.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import ee.leola.kassa.user.model.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

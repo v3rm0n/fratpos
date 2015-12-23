@@ -2,7 +2,7 @@ package ee.leola.kassa.repository;
 
 import ee.leola.kassa.models.PopularProduct;
 import ee.leola.kassa.models.Transaction;
-import ee.leola.kassa.models.User;
+import ee.leola.kassa.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

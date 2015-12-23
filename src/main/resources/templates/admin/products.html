@@ -1,0 +1,39 @@
+<section class="content-header">
+	<h1>Tooted</h1>
+</section>
+<section class="content">
+	<div ng-controller="ProductsController" ng-show="products != null" class="row">
+		<div class="col-md-12">
+			<div class="box">
+				<div class="box-body">
+					<p ng-hide="products.length > 0">Tooteid ei ole. Uute toodete lisamiseks vajuta nuppu "Lisa toode"</p>
+					<table ng-show="products.length > 0" class="table table-bordered table-hover">
+						<thead>
+						<tr>
+							<th ng-click="sort('name')">Toode</th>
+							<th ng-click="sort('price')">Hind</th>
+							<th ng-click="sort('quantity')">Kogus</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="product in sortedProducts()" ng-click="openProductDialog(product)">
+							<td ng-bind="product.name"></td>
+							<td ng-bind-template="{{product.price}} €"></td>
+							<td ng-bind="product.quantity" ng-style="{color: rowColor(product)}"></td>
+						</tr>
+						</tbody>
+						<tfoot>
+						<tr>
+							<th></th>
+							<th>Kokku</th>
+							<th ng-bind="totalProducts()"></th>
+						</tr>
+						</tfoot>
+					</table>
+					<br/>
+					<button ng-click="openProductDialog()" class="btn btn-primary">Lisa toode</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

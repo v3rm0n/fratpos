@@ -8,17 +8,20 @@ import ee.leola.kassa.models.Transaction;
 import ee.leola.kassa.repository.PaytypeRepository;
 import ee.leola.kassa.repository.ProductRepository;
 import ee.leola.kassa.repository.TransactionRepository;
-import ee.leola.kassa.repository.UserRepository;
+import ee.leola.kassa.user.model.User;
+import ee.leola.kassa.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
+import java.security.Principal;
 import java.util.List;
 
 import static java.util.Comparator.comparing;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @Controller
 public class ViewController {
@@ -35,13 +38,22 @@ public class ViewController {
 	@Autowired
 	private PaytypeRepository paytypeRepository;
 
-	@RequestMapping(value = "/dialog/{modal}", method = RequestMethod.GET)
+	@RequestMapping(value = "/", method = GET)
+	public ModelAndView index(Principal principal) {
+		User user = null;
+		if (principal != null) {
+			user = userRepository.findByEmail(principal.getName());
+		}
+		return new ModelAndView("index", "user", user);
+	}
+
+	@RequestMapping(value = "/dialog/{modal}", method = GET)
 	public String modal(@PathVariable("modal") String modal) {
 		return "dialog/" + modal;
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/posdata", method = RequestMethod.GET)
+	@RequestMapping(value = "/posdata", method = GET)
 	public JsonNode getPosData() {
 		ObjectNode result = Json.newObject();
 		result.set("users", Json.toJson(userRepository.findAll()));
@@ -55,7 +67,7 @@ public class ViewController {
 		return result;
 	}
 
-	@RequestMapping(value = "/admin/{page}", method = RequestMethod.GET)
+	@RequestMapping(value = "/admin/{page}", method = GET)
 	public String page(@PathVariable("page") String page) {
 		return "admin/" + page;
 	}

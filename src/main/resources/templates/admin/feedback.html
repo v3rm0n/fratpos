@@ -1,0 +1,30 @@
+<section class="content-header">
+	<h1>Tagasiside</h1>
+</section>
+<section class="content">
+	<div ng-controller="FeedbackController" ng-show="feedbacks != null" class="row">
+		<div class="col-md-12">
+			<div class="box">
+				<div class="box-body">
+					<p ng-hide="feedbacks.length > 0">Tagasisidet ei ole jäetud</p>
+					<table ng-show="feedbacks.length > 0" class="table table-bordered table-hover">
+						<thead>
+						<tr>
+							<th>Aeg</th>
+							<th>Sisu</th>
+							<th></th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="feedback in feedbacks">
+							<td ng-bind="feedback.formattedTime"></td>
+							<td ng-bind="feedback.content"></td>
+							<td><a ng-click="deleteFeedback(feedback)" class="btn btn-danger">Kustuta</a></td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

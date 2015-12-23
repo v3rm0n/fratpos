@@ -34,8 +34,12 @@ public abstract class RestBaseController<T, ID extends Serializable> {
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	@ResponseBody
-	public T get(@PathVariable ID id) {
-		return repo.findOne(id);
+	public ResponseEntity<T> get(@PathVariable ID id) {
+		T t = repo.findOne(id);
+		if (t != null) {
+			return new ResponseEntity<>(t, HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST, consumes = {MediaType.APPLICATION_JSON_VALUE})

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="_csrf" th:content="${_csrf.token}"></meta>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"></meta>
+  <title th:text="#{title}">Leola Infosüsteem</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.6/dist/css/bootstrap.min.css}" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"/>
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"/>
+  <link rel="stylesheet" href="/webjars/iCheck/1.0.2/skins/flat/yellow.css"/>
+  <!-- Theme style -->
+  <link rel="stylesheet" th:href="@{/webjars/adminlte/2.3.2/dist/css/AdminLTE.min.css}" href="https://almsaeedstudio.com/themes/AdminLTE/dist/css/AdminLTE.min.css"/>
+  <link rel="stylesheet" th:href="@{/webjars/adminlte/2.3.2/dist/css/skins/skin-yellow.min.css}" href="https://almsaeedstudio.com/themes/AdminLTE/dist/css/skins/_all-skins.min.css"/>
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="//oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+  <link rel="shortcut icon" href="/img/favicon.ico"/>
+
+  <style>
+    .modal-backdrop.am-fade {
+      opacity: .5;
+      transition: opacity .15s linear;
+    }
+
+    .modal-backdrop.am-fade.ng-enter {
+      opacity: 0;
+    }
+
+    .modal-backdrop.am-fade.ng-enter, .modal-backdrop.am-fade.ng-enter.ng-enter-active {
+      opacity: .5;
+    }
+
+    .modal-backdrop.am-fade.ng-leave {
+      opacity: .5;
+    }
+
+    .modal-backdrop.am-fade.ng-leave, .modal-backdrop.am-fade.ng-leave-active {
+      opacity: 0;
+    }
+  </style>
+
+</head>
+<body class="hold-transition skin-yellow sidebar-mini" ng-app="fratis">
+<div class="wrapper">
+
+  <!-- Main Header -->
+  <header class="main-header">
+
+    <!-- Logo -->
+    <a href="#" class="logo">
+      <!-- mini logo for sidebar mini 50x50 pixels -->
+      <span class="logo-mini"><b>L</b>IS</span>
+      <!-- logo for regular state and mobile devices -->
+      <span class="logo-lg"><b>Leola</b>IS</span>
+    </a>
+
+    <!-- Header Navbar -->
+    <nav class="navbar navbar-static-top" role="navigation">
+      <!-- Sidebar toggle button-->
+      <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+        <span class="sr-only">Toggle navigation</span>
+      </a>
+      <!-- Navbar Right Menu -->
+      <div class="navbar-custom-menu">
+        <form method="get" action="login.html" th:method="post" th:action="@{/logout}" name="logoutForm">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        </form>
+        <ul class="nav navbar-nav">
+          <!-- User Account Menu -->
+          <li class="user user-menu">
+            <!-- Menu Toggle Button -->
+            <a th:href="@{/#profile}" href="admin/profile.html">
+              <span><i class="fa fa-user"></i> <span th:text="${user.label}">ksv! Peeter Meeter(Õllenimi)</span></span>
+            </a>
+          </li>
+          <li>
+              <a href="#" onclick="document.logoutForm.submit();"><i class="fa fa-sign-out"></i> Logi välja</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Left side column. contains the logo and sidebar -->
+  <aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+      <!-- Sidebar Menu -->
+      <ul class="sidebar-menu">
+        <li class="header">MENÜÜ</li>
+        <!-- Optionally, you can add icons to the links -->
+        <li class="treeview">
+          <a href="#"><i class="fa fa-users"></i> <span>Liikmed</span> <i class="fa fa-angle-left pull-right"></i></a>
+          <ul class="treeview-menu">
+            <li><a href="#users">Nimekiri</a></li>
+            <li><a href="#statuses">Staatused</a></li>
+            <li><a href="#notifications">Teavitused</a></li>
+            <li><a href="#roles">Rollid ja õigused</a></li>
+          </ul>
+        </li>
+        <li><a href="#obligations"><i class="fa fa-arrow-left"></i> <span>Kohustused</span></a></li>
+        <li><a href="#income"><i class="fa fa-arrow-right"></i> <span>Laekumised</span></a></li>
+        <li><a href="#reports"><i class="fa fa-pie-chart"></i> <span>Aruanded</span></a></li>
+        <li class="treeview">
+          <a href="#"><i class="fa fa-shopping-cart"></i> <span>Kassa</span> <i class="fa fa-angle-left pull-right"></i></a>
+          <ul class="treeview-menu">
+            <li><a href="#products">Laoseis</a></li>
+            <li><a href="#transactions">Tehingud</a></li>
+            <li><a href="#paytypes">Makseviisid</a></li>
+            <li><a href="#stocktakings">Inventuur</a></li>
+            <li><a href="#feedback">Tagasiside</a></li>
+          </ul>
+        </li>
+      </ul>
+      <!-- /.sidebar-menu -->
+    </section>
+    <!-- /.sidebar -->
+  </aside>
+
+  <div class="content-wrapper" ng-view=""></div>
+
+  <!-- Main Footer -->
+  <footer class="main-footer">
+    <!-- Default to the left -->
+    <strong>Copyright &copy; 2016 <a href="http://www.leola.ee">Leola</a>.</strong> Kõik õigused kaitstud.
+  </footer>
+
+</div>
+<script th:src="@{/webjars/jquery/2.1.4/dist/jquery.min.js}" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script th:src="@{/webjars/iCheck/1.0.2/icheck.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/3.3.6/dist/js/bootstrap.min.js}" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script th:src="@{/webjars/adminlte/2.3.2/dist/js/app.min.js}" src="https://almsaeedstudio.com/themes/AdminLTE/dist/js/app.min.js"></script>
+<script th:src="@{/webjars/angularjs/1.4.8/angular.min.js}" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.8/angular.min.js"></script>
+<script th:src="@{/webjars/angularjs/1.4.8/angular-route.min.js}" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.8/angular-route.min.js"></script>
+<script th:src="@{/webjars/angularjs/1.4.8/angular-resource.min.js}" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.8/angular-resource.min.js"></script>
+<script src="/webjars/angular-strap/2.3.5/dist/angular-strap.min.js"></script>
+<script src="/webjars/angular-strap/2.3.5/dist/angular-strap.tpl.min.js"></script>
+<script th:src="@{js/is/app.js}"></script>
+<script th:src="@{js/is/controllers.js}"></script>
+</body>
+</html>

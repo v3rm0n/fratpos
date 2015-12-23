@@ -1,0 +1,35 @@
+<section class="content-header">
+	<h1>Makseviisid</h1>
+</section>
+<section class="content">
+	<div ng-controller="PaytypesController" ng-show="paytypes != null" class="row">
+		<div class="col-md-12">
+			<div class="box">
+				<div class="box-body">
+					<p ng-hide="paytypes.length > 0">Makseviise ei ole. Lisamiseks vajuta nuppu "Lisa makseviis"</p>
+					<table ng-show="paytypes.length > 0" class="table table-bordered table-hover">
+						<thead>
+						<tr>
+							<th>Nimi</th>
+							<th>Mõjutab saldot</th>
+							<th>Mõjutab kogust</th>
+							<th>Lubatud staatustele</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="paytype in paytypes" ng-click="openPaytypeDialog(paytype)">
+							<td ng-bind="paytype.name"></td>
+							<td ng-bind-template="{{ paytype.affectsBalance ? 'Jah' : 'Ei' }}"></td>
+							<td ng-bind-template="{{ paytype.affectsQuantity ? 'Jah' : 'Ei' }}"></td>
+							<td ng-bind="statuses(paytype)"></td>
+						</tr>
+						</tbody>
+					</table>
+					<br/>
+					<button ng-click="openPaytypeDialog()" class="btn btn-primary">Lisa makseviis</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+

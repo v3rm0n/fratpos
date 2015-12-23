@@ -1,0 +1,42 @@
+<section class="content-header">
+	<h1>Tehingud</h1>
+</section>
+<section class="content">
+	<div ng-controller="TransactionsController" ng-show="transactions != null" class="row">
+		<div class="col-md-12">
+			<div class="box">
+				<div class="box-body">
+					<p ng-hide="transactions.length > 0">Käesoleval perioodil ei ole veel tehinguid tehtud.</p>
+					<div ng-show="transactions.length > 0">
+						<table class="table table-bordered table-hover">
+							<thead>
+							<tr>
+								<th>Aeg</th>
+								<th>Nimi</th>
+								<th>Makseviis</th>
+								<th>Summa</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr ng-repeat="transaction in transactions" ng-class="{danger: transaction.invalid}" ng-click="openDialog(transaction)">
+								<td ng-bind="transaction.formattedTime"></td>
+								<td ng-bind="transaction.user.label"></td>
+								<td ng-bind="transaction.paytype"></td>
+								<td>{{transaction.sum}} €</td>
+							</tr>
+							</tbody>
+							<tfoot>
+							<tr>
+								<th></th>
+								<th></th>
+								<th>Kokku</th>
+								<th ng-bind-template="{{totalSum()}} €"></th>
+							</tr>
+							</tfoot>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

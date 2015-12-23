@@ -1,0 +1,35 @@
+<section class="content-header">
+	<h1>Inventuur</h1>
+</section>
+<section class="content">
+	<div ng-controller="StocktakingController" class="row">
+		<div class="col-md-12"><br/>
+			<div class="box">
+				<div class="box-body">
+					<p ng-hide="stocktakings.length > 0">Inventuure pole veel tehtud. Uue inventuuri tegemiseks vajuta nuppu "Inventuur". </p>
+					<p>Inventuuri tegemine nullib kõikide kasutajate saldod ning eemaldab tehingud. Tulemus salvestatakse CSV faili, mida saab igal ajal siit menüüst uuesti alla laadida.</p>
+					<table ng-show="stocktakings.length > 0" class="table table-bordered table-hover">
+						<thead>
+						<tr>
+							<th>Aeg</th>
+							<th>Saldo summa</th>
+							<th>Tehingute summa</th>
+							<th>Laoseis</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="stocktaking in stocktakings" ng-click="view(stocktaking)">
+							<td ng-bind="stocktaking.formattedTime"></td>
+							<td>{{stocktaking.balancesSum}} €</td>
+							<td>{{stocktaking.transactionsSum}} €</td>
+							<td>{{stocktaking.productsQuantity}}</td>
+						</tr>
+						</tbody>
+					</table>
+					<br/>
+					<button ng-click="stocktaking()" class="btn btn-danger">Inventuur</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

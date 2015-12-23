@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html ng-app="fratpos" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title th:text="#{title.pos}">Kassa</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<meta name="_csrf" th:content="${_csrf.token}"></meta>
+	<meta name="_csrf_header" th:content="${_csrf.headerName}"></meta>
+	<link rel="stylesheet" href="/css/style.css"/>
+	<link rel="stylesheet" href="/webjars/bootstrap/3.3.6/dist/css/bootstrap.min.css"/>
+	<link rel="stylesheet" href="/webjars/Bootflat/2.0.4/bootflat/css/bootflat.min.css"/>
+	<link rel="shortcut icon" href="/img/favicon.ico"/>
+</head>
+<body>
+<div ng-controller="PosController" ng-cloak="ng-cloak" scroll-to-view-when="paid" class="container"><br/>
+	<div class="row">
+		<div class="col-md-6 col-xs-6">
+			<h3 th:text="#{title.pos}">Kassa</h3>
+		</div>
+		<div class="col-md-6 col-xs-6">
+			<button id="feedback-btn" ng-click="openFeedbackDialog()" class="btn btn-info pull-right" th:text="#{pos.feedback}">Tagasiside</button>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-4">
+			<div ng-hide="isUserSelected()" class="form-search userform has-feedback search-only has-error"><i class="search-icon glyphicon glyphicon-search"></i>
+				<input id="usernotselected" type="text" placeholder="Kliendi nimi" th:placeholder="#{pos.client}" ng-model="user" data-animation="am-flip-x" bs-options="user as user.label for user in users | filter:$viewValue" bs-typeahead="bs-typeahead" focus-me="focus-me" class="form-control search-query"/><span class="glyphicon glyphicon-remove form-control-feedback"></span>
+			</div>
+			<div ng-show="isUserSelected()" ng-cloak="ng-cloak" class="form-search userform has-feedback input-group has-success">
+				<input type="text" placeholder="Kliendi nimi" th:placeholder="#{pos.client}" ng-model="user" data-animation="am-flip-x" bs-options="user as user.label for user in users | filter:$viewValue" bs-typeahead="bs-typeahead" ng-click="clear()" class="form-control search-query"/><span class="input-group-btn">
+          <button data-type="last" ng-click="openInfoDialog(user)" class="btn btn-primary" th:text="#{pos.info}">Info</button></span>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div ng-show="status != null" ng-cloak="ng-cloak" class="alert {{statusError ? &quot;alert-danger&quot; : &quot;alert-success&quot;}}"><strong ng-bind="status"></strong> {{statusMessage}}</div>
+		</div>
+		<div class="col-md-2">
+			<button href="#" ng-click="toggleShowAllProducts()" ng-show="haveZeroQuantity()" class="btn pull-right" th:text="#{pos.products.show.all}">Kuva kõiki tooteid</button>
+		</div>
+	</div><br class="visible-xs visible-sm"/>
+	<div class="row">
+		<div class="col-md-12">
+			<table class="table table-bordered table-hover table-condensed table-striped">
+				<thead>
+				<tr>
+					<th th:text="#{pos.products.table.name}">Toode</th>
+					<th class="choosequantity" th:text="#{pos.products.table.quantity}">Kogus</th>
+					<th class="quantity" th:text="#{pos.products.table.count}">Laoseis</th>
+					<th class="price" th:text="#{pos.products.table.price}">Hind</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr ng-repeat="product in filteredProducts()" class="{{product.quantity &lt;= 0 &amp;&amp; &quot;danger&quot; || &quot;&quot;}}">
+					<td ng-bind="product.name"></td>
+					<td><span ng-click="changeQuantity(product, 1)" class="glyphicon glyphicon-plus"></span><span ng-bind="quantity(product)"></span><span ng-click="changeQuantity(product, -1)" class="glyphicon glyphicon-minus"></span></td>
+					<td ng-bind="product.quantity"></td>
+					<td><span ng-bind="product.price"></span> <span th:text="#{common.currency}">€</span></td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-4">
+			<h2><span th:text="#{pos.products.sum}">Summa:</span> <span ng-bind="sum()"></span> <span th:text="#{common.currency}">€</span></h2>
+		</div>
+		<div class="col-md-8">
+			<div ng-show="status != null" ng-cloak="ng-cloak" class="alert {{statusError ? &quot;alert-danger&quot; : &quot;alert-success&quot;}}"><strong ng-bind="status"></strong> {{statusMessage}}</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="btn-group">
+				<button ng-repeat="paytype in paytypes" ng-click="pay(paytype)" ng-disabled="isDisabled(paytype)" disabled="disabled" class="btn btn-lg btn-primary">{{paytype.name}}</button>
+			</div>
+		</div>
+	</div><br/>
+	<div class="row">
+		<div class="col-md-12">
+			<h4 th:text="#{pos.transactions.title}">Viimased tehingud</h4>
+			<table ng-show="transactions.length &gt; 0" class="table table-bordered table-hover">
+				<thead>
+				<tr>
+					<th th:text="#{pos.transactions.table.time}">Aeg</th>
+					<th th:text="#{pos.transactions.table.user}">Nimi</th>
+					<th th:text="#{pos.transactions.table.sum}">Summa</th>
+					<th th:text="#{pos.transactions.table.type}">Makseviis</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr ng-repeat="transaction in filteredTransactions()" ng-click="openTransactionDialog(transaction)">
+					<td ng-bind="transaction.formattedTime"></td>
+					<td ng-bind="transaction.user.label"></td>
+					<td>{{transaction.sum}} <span th:text="#{common.currency}">€</span></td>
+					<td ng-bind="transaction.paytype"></td>
+				</tr>
+				<tr ng-hide="showAllTransactions" ng-click="toggleTransactions(true)">
+					<td colspan="4" style="text-align:center"><span class="glyphicon glyphicon-arrow-down"></span><span th:text="#{pos.transactions.more}">Näita kõiki</span><span class="glyphicon glyphicon-arrow-down"></span></td>
+				</tr>
+				<tr ng-show="showAllTransactions" ng-click="toggleTransactions(false)">
+					<td colspan="4" style="text-align:center"><span class="glyphicon glyphicon-arrow-up"></span><span th:text="#{pos.transactions.less}">Näita vähem</span><span class="glyphicon glyphicon-arrow-up"></span></td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<script th:src="@{/webjars/jquery/2.1.4/dist/jquery.min.js}" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script type="text/javascript" src="/webjars/chartjs/2.0.0-alpha4/Chart.min.js"></script>
+<script type="text/javascript" src="/webjars/angularjs/1.4.8/angular.min.js"></script>
+<script type="text/javascript" src="/webjars/angularjs/1.4.8/angular-route.min.js"></script>
+<script type="text/javascript" src="/webjars/angularjs/1.4.8/angular-resource.min.js"></script>
+<script type="text/javascript" src="/webjars/angular-strap/2.3.5/dist/angular-strap.min.js"></script>
+<script type="text/javascript" src="/webjars/angular-strap/2.3.5/dist/angular-strap.tpl.min.js"></script>
+<script type="text/javascript" src="/js/pos/app.js"></script>
+<script type="text/javascript" src="/js/pos/controllers.js"></script>
+</body>
+</html>
