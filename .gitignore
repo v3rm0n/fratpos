@@ -8,3 +8,6 @@ build
 *.ipr
 *.ids
 phantomjsdriver.log
+
+.DS_Store
+.DS_Store?

@@ -71,6 +71,7 @@ dependencies {
 	compile 'org.webjars.bower:chartjs:2.0.0-alpha4'
 	compile 'org.webjars.bower:iCheck:1.0.2'
 	compile 'org.webjars.bower:Bootflat:2.0.4'
+	compile 'org.webjars.bower:pace:1.0.2'
 
 	testCompile 'com.h2database:h2'
 	testCompile 'org.spockframework:spock-core'
