@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+touch tmp/restart.txt
+echo "restarting app"

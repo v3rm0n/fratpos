@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -e
+oldrev=$1
+newrev=$2
+
+echo "Before restart"
+
+# Rebuild project
+./gradlew clean build
+
+echo "Build finished"
+
+#cp build/libs/fratpos-1.0-SNAPSHOT.jar /var/app/fratpos-test/fratpos-test.jar
