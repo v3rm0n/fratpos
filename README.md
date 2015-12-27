@@ -49,7 +49,7 @@ This project contains the following technologies.
 
 ### Backend
 * Spring Boot <http://projects.spring.io/spring-boot/>
-* Jade <http://jade-lang.com/>
+* Thymeleaf <http://www.thymeleaf.org/>
 
 ### Frontend
 * Bootstrap <http://twitter.github.io/bootstrap/>

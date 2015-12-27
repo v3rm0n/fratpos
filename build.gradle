@@ -75,7 +75,6 @@ dependencies {
 
 	testCompile 'com.h2database:h2'
 	testCompile 'org.spockframework:spock-core'
-	testCompile 'org.codehaus.groovy:groovy-all'
 	testCompile 'org.springframework.boot:spring-boot-starter-test'
 
 }
