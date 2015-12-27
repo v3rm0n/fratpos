@@ -27,7 +27,10 @@
 				scope.$watch(attrs.doughnutChart, function (value) {
 					if (value) {
 						var ctx = element[0].getContext("2d");
-						new Chart(ctx).Doughnut(value);
+						var config = {
+							data: value
+						};
+						Chart.Doughnut(ctx, config);
 					}
 				});
 			}

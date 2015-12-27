@@ -68,7 +68,7 @@ dependencies {
 	compile 'org.webjars.bower:jquery:2.1.4'
 	compile 'org.webjars.bower:angular-strap:2.3.5'
 	compile 'org.webjars.bower:adminlte:2.3.2'
-	compile 'org.webjars.bower:chartjs:2.0.0-alpha4'
+	compile 'org.webjars.bower:chartjs:2.0.0-beta1'
 	compile 'org.webjars.bower:iCheck:1.0.2'
 	compile 'org.webjars.bower:Bootflat:2.0.4'
 	compile 'org.webjars.bower:pace:1.0.2'

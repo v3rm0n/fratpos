@@ -203,14 +203,15 @@
 				var colors = ['#4A89DC', '#37BC9B', '#3BAFDA', '#DA4453', '#8CC152', '#434A54', '#E9573F', '#D770AD', '#967ADC', '#F6BB42'];
 				modalScope.colors = colors;
 
-				var data = [], i;
+				var data = [], labels =[], i;
 
 				for (i = 0; (i < 10) && (i < stat.popularProducts.length); i += 1) {
 					var popularProduct = stat.popularProducts[i];
-					data.push({value: popularProduct.count, color: colors[i], label:popularProduct.product.name});
+					labels.push(popularProduct.product.name);
+					data.push(popularProduct.count);
 				}
 
-				modalScope.chartdata = data;
+				modalScope.chartdata = {datasets: [{data: data, backgroundColor: colors}], labels: labels};
 			});
 
 		};
