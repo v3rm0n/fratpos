@@ -374,4 +374,8 @@
 		};
 	});
 
+	app.controller('ProfileController', function($scope, api){
+
+	});
+
 }(this.angular));

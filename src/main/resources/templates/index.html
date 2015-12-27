@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
   <meta charset="utf-8"/>
   <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -77,9 +77,15 @@
         </form>
         <ul class="nav navbar-nav">
           <!-- User Account Menu -->
-          <li class="user user-menu">
+          <li sec:authorize="hasAuthority('PROFILE_VIEW')" class="user user-menu">
             <!-- Menu Toggle Button -->
             <a th:href="@{/#profile}" href="admin/profile.html">
+              <span><i class="fa fa-user"></i> <span th:text="${user.label}">ksv! Peeter Meeter(Hüüdnimi)</span></span>
+            </a>
+          </li>
+          <li sec:authorize="!hasAuthority('PROFILE_VIEW')" class="user user-menu">
+            <!-- Menu Toggle Button -->
+            <a href="#">
               <span><i class="fa fa-user"></i> <span th:text="${user.label}">ksv! Peeter Meeter(Hüüdnimi)</span></span>
             </a>
           </li>
@@ -98,20 +104,19 @@
       <!-- Sidebar Menu -->
       <ul class="sidebar-menu">
         <li class="header">MENÜÜ</li>
-        <!-- Optionally, you can add icons to the links -->
-        <li class="treeview">
+        <li sec:authorize="hasAuthority('USERS_VIEW')" class="treeview">
           <a href="#"><i class="fa fa-users"></i> <span>Liikmed</span> <i class="fa fa-angle-left pull-right"></i></a>
           <ul class="treeview-menu">
             <li><a href="#users">Nimekiri</a></li>
             <li><a href="#statuses">Staatused</a></li>
-            <li><a href="#notifications">Teavitused</a></li>
-            <li><a href="#roles">Rollid ja õigused</a></li>
+            <li sec:authorize="hasAuthority('NOTIFICATIONS_VIEW')"><a href="#notifications">Teavitused</a></li>
+            <li sec:authorize="hasAuthority('ROLES_VIEW')"><a href="#roles">Rollid ja õigused</a></li>
           </ul>
         </li>
-        <li><a href="#obligations"><i class="fa fa-arrow-left"></i> <span>Kohustused</span></a></li>
-        <li><a href="#income"><i class="fa fa-arrow-right"></i> <span>Laekumised</span></a></li>
-        <li><a href="#reports"><i class="fa fa-pie-chart"></i> <span>Aruanded</span></a></li>
-        <li class="treeview">
+        <li sec:authorize="hasAuthority('OBLIGATIONS_VIEW')"><a href="#obligations"><i class="fa fa-arrow-left"></i> <span>Kohustused</span></a></li>
+        <li sec:authorize="hasAuthority('INCOME_VIEW')"><a href="#income"><i class="fa fa-arrow-right"></i> <span>Laekumised</span></a></li>
+        <li sec:authorize="hasAuthority('REPORTS_VIEW')"><a href="#reports"><i class="fa fa-pie-chart"></i> <span>Aruanded</span></a></li>
+        <li sec:authorize="hasAuthority('POS_VIEW')" class="treeview">
           <a href="#"><i class="fa fa-shopping-cart"></i> <span>Kassa</span> <i class="fa fa-angle-left pull-right"></i></a>
           <ul class="treeview-menu">
             <li><a href="#products">Laoseis</a></li>
