@@ -1,5 +1,6 @@
 package info.kaara.fratpos.user;
 
+import info.kaara.fratpos.security.SubjectDNHeaderAuthenticationFilter;
 import info.kaara.fratpos.user.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -35,7 +36,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	public RequestHeaderAuthenticationFilter getPreauthFilter() throws Exception {
-		RequestHeaderAuthenticationFilter requestHeaderAuthenticationFilter = new RequestHeaderAuthenticationFilter();
+		SubjectDNHeaderAuthenticationFilter requestHeaderAuthenticationFilter = new SubjectDNHeaderAuthenticationFilter();
+		requestHeaderAuthenticationFilter.setSubjectDnRegex("emailAddress=(.*?)(?:/|$)");
 		requestHeaderAuthenticationFilter.setPrincipalRequestHeader("POS_USER");
 		requestHeaderAuthenticationFilter.setExceptionIfHeaderMissing(false);
 		requestHeaderAuthenticationFilter.setAuthenticationManager(authenticationManager());
