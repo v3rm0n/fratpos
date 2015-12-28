@@ -20,7 +20,7 @@ import java.util.List;
 import static java.util.Comparator.comparing;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
-@Secured("ROLE_POS_READ")
+@Secured("ROLE_POS_VIEW")
 @RestController
 public class PointOfSaleController {
 

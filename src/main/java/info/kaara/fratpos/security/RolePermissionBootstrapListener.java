@@ -1,6 +1,6 @@
 package info.kaara.fratpos.security;
 
-import info.kaara.fratpos.PosConfig;
+import info.kaara.fratpos.PreauthConfig;
 import info.kaara.fratpos.security.model.Permission;
 import info.kaara.fratpos.security.model.Role;
 import info.kaara.fratpos.security.repository.PermissionRepository;
@@ -75,7 +75,7 @@ public class RolePermissionBootstrapListener implements ApplicationListener<Appl
 	}
 
 	private String getPosRole(ConfigurableApplicationContext context) {
-		PosConfig posConfig = context.getBean(PosConfig.class);
-		return posConfig.getRole();
+		PreauthConfig preauthConfig = context.getBean(PreauthConfig.class);
+		return preauthConfig.getRole();
 	}
 }

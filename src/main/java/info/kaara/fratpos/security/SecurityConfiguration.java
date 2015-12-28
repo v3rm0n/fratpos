@@ -1,6 +1,6 @@
 package info.kaara.fratpos.security;
 
-import info.kaara.fratpos.PosConfig;
+import info.kaara.fratpos.PreauthConfig;
 import info.kaara.fratpos.security.preauth.PreAuthenticatedUserDetailsService;
 import info.kaara.fratpos.security.preauth.SubjectDNHeaderAuthenticationFilter;
 import info.kaara.fratpos.security.service.AuthenticationService;
@@ -28,7 +28,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	private PreAuthenticatedUserDetailsService preAuthenticatedUserDetailsService;
 
 	@Autowired
-	private PosConfig posConfig;
+	private PreauthConfig preauthConfig;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -44,7 +44,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	public RequestHeaderAuthenticationFilter preauthFilter() throws Exception {
 		SubjectDNHeaderAuthenticationFilter requestHeaderAuthenticationFilter = new SubjectDNHeaderAuthenticationFilter();
 		requestHeaderAuthenticationFilter.setSubjectDnRegex("emailAddress=(.*?)(?:/|$)");
-		requestHeaderAuthenticationFilter.setPrincipalRequestHeader(posConfig.getHeader());
+		requestHeaderAuthenticationFilter.setPrincipalRequestHeader(preauthConfig.getHeader());
 		requestHeaderAuthenticationFilter.setExceptionIfHeaderMissing(false);
 		requestHeaderAuthenticationFilter.setAuthenticationManager(authenticationManager());
 		return requestHeaderAuthenticationFilter;

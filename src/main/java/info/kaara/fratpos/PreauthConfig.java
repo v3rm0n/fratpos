@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Data
-@ConfigurationProperties("pos")
-public class PosConfig {
+@ConfigurationProperties("preauth")
+public class PreauthConfig {
 	private String principal;
 	private String role;
 	private String header;

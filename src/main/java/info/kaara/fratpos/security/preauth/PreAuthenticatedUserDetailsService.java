@@ -1,6 +1,6 @@
 package info.kaara.fratpos.security.preauth;
 
-import info.kaara.fratpos.PosConfig;
+import info.kaara.fratpos.PreauthConfig;
 import info.kaara.fratpos.security.model.Permission;
 import info.kaara.fratpos.security.model.Role;
 import info.kaara.fratpos.security.repository.RoleRepository;
@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,12 +25,13 @@ import static java.util.stream.Collectors.toList;
 public class PreAuthenticatedUserDetailsService implements AuthenticationUserDetailsService<PreAuthenticatedAuthenticationToken> {
 
 	@Autowired
-	private PosConfig posConfig;
+	private PreauthConfig preauthConfig;
 
 	@Autowired
 	private RoleRepository roleRepository;
 
 	@Override
+	@Transactional
 	public UserDetails loadUserDetails(PreAuthenticatedAuthenticationToken token) throws UsernameNotFoundException {
 		if (isPosUser(token.getPrincipal())) {
 			log.info("Preauthenticated user is pos user");
@@ -44,7 +46,7 @@ public class PreAuthenticatedUserDetailsService implements AuthenticationUserDet
 	}
 
 	private List<GrantedAuthority> getPosPermissions() {
-		Role posRole = roleRepository.findOneByName(posConfig.getRole());
+		Role posRole = roleRepository.findOneByName(preauthConfig.getRole());
 		return posRole.getPermissions().stream().map(this::toGrantedAuthority).collect(toList());
 	}
 
@@ -53,6 +55,6 @@ public class PreAuthenticatedUserDetailsService implements AuthenticationUserDet
 	}
 
 	private boolean isPosUser(Object principal) {
-		return posConfig.getPrincipal().equalsIgnoreCase(principal.toString());
+		return preauthConfig.getPrincipal().equalsIgnoreCase(principal.toString());
 	}
 }

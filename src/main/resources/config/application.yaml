@@ -13,7 +13,7 @@ spring:
     test-on-borrow: true
     test-while-idle: true
 
-pos:
+preauth:
   principal: leola@leola.ee
   role: POS
   header: POS_USER
