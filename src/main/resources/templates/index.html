@@ -112,8 +112,8 @@
             <li><a href="#statuses"><i class="fa fa-graduation-cap"></i> Staatused</a></li>
           </ul>
         </li>
-        <li sec:authorize="hasRole('ROLES_VIEW')"><a href="#roles"><i class="fa fa-lock"></i> Rollid ja õigused</a></li>
-        <li sec:authorize="hasRole('NOTIFICATIONS_VIEW')"><a href="#notifications"><i class="fa fa-envelope"></i> Teavitused</a></li>
+        <li sec:authorize="hasRole('ROLES_VIEW')"><a href="#roles"><i class="fa fa-lock"></i> <span>Rollid ja õigused</span></a></li>
+        <li sec:authorize="hasRole('NOTIFICATIONS_VIEW')"><a href="#notifications"><i class="fa fa-envelope"></i> <span>Teavitused</span></a></li>
         <li sec:authorize="hasRole('OBLIGATIONS_VIEW')"><a href="#obligations"><i class="fa fa-arrow-left"></i> <span>Kohustused</span></a></li>
         <li sec:authorize="hasRole('INCOME_VIEW')"><a href="#income"><i class="fa fa-arrow-right"></i> <span>Laekumised</span></a></li>
         <li sec:authorize="hasRole('REPORTS_VIEW')"><a href="#reports"><i class="fa fa-pie-chart"></i> <span>Aruanded</span></a></li>
