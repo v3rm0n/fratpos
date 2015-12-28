@@ -5,15 +5,16 @@ import info.kaara.fratpos.helper.Json;
 import info.kaara.fratpos.pos.model.Product;
 import info.kaara.fratpos.pos.model.Stocktaking;
 import info.kaara.fratpos.pos.model.Transaction;
-import info.kaara.fratpos.user.model.User;
 import info.kaara.fratpos.pos.repository.ProductRepository;
 import info.kaara.fratpos.pos.repository.StocktakingRepository;
 import info.kaara.fratpos.pos.repository.TransactionRepository;
+import info.kaara.fratpos.user.model.User;
 import info.kaara.fratpos.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -80,13 +81,13 @@ public class StocktakingController extends RestBaseController<Stocktaking, Long>
 
 	@Override
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST)
-	public ResponseEntity<Stocktaking> update(@PathVariable Long id, @RequestBody Stocktaking json) {
+	public ResponseEntity<Stocktaking> update(@PathVariable Long id, @RequestBody Stocktaking json, SecurityContextHolderAwareRequestWrapper request) {
 		return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
 	}
 
 	@Override
 	@RequestMapping(method = RequestMethod.POST)
-	public Stocktaking create(Stocktaking s) {
+	public ResponseEntity<Stocktaking> create(Stocktaking s, SecurityContextHolderAwareRequestWrapper request) {
 		log.info("Creating stocktaking");
 		Stocktaking stocktaking = new Stocktaking();
 		List<User> users = userRepository.findByBalanceNot(BigDecimal.ZERO);
@@ -107,7 +108,7 @@ public class StocktakingController extends RestBaseController<Stocktaking, Long>
 			userRepository.save(user);
 		});
 
-		return stocktaking;
+		return new ResponseEntity<>(stocktaking, HttpStatus.OK);
 	}
 
 }

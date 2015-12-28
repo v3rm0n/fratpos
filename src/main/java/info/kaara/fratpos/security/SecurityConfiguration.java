@@ -1,5 +1,8 @@
 package info.kaara.fratpos.security;
 
+import info.kaara.fratpos.PosConfig;
+import info.kaara.fratpos.security.preauth.PreAuthenticatedUserDetailsService;
+import info.kaara.fratpos.security.preauth.SubjectDNHeaderAuthenticationFilter;
 import info.kaara.fratpos.security.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -9,10 +12,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter;
 
 @EnableWebSecurity
@@ -26,9 +27,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private PreAuthenticatedUserDetailsService preAuthenticatedUserDetailsService;
 
+	@Autowired
+	private PosConfig posConfig;
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.addFilter(getPreauthFilter())
+		http.addFilter(preauthFilter())
 				.authorizeRequests()
 				.antMatchers("/webjars/**", "/css/**").permitAll()
 				.anyRequest().authenticated()
@@ -37,10 +41,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	}
 
 	@Bean
-	public RequestHeaderAuthenticationFilter getPreauthFilter() throws Exception {
+	public RequestHeaderAuthenticationFilter preauthFilter() throws Exception {
 		SubjectDNHeaderAuthenticationFilter requestHeaderAuthenticationFilter = new SubjectDNHeaderAuthenticationFilter();
 		requestHeaderAuthenticationFilter.setSubjectDnRegex("emailAddress=(.*?)(?:/|$)");
-		requestHeaderAuthenticationFilter.setPrincipalRequestHeader("POS_USER");
+		requestHeaderAuthenticationFilter.setPrincipalRequestHeader(posConfig.getHeader());
 		requestHeaderAuthenticationFilter.setExceptionIfHeaderMissing(false);
 		requestHeaderAuthenticationFilter.setAuthenticationManager(authenticationManager());
 		return requestHeaderAuthenticationFilter;

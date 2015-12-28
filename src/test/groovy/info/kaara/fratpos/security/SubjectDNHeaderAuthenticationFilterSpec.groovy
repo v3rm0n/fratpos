@@ -1,5 +1,6 @@
 package info.kaara.fratpos.security
 
+import info.kaara.fratpos.security.preauth.SubjectDNHeaderAuthenticationFilter
 import org.springframework.mock.web.MockHttpServletRequest
 import spock.lang.Specification
 

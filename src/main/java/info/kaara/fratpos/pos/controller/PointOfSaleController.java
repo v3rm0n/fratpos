@@ -12,6 +12,7 @@ import info.kaara.fratpos.pos.repository.TransactionRepository;
 import info.kaara.fratpos.user.model.User;
 import info.kaara.fratpos.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.List;
 import static java.util.Comparator.comparing;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
-
+@Secured("ROLE_POS_READ")
 @RestController
 public class PointOfSaleController {
 

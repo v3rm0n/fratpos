@@ -1,4 +1,50 @@
 <section class="content-header">
 	<h1>Rollid ja õigused</h1>
 </section>
-<section class="content"></section>
+<section class="content" ng-controller="RoleController">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="box">
+				<div class="box-body">
+					<div class="row">
+						<div class="col-md-4">
+							<div class="input-group margin">
+								<input type="text" class="form-control" ng-model="newRole"/>
+								<span class="input-group-btn">
+									<button type="button" ng-click="addRole(newRole)" class="btn btn-info btn-flat">Lisa roll</button>
+								</span>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<table class="table table-bordered table-hover">
+								<thead>
+								<tr>
+									<th>Õigused</th>
+									<th colspan="{{roles.length}}" style="text-align: center;">Rollid</th>
+								</tr>
+								</thead>
+								<tbody>
+								<tr style="text-align: center;">
+									<td></td>
+									<td ng-repeat="role in roles">{{role.name}}</td>
+								</tr>
+								<tr style="text-align: center;" ng-repeat="permission in permissions">
+									<td>{{permission.name}}</td>
+									<td ng-repeat="role in roles"><input type="checkbox" icheck="icheck" ng-change="change(permission, role, rolePermissions[permission.id][role.id])" ng-model="rolePermissions[permission.id][role.id]"/></td>
+								</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<button class="btn btn-primary" ng-click="save()">Salvesta</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

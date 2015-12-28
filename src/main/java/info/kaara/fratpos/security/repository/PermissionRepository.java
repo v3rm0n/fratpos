@@ -1,6 +1,6 @@
-package info.kaara.fratpos.user.repository;
+package info.kaara.fratpos.security.repository;
 
-import info.kaara.fratpos.user.model.Permission;
+import info.kaara.fratpos.security.model.Permission;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -22,7 +22,11 @@
 	//Nice looking checkboxes and radio buttons
 	app.directive('icheck', ['$timeout', function ($timeout) {
 		return {
+			restrict: 'A',
 			require: 'ngModel',
+			scope: {
+				model: '=ngModel'
+			},
 			link: function ($scope, element, $attrs, ngModel) {
 				return $timeout(function () {
 					var value;
@@ -54,7 +58,9 @@
 
 	app.factory('api', function ($http, $resource) {
 		return {
-			User: $resource('/user/:id', {id: '@id'}),
+			User: $resource('/user/:id', {id: '@id'}, {
+				me: {url: '/user/me', method: 'GET'}
+			}),
 			Product: $resource('/product/:id', {id: '@id'}),
 			Status: $resource('/status/:id', {id: '@id'}),
 			Paytype: $resource('/paytype/:id', {id: '@id'}),
@@ -62,7 +68,20 @@
 				invalidate: {url: '/transaction/invalid/:id', method: 'POST'}
 			}),
 			Feedback: $resource('/feedback/:id', {id: '@id'}),
-			Stocktaking: $resource('/stocktaking/:id', {id: '@id'})
+			Stocktaking: $resource('/stocktaking/:id', {id: '@id'}),
+			Role: $resource('/role/:id', {id: '@id'}, {
+				addPermission: {
+					url: '/role/:id/permission/:permissionId',
+					params: {id: '@id', permissionId: '@permissionId'},
+					method: 'PUT'
+				},
+				removePermission: {
+					url: '/role/:id/permission/:permissionId',
+					params: {id: '@id', permissionId: '@permissionId'},
+					method: 'DELETE'
+				}
+			}),
+			Permission: $resource('/permission/:id', {id: '@id'})
 		};
 	});
 

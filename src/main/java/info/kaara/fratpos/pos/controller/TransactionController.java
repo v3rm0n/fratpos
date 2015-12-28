@@ -4,14 +4,15 @@ import info.kaara.fratpos.common.controller.RestBaseController;
 import info.kaara.fratpos.pos.model.Product;
 import info.kaara.fratpos.pos.model.Transaction;
 import info.kaara.fratpos.pos.model.TransactionProduct;
-import info.kaara.fratpos.user.model.User;
 import info.kaara.fratpos.pos.repository.ProductRepository;
 import info.kaara.fratpos.pos.repository.TransactionRepository;
+import info.kaara.fratpos.user.model.User;
 import info.kaara.fratpos.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -63,13 +64,13 @@ public class TransactionController extends RestBaseController<Transaction, Long>
 
 	@Override
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST)
-	public ResponseEntity<Transaction> update(@PathVariable Long id, @RequestBody Transaction json) {
+	public ResponseEntity<Transaction> update(@PathVariable Long id, @RequestBody Transaction json, SecurityContextHolderAwareRequestWrapper request) {
 		return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
 	}
 
 	@Override
 	@RequestMapping(method = RequestMethod.POST)
-	public Transaction create(@RequestBody Transaction transaction) {
+	public ResponseEntity<Transaction> create(@RequestBody Transaction transaction, SecurityContextHolderAwareRequestWrapper request) {
 		log.info("Saving new transaction {}", transaction);
 
 		//Decrement product quantities and save
@@ -87,7 +88,7 @@ public class TransactionController extends RestBaseController<Transaction, Long>
 
 		repo.save(transaction);
 
-		return transaction;
+		return new ResponseEntity<>(transaction, HttpStatus.OK);
 	}
 
 	private void incrementProductQuantity(Long id, Integer quantity) {

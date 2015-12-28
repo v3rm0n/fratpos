@@ -1,7 +1,7 @@
 package info.kaara.fratpos.security.service;
 
-import info.kaara.fratpos.user.model.Permission;
-import info.kaara.fratpos.user.model.Role;
+import info.kaara.fratpos.security.model.Permission;
+import info.kaara.fratpos.security.model.Role;
 import info.kaara.fratpos.user.model.User;
 import info.kaara.fratpos.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -38,8 +38,12 @@ public class AuthenticationService implements UserDetailsService {
 		return new org.springframework.security.core.userdetails.User(user.getUserProfile().getEmail(), user.getPassword(), convertToGrantedAuthorities(user.getRoles()));
 	}
 
-	private static Set<GrantedAuthority> convertToGrantedAuthorities(Collection<Role> roles) {
+	private Set<GrantedAuthority> convertToGrantedAuthorities(Collection<Role> roles) {
 		log.info("Roles: {}", roles);
-		return roles.stream().flatMap(role -> role.getPermissions().stream()).map(Permission::getName).map(SimpleGrantedAuthority::new).collect(toSet());
+		return roles.stream().flatMap(role -> role.getPermissions().stream()).map(this::toGrantedAuthority).collect(toSet());
+	}
+
+	private GrantedAuthority toGrantedAuthority(Permission permission) {
+		return new SimpleGrantedAuthority("ROLE_" + permission.getName());
 	}
 }

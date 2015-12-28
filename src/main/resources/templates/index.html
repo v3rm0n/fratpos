@@ -8,11 +8,12 @@
   <title th:text="#{title.is}">korp! Infosüsteem</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
-  <link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.6/dist/css/bootstrap.min.css}" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+  <link rel="stylesheet" th:href="@{/webjars/adminlte/2.3.2/bootstrap/css/bootstrap.min.css}" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"/>
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"/>
-  <link rel="stylesheet" href="/webjars/iCheck/1.0.2/skins/flat/yellow.css"/>
-  <link rel="stylesheet" href="/webjars/pace/1.0.2/themes/blue/pace-theme-minimal.css"/>
+  <link rel="stylesheet" href="/webjars/adminlte/2.3.2/plugins/select2/select2.min.css"/>
+  <link rel="stylesheet" href="/webjars/adminlte/2.3.2/plugins/iCheck/flat/yellow.css"/>
+  <link rel="stylesheet" href="/webjars/adminlte/2.3.2/plugins/pace/pace.min.css"/>
   <!-- Theme style -->
   <link rel="stylesheet" th:href="@{/webjars/adminlte/2.3.2/dist/css/AdminLTE.min.css}" href="https://almsaeedstudio.com/themes/AdminLTE/dist/css/AdminLTE.min.css"/>
   <link rel="stylesheet" th:href="@{/webjars/adminlte/2.3.2/dist/css/skins/skin-yellow.min.css}" href="https://almsaeedstudio.com/themes/AdminLTE/dist/css/skins/_all-skins.min.css"/>
@@ -77,16 +78,16 @@
         </form>
         <ul class="nav navbar-nav">
           <!-- User Account Menu -->
-          <li sec:authorize="hasAuthority('PROFILE_VIEW')" class="user user-menu">
+          <li sec:authorize="hasRole('PROFILE_VIEW')" class="user user-menu">
             <!-- Menu Toggle Button -->
             <a th:href="@{/#profile}" href="admin/profile.html">
-              <span><i class="fa fa-user"></i> <span th:text="${user.label}">ksv! Peeter Meeter(Hüüdnimi)</span></span>
+              <span><i class="fa fa-user"></i> <span th:text="${user != null}? ${user.label} : ${#authentication.name}">ksv! Peeter Meeter(Hüüdnimi)</span></span>
             </a>
           </li>
-          <li sec:authorize="!hasAuthority('PROFILE_VIEW')" class="user user-menu">
+          <li sec:authorize="!hasRole('PROFILE_VIEW')" class="user user-menu">
             <!-- Menu Toggle Button -->
-            <a href="#">
-              <span><i class="fa fa-user"></i> <span th:text="${user.label}">ksv! Peeter Meeter(Hüüdnimi)</span></span>
+            <a href="#" onclick="return false;">
+              <span><i class="fa fa-user"></i> <span th:text="${user != null}? ${user.label} : ${#authentication.name}">ksv! Peeter Meeter(Hüüdnimi)</span></span>
             </a>
           </li>
           <li>
@@ -104,19 +105,19 @@
       <!-- Sidebar Menu -->
       <ul class="sidebar-menu">
         <li class="header">MENÜÜ</li>
-        <li sec:authorize="hasAuthority('USERS_VIEW')" class="treeview">
+        <li sec:authorize="hasRole('USERS_VIEW')" class="treeview">
           <a href="#"><i class="fa fa-users"></i> <span>Liikmed</span> <i class="fa fa-angle-left pull-right"></i></a>
           <ul class="treeview-menu">
             <li><a href="#users">Nimekiri</a></li>
             <li><a href="#statuses">Staatused</a></li>
-            <li sec:authorize="hasAuthority('NOTIFICATIONS_VIEW')"><a href="#notifications">Teavitused</a></li>
-            <li sec:authorize="hasAuthority('ROLES_VIEW')"><a href="#roles">Rollid ja õigused</a></li>
+            <li sec:authorize="hasRole('NOTIFICATIONS_VIEW')"><a href="#notifications">Teavitused</a></li>
           </ul>
         </li>
-        <li sec:authorize="hasAuthority('OBLIGATIONS_VIEW')"><a href="#obligations"><i class="fa fa-arrow-left"></i> <span>Kohustused</span></a></li>
-        <li sec:authorize="hasAuthority('INCOME_VIEW')"><a href="#income"><i class="fa fa-arrow-right"></i> <span>Laekumised</span></a></li>
-        <li sec:authorize="hasAuthority('REPORTS_VIEW')"><a href="#reports"><i class="fa fa-pie-chart"></i> <span>Aruanded</span></a></li>
-        <li sec:authorize="hasAuthority('POS_VIEW')" class="treeview">
+        <li sec:authorize="hasRole('ROLES_VIEW')"><a href="#roles"><i class="fa fa-lock"></i> Rollid ja õigused</a></li>
+        <li sec:authorize="hasRole('OBLIGATIONS_VIEW')"><a href="#obligations"><i class="fa fa-arrow-left"></i> <span>Kohustused</span></a></li>
+        <li sec:authorize="hasRole('INCOME_VIEW')"><a href="#income"><i class="fa fa-arrow-right"></i> <span>Laekumised</span></a></li>
+        <li sec:authorize="hasRole('REPORTS_VIEW')"><a href="#reports"><i class="fa fa-pie-chart"></i> <span>Aruanded</span></a></li>
+        <li sec:authorize="hasRole('POS_VIEW')" class="treeview">
           <a href="#"><i class="fa fa-shopping-cart"></i> <span>Kassa</span> <i class="fa fa-angle-left pull-right"></i></a>
           <ul class="treeview-menu">
             <li><a href="#products">Laoseis</a></li>
@@ -141,10 +142,10 @@
   </footer>
 
 </div>
-<script th:src="@{/webjars/jquery/2.1.4/dist/jquery.min.js}" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-<script th:src="@{/webjars/iCheck/1.0.2/icheck.min.js}"></script>
-<script src="/webjars/pace/1.0.2/pace.min.js"></script>
-<script th:src="@{/webjars/bootstrap/3.3.6/dist/js/bootstrap.min.js}" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script th:src="@{/webjars/adminlte/2.3.2/plugins/jQuery/jQuery-2.1.4.min.js}" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="/webjars/adminlte/2.3.2/plugins/iCheck/icheck.min.js"></script>
+<script src="/webjars/adminlte/2.3.2/plugins/pace/pace.min.js"></script>
+<script th:src="@{/webjars/adminlte/2.3.2/bootstrap/js/bootstrap.min.js}" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <script th:src="@{/webjars/adminlte/2.3.2/dist/js/app.min.js}" src="https://almsaeedstudio.com/themes/AdminLTE/dist/js/app.min.js"></script>
 <script th:src="@{/webjars/angularjs/1.4.8/angular.min.js}" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.8/angular.min.js"></script>
 <script th:src="@{/webjars/angularjs/1.4.8/angular-route.min.js}" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.8/angular-route.min.js"></script>

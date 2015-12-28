@@ -8,19 +8,19 @@
 			<div class="box box-primary">
 				<div class="box-body box-profile">
 
-					<h3 class="profile-username text-center">Peeter Meeter</h3>
+					<h3 class="profile-username text-center" ng-bind-template="{{user.firstName+' '+ user.lastName}}"></h3>
 
-					<p class="text-muted text-center">Õllenimi</p>
+					<p class="text-muted text-center" ng-bind="user.beerName"></p>
 
 					<ul class="list-group list-group-unbordered">
 						<li class="list-group-item">
-							<b>Staatus</b> <a class="pull-right">ksv!</a>
+							<b>Staatus</b> <a class="pull-right" ng-bind="user.status.name"></a>
 						</li>
 						<li class="list-group-item">
-							<b>Saldo</b> <a class="pull-right">10 €</a>
+							<b>Saldo</b> <a class="pull-right" ng-bind="user.balance"></a>
 						</li>
 						<li class="list-group-item">
-							<b>Liige alates</b> <a class="pull-right">21.10.2008</a>
+							<b>Liige alates</b> <a class="pull-right"></a>
 						</li>
 					</ul>
 
@@ -38,19 +38,19 @@
 				<!-- /.box-header -->
 				<div class="box-body">
 					<strong><i class="fa fa-envelope margin-r-5"></i> E-post</strong>
-					<p class="text-muted"><a href="mailto:peeter@mailinator.com">peeter@mailinator.com</a></p>
+					<p class="text-muted"><a ng-href="mailto:{{user.userProfile.email}}" ng-bind="user.userProfile.email"></a></p>
 					<hr/>
 
 					<strong><i class="fa fa-map-marker margin-r-5"></i> Elukoht</strong>
-					<p class="text-muted">Trummi 30r, Tallinn</p>
+					<p class="text-muted" ng-bind="user.userProfile.email"></p>
 					<hr/>
 
 					<strong><i class="fa fa-phone margin-r-5"></i> Telefon</strong>
-					<p class="text-muted">+37256489596</p>
+					<p class="text-muted" ng-bind="user.userProfile.phone"></p>
 					<hr/>
 
 					<strong><i class="fa fa-gift margin-r-5"></i> Sünniaeg</strong>
-					<p class="text-muted">23.10.1975</p>
+					<p class="text-muted" ng-bind="user.userProfile.birthdate"></p>
 				</div>
 				<!-- /.box-body -->
 			</div>
@@ -62,6 +62,7 @@
 				<ul class="nav nav-tabs">
 					<li class="active"><a href="#timeline" data-toggle="tab">Tegevused</a></li>
 					<li><a href="#settings" data-toggle="tab">Muuda profiili</a></li>
+					<li><a href="#roles" data-toggle="tab">Muuda rolle</a></li>
 				</ul>
 				<div class="tab-content">
 					<div class="tab-pane active" id="timeline">
@@ -140,6 +141,37 @@
 					<!-- /.tab-pane -->
 
 					<div class="tab-pane" id="settings">
+						<form class="form-horizontal">
+							<div class="form-group">
+								<label for="inputName" class="col-sm-2 control-label">Eesnimi</label>
+
+								<div class="col-sm-10">
+									<input type="email" class="form-control" id="inputName" placeholder="Name"/>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="inputName" class="col-sm-2 control-label">Perenimi</label>
+
+								<div class="col-sm-10">
+									<input type="email" class="form-control" id="inputName" placeholder="Name"/>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="inputEmail" class="col-sm-2 control-label">Email</label>
+
+								<div class="col-sm-10">
+									<input type="email" class="form-control" id="inputEmail" placeholder="Email"/>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-offset-2 col-sm-10">
+									<button type="submit" class="btn btn-danger">Muuda</button>
+								</div>
+							</div>
+						</form>
+					</div>
+					<!-- /.tab-pane -->
+					<div class="tab-pane" id="roles">
 						<form class="form-horizontal">
 							<div class="form-group">
 								<label for="inputName" class="col-sm-2 control-label">Eesnimi</label>

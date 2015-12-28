@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<html>
 <section class="content-header">
 	<h1>Liikmed</h1>
 </section>
@@ -28,17 +28,15 @@
 							<th ng-click="sort(&quot;lastName&quot;)">Perenimi</th>
 							<th ng-click="sort(&quot;beerName&quot;)">Õllenimi</th>
 							<th ng-click="sort(&quot;balance&quot;)">Saldo</th>
-							<th sec:authorize="hasAuthority('PROFILE_VIEW')">Tegevused</th>
 						</tr>
 						</thead>
 						<tbody>
-						<tr ng-repeat="user in filteredUsers()">
-							<td ng-click="openUserDialog(user)" ng-bind="user.status.name"></td>
-							<td ng-click="openUserDialog(user)" ng-bind="user.firstName"></td>
-							<td ng-click="openUserDialog(user)" ng-bind="user.lastName"></td>
+						<tr ng-repeat="user in filteredUsers()" ng-click="openUserDialog(user)">
+							<td ng-bind="user.status.name"></td>
+							<td ng-bind="user.firstName"></td>
+							<td ng-bind="user.lastName"></td>
 							<td ng-click="openUserDialog(user)" ng-bind="user.beerName"></td>
 							<td ng-click="openUserDialog(user)" ng-bind-template="{{user.balance}} €"></td>
-							<td sec:authorize="hasAuthority('PROFILE_VIEW')"><button ng-click="openProfile(user)" class="btn btn-info">Profiil</button></td>
 						</tr>
 						</tbody>
 						<tfoot>
@@ -48,7 +46,6 @@
 							<th></th>
 							<th>Kokku</th>
 							<th ng-bind-template="{{totalBalance()}} €"></th>
-							<th sec:authorize="hasAuthority('PROFILE_VIEW')"></th>
 						</tr>
 						</tfoot>
 					</table>

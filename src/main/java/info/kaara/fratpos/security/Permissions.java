@@ -1,4 +1,4 @@
-package info.kaara.fratpos.user;
+package info.kaara.fratpos.security;
 
 public enum Permissions {
 	USERS_VIEW,
@@ -13,5 +13,7 @@ public enum Permissions {
 	REPORTS_VIEW,
 	REPORTS_MODIFY,
 	POS_VIEW,
-	POS_MODIFY
+	POS_MODIFY,
+	PROFILE_VIEW,
+	PROFILE_MODIFY
 }

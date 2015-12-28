@@ -2,8 +2,6 @@ package info.kaara.fratpos.pos.controller;
 
 import info.kaara.fratpos.common.controller.RestBaseController;
 import info.kaara.fratpos.pos.model.Feedback;
-import info.kaara.fratpos.user.model.User;
-import info.kaara.fratpos.user.repository.UserRepository;
 import info.kaara.fratpos.pos.model.Paytype;
 import info.kaara.fratpos.pos.model.Product;
 import info.kaara.fratpos.pos.model.Status;
@@ -23,7 +21,7 @@ public class PosRestControllers {
 
 		@Autowired
 		public Feedbacks(FeedbackRepository feedbackRepository) {
-			super(feedbackRepository);
+			super(feedbackRepository, "ROLE_POS");
 		}
 	}
 
@@ -33,7 +31,7 @@ public class PosRestControllers {
 
 		@Autowired
 		public Paytypes(PaytypeRepository paytypeRepository) {
-			super(paytypeRepository);
+			super(paytypeRepository, "ROLE_POS");
 		}
 	}
 
@@ -43,7 +41,7 @@ public class PosRestControllers {
 
 		@Autowired
 		public Products(ProductRepository productRepository) {
-			super(productRepository);
+			super(productRepository, "ROLE_POS");
 		}
 	}
 
@@ -53,17 +51,7 @@ public class PosRestControllers {
 
 		@Autowired
 		public Statuses(StatusRepository statusRepository) {
-			super(statusRepository);
-		}
-	}
-
-	@RestController
-	@RequestMapping(value = "/user")
-	public static class Users extends RestBaseController<User, Long> {
-
-		@Autowired
-		public Users(UserRepository userRepository) {
-			super(userRepository);
+			super(statusRepository, "ROLE_POS");
 		}
 	}
 

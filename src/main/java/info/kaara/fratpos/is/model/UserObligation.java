@@ -8,7 +8,6 @@ import lombok.EqualsAndHashCode;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-
 import java.math.BigDecimal;
 
 import static javax.persistence.DiscriminatorType.INTEGER;

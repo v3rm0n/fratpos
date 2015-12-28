@@ -1,9 +1,12 @@
 package info.kaara.fratpos.user.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import info.kaara.fratpos.pos.model.Model;
 import info.kaara.fratpos.pos.model.Status;
+import info.kaara.fratpos.security.model.Role;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -12,6 +15,7 @@ import java.util.List;
 
 @Entity
 @Data
+@ToString(exclude = "password")
 @EqualsAndHashCode(callSuper = true)
 public class User extends Model {
 
@@ -33,6 +37,7 @@ public class User extends Model {
 	@OneToOne
 	private UserProfile userProfile;
 
+	@JsonIgnore
 	private String password;
 
 	private BigDecimal balance = BigDecimal.ZERO;

@@ -1,4 +1,4 @@
-package info.kaara.fratpos.security;
+package info.kaara.fratpos.security.preauth;
 
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.security.authentication.BadCredentialsException;

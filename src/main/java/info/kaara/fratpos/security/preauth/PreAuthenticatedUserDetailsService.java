@@ -1,9 +1,9 @@
-package info.kaara.fratpos.security;
+package info.kaara.fratpos.security.preauth;
 
 import info.kaara.fratpos.PosConfig;
-import info.kaara.fratpos.user.model.Permission;
-import info.kaara.fratpos.user.model.Role;
-import info.kaara.fratpos.user.repository.RoleRepository;
+import info.kaara.fratpos.security.model.Permission;
+import info.kaara.fratpos.security.model.Role;
+import info.kaara.fratpos.security.repository.RoleRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -45,7 +45,11 @@ public class PreAuthenticatedUserDetailsService implements AuthenticationUserDet
 
 	private List<GrantedAuthority> getPosPermissions() {
 		Role posRole = roleRepository.findOneByName(posConfig.getRole());
-		return posRole.getPermissions().stream().map(Permission::getName).map(SimpleGrantedAuthority::new).collect(toList());
+		return posRole.getPermissions().stream().map(this::toGrantedAuthority).collect(toList());
+	}
+
+	private GrantedAuthority toGrantedAuthority(Permission permission) {
+		return new SimpleGrantedAuthority("ROLE_" + permission.getName());
 	}
 
 	private boolean isPosUser(Object principal) {

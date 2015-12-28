@@ -374,7 +374,69 @@
 		};
 	});
 
-	app.controller('ProfileController', function($scope, api){
+	app.controller('ProfileController', function ($scope, api, $routeParams) {
+
+		if ($routeParams.id) {
+			$scope.user = api.User.get({id: id});
+		} else {
+			$scope.user = api.User.me();
+		}
+
+	});
+
+	app.controller('RoleController', function ($scope, api) {
+
+		$scope.permissions = api.Permission.query();
+		$scope.changedPermissions = {};
+
+		var initRoles = function () {
+			$scope.roles = api.Role.query(function (roles) {
+				$scope.rolePermissions = {};
+				roles.forEach(function (role) {
+					$scope.permissions.$promise.then(function () {
+						role.permissions.forEach(function (permission) {
+							$scope.rolePermissions[permission.id] = $scope.rolePermissions[permission.id] || {};
+							$scope.rolePermissions[permission.id][role.id] = true;
+						});
+					});
+				});
+			});
+		};
+
+		initRoles();
+
+		$scope.addRole = function (newRole) {
+			var role = new api.Role();
+			role.name = newRole;
+			role.$save(function () {
+				$scope.newRole = null;
+				initRoles();
+			});
+		};
+
+		var addPermissionToRole = function (roleId, permissionId) {
+			api.Role.addPermission({id: roleId, permissionId: permissionId});
+		};
+		var removePermissionFromRole = function (roleId, permissionId) {
+			api.Role.removePermission({id: roleId, permissionId: permissionId});
+		};
+
+		$scope.save = function () {
+			angular.forEach($scope.changedPermissions, function (roles, permissionId) {
+				angular.forEach(roles, function (checked, roleId) {
+					if (checked) {
+						addPermissionToRole(roleId, permissionId);
+					} else {
+						removePermissionFromRole(roleId, permissionId);
+					}
+				});
+			});
+		};
+
+		$scope.change = function (permission, role, checked) {
+			$scope.changedPermissions[permission.id] = $scope.changedPermissions[permission.id] || {};
+			$scope.changedPermissions[permission.id][role.id] = checked;
+		};
 
 	});
 

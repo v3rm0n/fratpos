@@ -1,4 +1,4 @@
-package info.kaara.fratpos.user.model;
+package info.kaara.fratpos.security.model;
 
 import info.kaara.fratpos.pos.model.Model;
 import lombok.*;

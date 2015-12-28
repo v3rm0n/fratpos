@@ -10,4 +10,5 @@ import org.springframework.stereotype.Component;
 public class PosConfig {
 	private String principal;
 	private String role;
+	private String header;
 }
