@@ -1,7 +1,6 @@
-package info.kaara.fratpos.user;
+package info.kaara.fratpos.security;
 
-import info.kaara.fratpos.security.SubjectDNHeaderAuthenticationFilter;
-import info.kaara.fratpos.user.service.AuthenticationService;
+import info.kaara.fratpos.security.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +22,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private AuthenticationService authenticationService;
+
+	@Autowired
+	private PreAuthenticatedUserDetailsService preAuthenticatedUserDetailsService;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -47,15 +49,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Bean
 	public PreAuthenticatedAuthenticationProvider preauthAuthProvider() {
 		PreAuthenticatedAuthenticationProvider preauthAuthProvider = new PreAuthenticatedAuthenticationProvider();
-		preauthAuthProvider.setPreAuthenticatedUserDetailsService(userDetailsServiceWrapper());
+		preauthAuthProvider.setPreAuthenticatedUserDetailsService(preAuthenticatedUserDetailsService);
 		return preauthAuthProvider;
-	}
-
-	@Bean
-	public UserDetailsByNameServiceWrapper<PreAuthenticatedAuthenticationToken> userDetailsServiceWrapper() {
-		UserDetailsByNameServiceWrapper<PreAuthenticatedAuthenticationToken> wrapper = new UserDetailsByNameServiceWrapper<>();
-		wrapper.setUserDetailsService(authenticationService);
-		return wrapper;
 	}
 
 	@Override

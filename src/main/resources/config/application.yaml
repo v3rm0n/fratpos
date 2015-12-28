@@ -13,3 +13,7 @@ spring:
 logging:
   level:
     org.springframework.security.web.authentication.preauth: DEBUG
+
+pos:
+  principal: leola@leola.ee
+  role: POS

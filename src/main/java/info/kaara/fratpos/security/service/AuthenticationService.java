@@ -1,4 +1,4 @@
-package info.kaara.fratpos.user.service;
+package info.kaara.fratpos.security.service;
 
 import info.kaara.fratpos.user.model.Permission;
 import info.kaara.fratpos.user.model.Role;

@@ -1,15 +1,18 @@
 package info.kaara.fratpos;
 
-import org.springframework.boot.SpringApplication;
+import info.kaara.fratpos.user.RolePermissionBootstrapListener;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @SpringBootApplication
-public class Application extends WebMvcConfigurerAdapter{
+public class Application extends WebMvcConfigurerAdapter {
 
 	public static void main(String... args) {
-		SpringApplication.run(Application.class);
+		SpringApplicationBuilder app = new SpringApplicationBuilder(Application.class);
+		app.listeners(new RolePermissionBootstrapListener());
+		app.run(args);
 	}
 
 	@Override

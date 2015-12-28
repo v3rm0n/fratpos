@@ -22,7 +22,10 @@ public class SubjectDNHeaderAuthenticationFilter extends RequestHeaderAuthentica
 	@Override
 	protected Object getPreAuthenticatedPrincipal(HttpServletRequest request) {
 		Object principal = super.getPreAuthenticatedPrincipal(request);
-		return extractPrincipal(principal.toString());
+		if (principal != null) {
+			return extractPrincipal(principal.toString());
+		}
+		return null;
 	}
 
 	private Object extractPrincipal(String subjectDN) {
