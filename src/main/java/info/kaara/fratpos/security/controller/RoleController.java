@@ -37,7 +37,7 @@ public class RoleController extends RestBaseController<Role, Long> {
 				if (!role.getPermissions().contains(permission)) {
 					log.info("Adding permission {} to role {}", permission.getName(), role.getName());
 					role.getPermissions().add(permission);
-					repo.saveAndFlush(role);
+					repo.save(role);
 				}
 			}
 			return new ResponseEntity<>(HttpStatus.OK);
@@ -55,7 +55,7 @@ public class RoleController extends RestBaseController<Role, Long> {
 				if (role.getPermissions().contains(permission)) {
 					log.info("Removing permission {} from role {}", permission.getName(), role.getName());
 					role.getPermissions().remove(permission);
-					repo.saveAndFlush(role);
+					repo.save(role);
 				}
 			}
 			return new ResponseEntity<>(HttpStatus.OK);

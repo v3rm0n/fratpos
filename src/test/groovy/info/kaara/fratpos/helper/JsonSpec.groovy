@@ -1,7 +1,7 @@
 package info.kaara.fratpos.helper
 
 import com.fasterxml.jackson.databind.JsonNode
-import info.kaara.fratpos.pos.model.Status
+import info.kaara.fratpos.user.model.Status
 import info.kaara.fratpos.user.model.User
 import spock.lang.Specification
 

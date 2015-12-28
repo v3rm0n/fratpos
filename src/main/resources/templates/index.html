@@ -108,23 +108,23 @@
         <li sec:authorize="hasRole('USERS_VIEW')" class="treeview">
           <a href="#"><i class="fa fa-users"></i> <span>Liikmed</span> <i class="fa fa-angle-left pull-right"></i></a>
           <ul class="treeview-menu">
-            <li><a href="#users">Nimekiri</a></li>
-            <li><a href="#statuses">Staatused</a></li>
-            <li sec:authorize="hasRole('NOTIFICATIONS_VIEW')"><a href="#notifications">Teavitused</a></li>
+            <li><a href="#users"><i class="fa fa-list"></i> Nimekiri</a></li>
+            <li><a href="#statuses"><i class="fa fa-graduation-cap"></i> Staatused</a></li>
           </ul>
         </li>
         <li sec:authorize="hasRole('ROLES_VIEW')"><a href="#roles"><i class="fa fa-lock"></i> Rollid ja õigused</a></li>
+        <li sec:authorize="hasRole('NOTIFICATIONS_VIEW')"><a href="#notifications"><i class="fa fa-envelope"></i> Teavitused</a></li>
         <li sec:authorize="hasRole('OBLIGATIONS_VIEW')"><a href="#obligations"><i class="fa fa-arrow-left"></i> <span>Kohustused</span></a></li>
         <li sec:authorize="hasRole('INCOME_VIEW')"><a href="#income"><i class="fa fa-arrow-right"></i> <span>Laekumised</span></a></li>
         <li sec:authorize="hasRole('REPORTS_VIEW')"><a href="#reports"><i class="fa fa-pie-chart"></i> <span>Aruanded</span></a></li>
         <li sec:authorize="hasRole('POS_VIEW')" class="treeview">
           <a href="#"><i class="fa fa-shopping-cart"></i> <span>Kassa</span> <i class="fa fa-angle-left pull-right"></i></a>
           <ul class="treeview-menu">
-            <li><a href="#products">Laoseis</a></li>
-            <li><a href="#transactions">Tehingud</a></li>
-            <li><a href="#paytypes">Makseviisid</a></li>
-            <li><a href="#stocktakings">Inventuur</a></li>
-            <li><a href="#feedback">Tagasiside</a></li>
+            <li><a href="#products"><i class="fa fa-cubes"></i> Laoseis</a></li>
+            <li><a href="#transactions"><i class="fa fa-exchange"></i> Tehingud</a></li>
+            <li><a href="#paytypes"><i class="fa fa-money"></i> Makseviisid</a></li>
+            <li><a href="#stocktakings"><i class="fa fa-tasks"></i> Inventuur</a></li>
+            <li><a href="#feedback"><i class="fa fa-edit"></i> Tagasiside</a></li>
           </ul>
         </li>
       </ul>
@@ -143,8 +143,10 @@
 
 </div>
 <script th:src="@{/webjars/adminlte/2.3.2/plugins/jQuery/jQuery-2.1.4.min.js}" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="/webjars/lodash/3.10.1/lodash.min.js"></script>
 <script src="/webjars/adminlte/2.3.2/plugins/iCheck/icheck.min.js"></script>
 <script src="/webjars/adminlte/2.3.2/plugins/pace/pace.min.js"></script>
+<script src="/webjars/adminlte/2.3.2/plugins/select2/select2.min.js"></script>
 <script th:src="@{/webjars/adminlte/2.3.2/bootstrap/js/bootstrap.min.js}" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <script th:src="@{/webjars/adminlte/2.3.2/dist/js/app.min.js}" src="https://almsaeedstudio.com/themes/AdminLTE/dist/js/app.min.js"></script>
 <script th:src="@{/webjars/angularjs/1.4.8/angular.min.js}" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.8/angular.min.js"></script>

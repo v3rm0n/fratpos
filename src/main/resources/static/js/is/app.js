@@ -59,7 +59,17 @@
 	app.factory('api', function ($http, $resource) {
 		return {
 			User: $resource('/user/:id', {id: '@id'}, {
-				me: {url: '/user/me', method: 'GET'}
+				me: {url: '/user/me', method: 'GET'},
+				addRole: {
+					url: '/user/:id/role/:roleId',
+					params: {id: '@id', roleId: '@roleId'},
+					method: 'PUT'
+				},
+				removeRole: {
+					url: '/user/:id/role/:roleId',
+					params: {id: '@id', roleId: '@roleId'},
+					method: 'DELETE'
+				}
 			}),
 			Product: $resource('/product/:id', {id: '@id'}),
 			Status: $resource('/status/:id', {id: '@id'}),

@@ -374,13 +374,45 @@
 		};
 	});
 
-	app.controller('ProfileController', function ($scope, api, $routeParams) {
+	app.controller('ProfileController', function ($scope, api, $routeParams, $q) {
 
-		if ($routeParams.id) {
-			$scope.user = api.User.get({id: id});
-		} else {
-			$scope.user = api.User.me();
-		}
+		$scope.availableRoles = [];
+
+		var initUser = function () {
+			if ($routeParams.id) {
+				$scope.user = api.User.get({id: $routeParams.id});
+			} else {
+				$scope.user = api.User.me();
+			}
+		};
+
+		initUser();
+
+		$scope.roles = api.Role.query();
+
+		var initAvailableRoles = function () {
+			$q.all([$scope.roles.$promise, $scope.user.$promise]).then(function (values) {
+				var contains = function (role) {
+					return _.find(values[1].roles, {id: role.id}) === undefined;
+				};
+				$scope.availableRoles = _.filter(values[0], contains);
+			});
+		};
+
+		initAvailableRoles();
+
+		$scope.$watch('user', initAvailableRoles);
+
+		$scope.addRole = function (role) {
+			if (!role) {
+				return;
+			}
+			api.User.addRole({id: $scope.user.id, roleId: role.id}, initUser);
+		};
+
+		$scope.removeRole = function (role) {
+			api.User.removeRole({id: $scope.user.id, roleId: role.id}, initUser);
+		};
 
 	});
 

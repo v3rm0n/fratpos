@@ -4,7 +4,10 @@ import info.kaara.fratpos.pos.model.Model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import java.util.List;
 
 @Entity
@@ -12,7 +15,8 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class Role extends Model {
 	private String name;
-	@ManyToMany(fetch = FetchType.EAGER)
+
+	@ManyToMany
 	@JoinTable(inverseJoinColumns = @JoinColumn(name = "permission_id"))
 	private List<Permission> permissions;
 }

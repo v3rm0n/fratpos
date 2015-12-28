@@ -2,7 +2,6 @@ package info.kaara.fratpos.user.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import info.kaara.fratpos.pos.model.Model;
-import info.kaara.fratpos.pos.model.Status;
 import info.kaara.fratpos.security.model.Role;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -30,7 +29,7 @@ public class User extends Model {
 	@ManyToOne
 	private Status status;
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany
 	@JoinTable(inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private List<Role> roles;
 

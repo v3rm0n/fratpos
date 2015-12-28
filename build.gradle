@@ -66,6 +66,7 @@ dependencies {
 
 	compile 'org.webjars:angularjs:1.4.8'
 	compile 'org.webjars.bower:angular-strap:2.3.5'
+	compile 'org.webjars.bower:lodash:3.10.1'
 	compile 'org.webjars.bower:chartjs:2.0.0-beta1'
 	compile 'org.webjars.bower:Bootflat:2.0.4'
 	compile 'org.webjars.bower:adminlte:2.3.2'

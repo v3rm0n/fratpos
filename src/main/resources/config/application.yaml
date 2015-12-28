@@ -1,4 +1,6 @@
 spring:
+  aop:
+    proxy-target-class: true
   application:
     name: fratpos
   datasource:
@@ -10,9 +12,6 @@ spring:
     validation-query: SELECT 1
     test-on-borrow: true
     test-while-idle: true
-logging:
-  level:
-    org.springframework.security.web.authentication.preauth: DEBUG
 
 pos:
   principal: leola@leola.ee
