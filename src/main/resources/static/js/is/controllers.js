@@ -374,6 +374,18 @@
 		};
 	});
 
+	app.controller('MenuController', function ($scope, $location) {
+
+		$scope.isActive = function (menu) {
+			var path = _.trimLeft($location.path(), '/');
+			if (_.isArray(menu)) {
+				return _.contains(menu, path);
+			}
+			return path === menu;
+		};
+
+	});
+
 	app.controller('ProfileController', function ($scope, api, $routeParams, $q) {
 
 		$scope.availableRoles = [];

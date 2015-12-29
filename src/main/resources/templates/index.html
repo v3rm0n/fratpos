@@ -26,29 +26,7 @@
   <![endif]-->
 
   <link rel="shortcut icon" href="/img/favicon.ico"/>
-
-  <style>
-    .modal-backdrop.am-fade {
-      opacity: .5;
-      transition: opacity .15s linear;
-    }
-
-    .modal-backdrop.am-fade.ng-enter {
-      opacity: 0;
-    }
-
-    .modal-backdrop.am-fade.ng-enter, .modal-backdrop.am-fade.ng-enter.ng-enter-active {
-      opacity: .5;
-    }
-
-    .modal-backdrop.am-fade.ng-leave {
-      opacity: .5;
-    }
-
-    .modal-backdrop.am-fade.ng-leave, .modal-backdrop.am-fade.ng-leave-active {
-      opacity: 0;
-    }
-  </style>
+  <link rel="stylesheet" href="/css/is.css"/>
 
 </head>
 <body class="hold-transition skin-yellow sidebar-mini" ng-app="fratis">
@@ -99,32 +77,32 @@
   </header>
 
   <!-- Left side column. contains the logo and sidebar -->
-  <aside class="main-sidebar">
+  <aside class="main-sidebar" ng-controller="MenuController">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
       <!-- Sidebar Menu -->
       <ul class="sidebar-menu">
         <li class="header">MENÜÜ</li>
-        <li sec:authorize="hasRole('USERS_VIEW')" class="treeview">
+        <li ng-class="{active: isActive(['users', 'statuses'])}" sec:authorize="hasRole('USERS_VIEW')" class="treeview">
           <a href="#"><i class="fa fa-users"></i> <span>Liikmed</span> <i class="fa fa-angle-left pull-right"></i></a>
           <ul class="treeview-menu">
-            <li><a href="#users"><i class="fa fa-list"></i> Nimekiri</a></li>
-            <li><a href="#statuses"><i class="fa fa-graduation-cap"></i> Staatused</a></li>
+            <li ng-class="{active: isActive('users')}"><a href="#users"><i class="fa fa-list"></i> Nimekiri</a></li>
+            <li ng-class="{active: isActive('statuses')}"><a href="#statuses"><i class="fa fa-graduation-cap"></i> Staatused</a></li>
           </ul>
         </li>
-        <li sec:authorize="hasRole('ROLES_VIEW')"><a href="#roles"><i class="fa fa-lock"></i> <span>Rollid ja õigused</span></a></li>
-        <li sec:authorize="hasRole('NOTIFICATIONS_VIEW')"><a href="#notifications"><i class="fa fa-envelope"></i> <span>Teavitused</span></a></li>
-        <li sec:authorize="hasRole('OBLIGATIONS_VIEW')"><a href="#obligations"><i class="fa fa-arrow-left"></i> <span>Kohustused</span></a></li>
-        <li sec:authorize="hasRole('INCOME_VIEW')"><a href="#income"><i class="fa fa-arrow-right"></i> <span>Laekumised</span></a></li>
-        <li sec:authorize="hasRole('REPORTS_VIEW')"><a href="#reports"><i class="fa fa-pie-chart"></i> <span>Aruanded</span></a></li>
-        <li sec:authorize="hasRole('POS_VIEW')" class="treeview">
+        <li ng-class="{active: isActive('roles')}" sec:authorize="hasRole('ROLES_VIEW')"><a href="#roles"><i class="fa fa-lock"></i> <span>Rollid ja õigused</span></a></li>
+        <li ng-class="{active: isActive('notifications')}" sec:authorize="hasRole('NOTIFICATIONS_VIEW')"><a href="#notifications"><i class="fa fa-envelope"></i> <span>Teavitused</span></a></li>
+        <li ng-class="{active: isActive('obligations')}" sec:authorize="hasRole('OBLIGATIONS_VIEW')"><a href="#obligations"><i class="fa fa-arrow-left"></i> <span>Kohustused</span></a></li>
+        <li ng-class="{active: isActive('income')}" sec:authorize="hasRole('INCOME_VIEW')"><a href="#income"><i class="fa fa-arrow-right"></i> <span>Laekumised</span></a></li>
+        <li ng-class="{active: isActive('reports')}" sec:authorize="hasRole('REPORTS_VIEW')"><a href="#reports"><i class="fa fa-pie-chart"></i> <span>Aruanded</span></a></li>
+        <li ng-class="{active: isActive(['products', 'transactions', 'paytypes', 'stocktakings', 'feedback'])}" sec:authorize="hasRole('POS_VIEW')" class="treeview">
           <a href="#"><i class="fa fa-shopping-cart"></i> <span>Kassa</span> <i class="fa fa-angle-left pull-right"></i></a>
           <ul class="treeview-menu">
-            <li><a href="#products"><i class="fa fa-cubes"></i> Laoseis</a></li>
-            <li><a href="#transactions"><i class="fa fa-exchange"></i> Tehingud</a></li>
-            <li><a href="#paytypes"><i class="fa fa-money"></i> Makseviisid</a></li>
-            <li><a href="#stocktakings"><i class="fa fa-tasks"></i> Inventuur</a></li>
-            <li><a href="#feedback"><i class="fa fa-edit"></i> Tagasiside</a></li>
+            <li ng-class="{active: isActive('products')}"><a href="#products"><i class="fa fa-cubes"></i> Laoseis</a></li>
+            <li ng-class="{active: isActive('transactions')}"><a href="#transactions"><i class="fa fa-exchange"></i> Tehingud</a></li>
+            <li ng-class="{active: isActive('paytypes')}"><a href="#paytypes"><i class="fa fa-money"></i> Makseviisid</a></li>
+            <li ng-class="{active: isActive('stocktakings')}"><a href="#stocktakings"><i class="fa fa-tasks"></i> Inventuur</a></li>
+            <li ng-class="{active: isActive('feedback')}"><a href="#feedback"><i class="fa fa-edit"></i> Tagasiside</a></li>
           </ul>
         </li>
       </ul>
