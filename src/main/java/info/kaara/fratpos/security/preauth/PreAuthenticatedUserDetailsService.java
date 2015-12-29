@@ -6,6 +6,8 @@ import info.kaara.fratpos.security.model.Role;
 import info.kaara.fratpos.security.repository.RoleRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
@@ -30,6 +32,9 @@ public class PreAuthenticatedUserDetailsService implements AuthenticationUserDet
 	@Autowired
 	private RoleRepository roleRepository;
 
+	@Autowired
+	private MessageSource messageSource;
+
 	@Override
 	@Transactional
 	public UserDetails loadUserDetails(PreAuthenticatedAuthenticationToken token) throws UsernameNotFoundException {
@@ -46,8 +51,12 @@ public class PreAuthenticatedUserDetailsService implements AuthenticationUserDet
 	}
 
 	private List<GrantedAuthority> getPosPermissions() {
-		Role posRole = roleRepository.findOneByName(preauthConfig.getRole());
+		Role posRole = roleRepository.findOneByName(getRoleName(preauthConfig.getRole()));
 		return posRole.getPermissions().stream().map(this::toGrantedAuthority).collect(toList());
+	}
+
+	private String getRoleName(String role) {
+		return messageSource.getMessage("role." + role, null, role, LocaleContextHolder.getLocale());
 	}
 
 	private GrantedAuthority toGrantedAuthority(Permission permission) {
