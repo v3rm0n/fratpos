@@ -13,4 +13,6 @@ import javax.persistence.Entity;
 public class Permission extends Model {
 	@NonNull
 	private String name;
+
+	private transient String description;
 }

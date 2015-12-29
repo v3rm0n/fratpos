@@ -8,6 +8,7 @@
 	<link rel="stylesheet" href="/css/pos.css"/>
 	<link rel="stylesheet" href="/webjars/Bootflat/2.0.4/css/bootstrap.min.css"/>
 	<link rel="stylesheet" href="/webjars/Bootflat/2.0.4/bootflat/css/bootflat.min.css"/>
+	<link rel="stylesheet" href="/webjars/toastr/2.1.2/build/toastr.min.css"/>
 	<link rel="shortcut icon" href="/img/favicon.ico"/>
 </head>
 <body>
@@ -30,10 +31,7 @@
           <button data-type="last" ng-click="openInfoDialog(user)" class="btn btn-primary" th:text="#{pos.info}">Info</button></span>
 			</div>
 		</div>
-		<div class="col-md-6">
-			<div ng-show="status != null" ng-cloak="ng-cloak" class="alert {{statusError ? &quot;alert-danger&quot; : &quot;alert-success&quot;}}"><strong ng-bind="status"></strong> {{statusMessage}}</div>
-		</div>
-		<div class="col-md-2">
+		<div class="col-md-8">
 			<button href="#" ng-click="toggleShowAllProducts()" ng-show="haveZeroQuantity()" class="btn pull-right" th:text="#{pos.products.show.all}">Kuva kõiki tooteid</button>
 		</div>
 	</div><br class="visible-xs visible-sm"/>
@@ -62,9 +60,6 @@
 	<div class="row">
 		<div class="col-md-4">
 			<h2><span th:text="#{pos.products.sum}">Summa:</span> <span ng-bind="sum()"></span> <span th:text="#{common.currency}">€</span></h2>
-		</div>
-		<div class="col-md-8">
-			<div ng-show="status != null" ng-cloak="ng-cloak" class="alert {{statusError ? &quot;alert-danger&quot; : &quot;alert-success&quot;}}"><strong ng-bind="status"></strong> {{statusMessage}}</div>
 		</div>
 	</div>
 	<div class="row">
@@ -106,6 +101,7 @@
 </div>
 <script type="text/javascript" src="/webjars/chartjs/2.0.0-beta1/Chart.min.js"></script>
 <script th:src="@{/webjars/Bootflat/2.0.4/js/jquery-1.10.1.min.js}" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+<script src="/webjars/toastr/2.1.2/build/toastr.min.js"></script>
 <script type="text/javascript" src="/webjars/angularjs/1.4.8/angular.min.js"></script>
 <script type="text/javascript" src="/webjars/angularjs/1.4.8/angular-route.min.js"></script>
 <script type="text/javascript" src="/webjars/angularjs/1.4.8/angular-resource.min.js"></script>

@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 import java.util.Arrays;
 import java.util.List;
@@ -35,15 +37,20 @@ public class RolePermissionBootstrapListener implements ApplicationListener<Appl
 
 	private void createAllPermissionsIfNotExists(ConfigurableApplicationContext context) {
 		PermissionRepository permissionRepository = context.getBean(PermissionRepository.class);
+		List<String> permissionNames = getPermissionNames();
 		if (permissionRepository.count() > 0) {
-			return;
+			List<String> permissions = permissionRepository.findAll().stream().map(Permission::getName).collect(toList());
+			permissionNames.removeAll(permissions);
 		}
-		log.info("Permissions don't exist, creating");
-		Arrays.stream(Permissions.values())
-				.map(Permissions::name)
+		log.info("Creating missing permissions");
+		permissionNames.stream()
 				.map(Permission::new)
 				.map(permissionRepository::save)
 				.collect(toList());
+	}
+
+	private List<String> getPermissionNames() {
+		return Arrays.asList(Permissions.values()).stream().map(Permissions::name).collect(toList());
 	}
 
 	private void createRolesRoleIfNotExists(ConfigurableApplicationContext context) {
@@ -57,12 +64,13 @@ public class RolePermissionBootstrapListener implements ApplicationListener<Appl
 
 	private void createRoleIfNotExists(ConfigurableApplicationContext context, String role, Permissions... permissions) {
 		RoleRepository roleRepository = context.getBean(RoleRepository.class);
-		if (roleRepository.findOneByName(role) != null) {
+		String roleName = getRoleName(role, context);
+		if (roleRepository.findOneByName(roleName) != null) {
 			return;
 		}
 		log.info("Role {} doesn't exist, creating", role);
 		Role r = new Role();
-		r.setName(role);
+		r.setName(roleName);
 		r.setPermissions(getPermissions(context, permissions));
 		roleRepository.save(r);
 	}
@@ -77,5 +85,10 @@ public class RolePermissionBootstrapListener implements ApplicationListener<Appl
 	private String getPosRole(ConfigurableApplicationContext context) {
 		PreauthConfig preauthConfig = context.getBean(PreauthConfig.class);
 		return preauthConfig.getRole();
+	}
+
+	private String getRoleName(String role, ConfigurableApplicationContext context) {
+		MessageSource messageSource = context.getBean(MessageSource.class);
+		return messageSource.getMessage("role." + role, null, role, LocaleContextHolder.getLocale());
 	}
 }

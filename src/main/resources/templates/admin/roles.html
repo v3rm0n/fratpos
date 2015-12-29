@@ -31,7 +31,7 @@
 									<td ng-repeat="role in roles">{{role.name}}</td>
 								</tr>
 								<tr style="text-align: center;" ng-repeat="permission in permissions">
-									<td>{{permission.name}}</td>
+									<td>{{permission.description}}</td>
 									<td ng-repeat="role in roles"><input type="checkbox" icheck="icheck" ng-change="change(permission, role, rolePermissions[permission.id][role.id])" ng-model="rolePermissions[permission.id][role.id]"/></td>
 								</tr>
 								</tbody>

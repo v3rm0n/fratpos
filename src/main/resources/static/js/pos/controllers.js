@@ -3,7 +3,7 @@
 
 	var app = angular.module('fratpos');
 
-	app.controller('PosController', function ($scope, api, $timeout, $modal) {
+	app.controller('PosController', function ($scope, api, $timeout, $modal, notify) {
 
 		var getData = function () {
 			api.posdata().success(function (data) {
@@ -103,12 +103,11 @@
 		};
 
 		var updateStatus = function (message, error) {
-			$scope.statusMessage = message;
-			$scope.status = error ? 'Viga!' : 'Korras!';
-			$scope.statusError = error;
-			$timeout(function () {
-				$scope.status = undefined;
-			}, 1000);
+			if (error) {
+				notify.error(message);
+			} else {
+				notify.success(message);
+			}
 		};
 
 		var productsArray = function (products) {
@@ -179,11 +178,10 @@
 
 			modalScope.save = function (feedback) {
 				feedback.$save(function () {
-					modalScope.error = false;
 					updateStatus('Tagasiside edastatud!', false);
 					d.hide();
 				}, function () {
-					modalScope.error = true;
+					updateStatus('Tagasiside jätmine ebaõnnestus!', true);
 				});
 			};
 		};
@@ -203,7 +201,7 @@
 				var colors = ['#4A89DC', '#37BC9B', '#3BAFDA', '#DA4453', '#8CC152', '#434A54', '#E9573F', '#D770AD', '#967ADC', '#F6BB42'];
 				modalScope.colors = colors;
 
-				var data = [], labels =[], i;
+				var data = [], labels = [], i;
 
 				for (i = 0; (i < 10) && (i < stat.popularProducts.length); i += 1) {
 					var popularProduct = stat.popularProducts[i];

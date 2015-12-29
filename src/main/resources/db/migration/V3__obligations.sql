@@ -1,12 +1,12 @@
 CREATE TABLE IF NOT EXISTS obligation_type (
-	id   BIGINT(20)  NOT NULL,
+	id   BIGINT(20)  NOT NULL AUTO_INCREMENT,
 	name VARCHAR(45) NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE INDEX name_UNIQUE (name ASC)
 );
 
 CREATE TABLE IF NOT EXISTS obligation (
-	id                 BIGINT(20)     NOT NULL,
+	id                 BIGINT(20)     NOT NULL AUTO_INCREMENT,
 	obligation_type_id BIGINT(20)     NOT NULL,
 	description        VARCHAR(80)    NULL     DEFAULT NULL,
 	time               DATETIME       NULL     DEFAULT NULL,
@@ -43,14 +43,14 @@ CREATE TABLE IF NOT EXISTS user_obligation (
 );
 
 CREATE TABLE IF NOT EXISTS income_type (
-	id   BIGINT(20)  NOT NULL,
+	id   BIGINT(20)  NOT NULL AUTO_INCREMENT,
 	name VARCHAR(45) NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE INDEX name_UNIQUE (name ASC)
 );
 
 CREATE TABLE IF NOT EXISTS income (
-	id             BIGINT(20)     NOT NULL,
+	id             BIGINT(20)     NOT NULL AUTO_INCREMENT,
 	user_id        BIGINT(20)     NOT NULL,
 	income_type_id BIGINT(20)     NOT NULL,
 	amount         DECIMAL(10, 2) NOT NULL,
@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS income (
 );
 
 CREATE TABLE IF NOT EXISTS notification (
-	id           BIGINT(20)  NOT NULL,
+	id           BIGINT(20)  NOT NULL AUTO_INCREMENT,
 	user_id      BIGINT(20)  NOT NULL,
 	type         VARCHAR(45) NOT NULL,
 	date_created DATETIME    NOT NULL DEFAULT NOW(),

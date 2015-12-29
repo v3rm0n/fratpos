@@ -1,3 +1,4 @@
+<div xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <section class="content-header">
 	<h1>Profiil</h1>
 </section>
@@ -24,7 +25,7 @@
 						</li>
 					</ul>
 
-					<a href="#" class="btn btn-primary btn-block"><b>Saada teavitus</b></a>
+					<a sec:authorize="hasRole('NOTIFICATIONS_MODIFY')" href="#" class="btn btn-primary btn-block"><b>Saada teavitus</b></a>
 				</div>
 				<!-- /.box-body -->
 			</div>
@@ -57,8 +58,8 @@
 					<p>
 						<span class="label label-success" style="margin-right: 5px;white-space: normal;" ng-repeat="role in user.roles">{{role.name}} <i class="fa fa-times" style="cursor: pointer;" ng-click="removeRole(role)"></i></span>
 					</p>
-					<div ng-if="availableRoles.length > 0">
-						<select ng-model="newRole" class="form-control" ng-change="addRole(newRole)" ng-options="role as role.name for role in availableRoles">
+					<div sec:authorize="hasRole('ROLES_MODIFY')" ng-if="availableRoles.length > 0">
+						<select select2="" ng-model="newRole" class="form-control" ng-change="addRole(newRole)" ng-options="role as role.name for role in availableRoles">
 							<option value="">Lisa roll...</option>
 						</select>
 					</div>
@@ -190,3 +191,4 @@
 		<!-- /.col -->
 	</div>
 </section>
+</div>

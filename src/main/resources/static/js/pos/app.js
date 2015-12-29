@@ -1,4 +1,4 @@
-(function (angular, Chart) {
+(function (angular, Chart, toastr) {
 	"use strict";
 
 	var app = angular.module('fratpos', ['mgcrea.ngStrap', 'ngResource']);
@@ -49,6 +49,22 @@
 		};
 	});
 
+	app.factory('notify', function () {
+		toastr.options = {
+			"positionClass": "toast-bottom-right",
+			"preventDuplicates": true,
+			"timeOut": "2000"
+		};
+		return {
+			success: function (text) {
+				toastr.success(text);
+			},
+			error: function (text) {
+				toastr.error(text);
+			}
+		};
+	});
+
 	app.factory('api', function ($http, $resource) {
 		return {
 			posdata: function () {
@@ -72,4 +88,4 @@
 		};
 	});
 
-}(window.angular, window.Chart));
+}(window.angular, window.Chart, window.toastr));

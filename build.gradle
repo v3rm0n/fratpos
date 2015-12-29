@@ -70,6 +70,8 @@ dependencies {
 	compile 'org.webjars.bower:chartjs:2.0.0-beta1'
 	compile 'org.webjars.bower:Bootflat:2.0.4'
 	compile 'org.webjars.bower:adminlte:2.3.2'
+	compile 'org.webjars.bower:bootstrap-sweetalert:0.4.5'
+	compile 'org.webjars.npm:toastr:2.1.2'
 
 	testCompile 'com.h2database:h2'
 	testCompile 'org.spockframework:spock-core'

@@ -1,129 +1,138 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
-  <meta charset="utf-8"/>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-  <meta name="_csrf" th:content="${_csrf.token}"></meta>
-  <meta name="_csrf_header" th:content="${_csrf.headerName}"></meta>
-  <title th:text="#{title.is}">korp! Infosüsteem</title>
-  <!-- Tell the browser to be responsive to screen width -->
-  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
-  <link rel="stylesheet" th:href="@{/webjars/adminlte/2.3.2/bootstrap/css/bootstrap.min.css}" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"/>
-  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"/>
-  <link rel="stylesheet" href="/webjars/adminlte/2.3.2/plugins/select2/select2.min.css"/>
-  <link rel="stylesheet" href="/webjars/adminlte/2.3.2/plugins/iCheck/flat/yellow.css"/>
-  <link rel="stylesheet" href="/webjars/adminlte/2.3.2/plugins/pace/pace.min.css"/>
-  <!-- Theme style -->
-  <link rel="stylesheet" th:href="@{/webjars/adminlte/2.3.2/dist/css/AdminLTE.min.css}" href="https://almsaeedstudio.com/themes/AdminLTE/dist/css/AdminLTE.min.css"/>
-  <link rel="stylesheet" th:href="@{/webjars/adminlte/2.3.2/dist/css/skins/skin-yellow.min.css}" href="https://almsaeedstudio.com/themes/AdminLTE/dist/css/skins/_all-skins.min.css"/>
+	<meta charset="utf-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<meta name="_csrf" th:content="${_csrf.token}"></meta>
+	<meta name="_csrf_header" th:content="${_csrf.headerName}"></meta>
+	<title th:text="#{title.is}">korp! Infosüsteem</title>
+	<!-- Tell the browser to be responsive to screen width -->
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
+	<link rel="stylesheet" th:href="@{/webjars/adminlte/2.3.2/bootstrap/css/bootstrap.min.css}" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"/>
+	<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"/>
+	<link rel="stylesheet" href="/webjars/adminlte/2.3.2/plugins/select2/select2.min.css"/>
+	<link rel="stylesheet" href="/webjars/adminlte/2.3.2/plugins/iCheck/flat/yellow.css"/>
+	<link rel="stylesheet" href="/webjars/adminlte/2.3.2/plugins/pace/pace.min.css"/>
+	<link rel="stylesheet" href="/webjars/toastr/2.1.2/build/toastr.min.css"/>
+	<link rel="stylesheet" href="/webjars/bootstrap-sweetalert/0.4.5/lib/sweet-alert.css"/>
+	<!-- Theme style -->
+	<link rel="stylesheet" th:href="@{/webjars/adminlte/2.3.2/dist/css/AdminLTE.min.css}" href="https://almsaeedstudio.com/themes/AdminLTE/dist/css/AdminLTE.min.css"/>
+	<link rel="stylesheet" th:href="@{/webjars/adminlte/2.3.2/dist/css/skins/skin-yellow.min.css}"
+		  href="https://almsaeedstudio.com/themes/AdminLTE/dist/css/skins/_all-skins.min.css"/>
 
-  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-  <!--[if lt IE 9]>
-  <script src="//oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-  <script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-  <![endif]-->
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	<script src="//oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+	<script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
 
-  <link rel="shortcut icon" href="/img/favicon.ico"/>
-  <link rel="stylesheet" href="/css/is.css"/>
+	<link rel="shortcut icon" href="/img/favicon.ico"/>
+	<link rel="stylesheet" href="/css/is.css"/>
 
 </head>
 <body class="hold-transition skin-yellow sidebar-mini" ng-app="fratis">
 <div class="wrapper">
 
-  <!-- Main Header -->
-  <header class="main-header">
+	<!-- Main Header -->
+	<header class="main-header">
 
-    <!-- Logo -->
-    <a href="#" class="logo">
-      <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span class="logo-mini"><b>L</b>IS</span>
-      <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg"><b th:text="#{brand}">korp!</b>IS</span>
-    </a>
+		<!-- Logo -->
+		<a href="#" class="logo">
+			<!-- mini logo for sidebar mini 50x50 pixels -->
+			<span class="logo-mini"><b>L</b>IS</span>
+			<!-- logo for regular state and mobile devices -->
+			<span class="logo-lg"><b th:text="#{brand}">korp!</b>IS</span>
+		</a>
 
-    <!-- Header Navbar -->
-    <nav class="navbar navbar-static-top" role="navigation">
-      <!-- Sidebar toggle button-->
-      <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
-        <span class="sr-only">Toggle navigation</span>
-      </a>
-      <!-- Navbar Right Menu -->
-      <div class="navbar-custom-menu">
-        <form method="get" action="login.html" th:method="post" th:action="@{/logout}" name="logoutForm">
-          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-        </form>
-        <ul class="nav navbar-nav">
-          <!-- User Account Menu -->
-          <li sec:authorize="hasRole('PROFILE_VIEW')" class="user user-menu">
-            <!-- Menu Toggle Button -->
-            <a th:href="@{/#profile}" href="admin/profile.html">
-              <span><i class="fa fa-user"></i> <span th:text="${user != null}? ${user.label} : ${#authentication.name}">ksv! Peeter Meeter(Hüüdnimi)</span></span>
-            </a>
-          </li>
-          <li sec:authorize="!hasRole('PROFILE_VIEW')" class="user user-menu">
-            <!-- Menu Toggle Button -->
-            <a href="#" onclick="return false;">
-              <span><i class="fa fa-user"></i> <span th:text="${user != null}? ${user.label} : ${#authentication.name}">ksv! Peeter Meeter(Hüüdnimi)</span></span>
-            </a>
-          </li>
-          <li>
-              <a href="#" onclick="document.logoutForm.submit();"><i class="fa fa-sign-out"></i> Logi välja</a>
-          </li>
-        </ul>
-      </div>
-    </nav>
-  </header>
+		<!-- Header Navbar -->
+		<nav class="navbar navbar-static-top" role="navigation">
+			<!-- Sidebar toggle button-->
+			<a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+				<span class="sr-only">Toggle navigation</span>
+			</a>
+			<!-- Navbar Right Menu -->
+			<div class="navbar-custom-menu">
+				<form method="get" action="login.html" th:method="post" th:action="@{/logout}" name="logoutForm">
+					<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+				</form>
+				<ul class="nav navbar-nav">
+					<!-- User Account Menu -->
+					<li sec:authorize="hasRole('PROFILE_VIEW')" class="user user-menu">
+						<!-- Menu Toggle Button -->
+						<a th:href="@{/#profile}" href="admin/profile.html">
+							<span><i class="fa fa-user"></i> <span th:text="${user != null}? ${user.label} : ${#authentication.name}">ksv! Peeter Meeter(Hüüdnimi)</span></span>
+						</a>
+					</li>
+					<li sec:authorize="!hasRole('PROFILE_VIEW')" class="user user-menu">
+						<!-- Menu Toggle Button -->
+						<a href="#" onclick="return false;">
+							<span><i class="fa fa-user"></i> <span th:text="${user != null}? ${user.label} : ${#authentication.name}">ksv! Peeter Meeter(Hüüdnimi)</span></span>
+						</a>
+					</li>
+					<li>
+						<a href="#" onclick="document.logoutForm.submit();"><i class="fa fa-sign-out"></i> Logi välja</a>
+					</li>
+				</ul>
+			</div>
+		</nav>
+	</header>
 
-  <!-- Left side column. contains the logo and sidebar -->
-  <aside class="main-sidebar" ng-controller="MenuController">
-    <!-- sidebar: style can be found in sidebar.less -->
-    <section class="sidebar">
-      <!-- Sidebar Menu -->
-      <ul class="sidebar-menu">
-        <li class="header">MENÜÜ</li>
-        <li ng-class="{active: isActive(['users', 'statuses'])}" sec:authorize="hasRole('USERS_VIEW')" class="treeview">
-          <a href="#"><i class="fa fa-users"></i> <span>Liikmed</span> <i class="fa fa-angle-left pull-right"></i></a>
-          <ul class="treeview-menu">
-            <li ng-class="{active: isActive('users')}"><a href="#users"><i class="fa fa-list"></i> Nimekiri</a></li>
-            <li ng-class="{active: isActive('statuses')}"><a href="#statuses"><i class="fa fa-graduation-cap"></i> Staatused</a></li>
-          </ul>
-        </li>
-        <li ng-class="{active: isActive('roles')}" sec:authorize="hasRole('ROLES_VIEW')"><a href="#roles"><i class="fa fa-lock"></i> <span>Rollid ja õigused</span></a></li>
-        <li ng-class="{active: isActive('notifications')}" sec:authorize="hasRole('NOTIFICATIONS_VIEW')"><a href="#notifications"><i class="fa fa-envelope"></i> <span>Teavitused</span></a></li>
-        <li ng-class="{active: isActive('obligations')}" sec:authorize="hasRole('OBLIGATIONS_VIEW')"><a href="#obligations"><i class="fa fa-arrow-left"></i> <span>Kohustused</span></a></li>
-        <li ng-class="{active: isActive('income')}" sec:authorize="hasRole('INCOME_VIEW')"><a href="#income"><i class="fa fa-arrow-right"></i> <span>Laekumised</span></a></li>
-        <li ng-class="{active: isActive('reports')}" sec:authorize="hasRole('REPORTS_VIEW')"><a href="#reports"><i class="fa fa-pie-chart"></i> <span>Aruanded</span></a></li>
-        <li ng-class="{active: isActive(['products', 'transactions', 'paytypes', 'stocktakings', 'feedback'])}" sec:authorize="hasRole('POS_VIEW')" class="treeview">
-          <a href="#"><i class="fa fa-shopping-cart"></i> <span>Kassa</span> <i class="fa fa-angle-left pull-right"></i></a>
-          <ul class="treeview-menu">
-            <li ng-class="{active: isActive('products')}"><a href="#products"><i class="fa fa-cubes"></i> Laoseis</a></li>
-            <li ng-class="{active: isActive('transactions')}"><a href="#transactions"><i class="fa fa-exchange"></i> Tehingud</a></li>
-            <li ng-class="{active: isActive('paytypes')}"><a href="#paytypes"><i class="fa fa-money"></i> Makseviisid</a></li>
-            <li ng-class="{active: isActive('stocktakings')}"><a href="#stocktakings"><i class="fa fa-tasks"></i> Inventuur</a></li>
-            <li ng-class="{active: isActive('feedback')}"><a href="#feedback"><i class="fa fa-edit"></i> Tagasiside</a></li>
-          </ul>
-        </li>
-      </ul>
-      <!-- /.sidebar-menu -->
-    </section>
-    <!-- /.sidebar -->
-  </aside>
+	<!-- Left side column. contains the logo and sidebar -->
+	<aside class="main-sidebar" ng-controller="MenuController">
+		<!-- sidebar: style can be found in sidebar.less -->
+		<section class="sidebar">
+			<!-- Sidebar Menu -->
+			<ul class="sidebar-menu">
+				<li class="header">MENÜÜ</li>
+				<li ng-class="{active: isActive(['users', 'statuses'])}" sec:authorize="hasRole('USERS_VIEW')" class="treeview">
+					<a href="#"><i class="fa fa-users"></i> <span>Liikmed</span> <i class="fa fa-angle-left pull-right"></i></a>
+					<ul class="treeview-menu">
+						<li ng-class="{active: isActive('users')}"><a href="#users"><i class="fa fa-list"></i> Nimekiri</a></li>
+						<li ng-class="{active: isActive('statuses')}"><a href="#statuses"><i class="fa fa-graduation-cap"></i> Staatused</a></li>
+					</ul>
+				</li>
+				<li ng-class="{active: isActive('roles')}" sec:authorize="hasRole('ROLES_VIEW')"><a href="#roles"><i class="fa fa-lock"></i> <span>Rollid ja õigused</span></a></li>
+				<li ng-class="{active: isActive('notifications')}" sec:authorize="hasRole('NOTIFICATIONS_VIEW')"><a href="#notifications"><i class="fa fa-envelope"></i> <span>Teavitused</span></a>
+				</li>
+				<li ng-class="{active: isActive('obligations')}" sec:authorize="hasRole('OBLIGATIONS_VIEW')"><a href="#obligations"><i class="fa fa-arrow-left"></i> <span>Kohustused</span></a>
+				</li>
+				<li ng-class="{active: isActive('income')}" sec:authorize="hasRole('INCOME_VIEW')"><a href="#income"><i class="fa fa-arrow-right"></i> <span>Laekumised</span></a>
+				</li>
+				<li ng-class="{active: isActive('reports')}" sec:authorize="hasRole('REPORTS_VIEW')"><a href="#reports"><i class="fa fa-pie-chart"></i> <span>Aruanded</span></a>
+				</li>
+				<li ng-class="{active: isActive(['products', 'transactions', 'paytypes', 'stocktakings', 'feedback'])}" sec:authorize="hasRole('POS_VIEW')" class="treeview">
+					<a href="#"><i class="fa fa-shopping-cart"></i> <span>Kassa</span> <i class="fa fa-angle-left pull-right"></i></a>
+					<ul class="treeview-menu">
+						<li ng-class="{active: isActive('products')}"><a href="#products"><i class="fa fa-cubes"></i> Laoseis</a></li>
+						<li ng-class="{active: isActive('transactions')}"><a href="#transactions"><i class="fa fa-exchange"></i> Tehingud</a></li>
+						<li ng-class="{active: isActive('paytypes')}"><a href="#paytypes"><i class="fa fa-money"></i> Makseviisid</a></li>
+						<li ng-class="{active: isActive('stocktakings')}"><a href="#stocktakings"><i class="fa fa-tasks"></i> Inventuur</a></li>
+						<li ng-class="{active: isActive('feedback')}"><a href="#feedback"><i class="fa fa-edit"></i> Tagasiside</a></li>
+					</ul>
+				</li>
+			</ul>
+			<!-- /.sidebar-menu -->
+		</section>
+		<!-- /.sidebar -->
+	</aside>
 
-  <div class="content-wrapper" ng-view=""></div>
+	<div class="content-wrapper" ng-view=""></div>
 
-  <!-- Main Footer -->
-  <footer class="main-footer">
-    <!-- Default to the left -->
-    <strong>Copyright &copy; 2016 <a th:href="@{#{main.url}}" href="http://www.example.com" th:text="#{brand}">korp!</a>.</strong> Kõik õigused kaitstud.
-  </footer>
+	<!-- Main Footer -->
+	<footer class="main-footer">
+		<!-- Default to the left -->
+		<strong>Copyright &copy; 2016 <a th:href="@{#{main.url}}" href="http://www.example.com" th:text="#{brand}">korp!</a>.</strong> Kõik õigused kaitstud.
+	</footer>
 
 </div>
 <script th:src="@{/webjars/adminlte/2.3.2/plugins/jQuery/jQuery-2.1.4.min.js}" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <script src="/webjars/lodash/3.10.1/lodash.min.js"></script>
 <script src="/webjars/adminlte/2.3.2/plugins/iCheck/icheck.min.js"></script>
 <script src="/webjars/adminlte/2.3.2/plugins/pace/pace.min.js"></script>
+<script src="/webjars/toastr/2.1.2/build/toastr.min.js"></script>
+<script src="/webjars/bootstrap-sweetalert/0.4.5/lib/sweet-alert.min.js"></script>
 <script src="/webjars/adminlte/2.3.2/plugins/select2/select2.min.js"></script>
 <script th:src="@{/webjars/adminlte/2.3.2/bootstrap/js/bootstrap.min.js}" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <script th:src="@{/webjars/adminlte/2.3.2/dist/js/app.min.js}" src="https://almsaeedstudio.com/themes/AdminLTE/dist/js/app.min.js"></script>
@@ -132,6 +141,10 @@
 <script th:src="@{/webjars/angularjs/1.4.8/angular-resource.min.js}" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.8/angular-resource.min.js"></script>
 <script src="/webjars/angular-strap/2.3.5/dist/angular-strap.min.js"></script>
 <script src="/webjars/angular-strap/2.3.5/dist/angular-strap.tpl.min.js"></script>
+<script src="/webjars/adminlte/2.3.2/plugins/input-mask/jquery.inputmask.js"></script>
+<script src="/webjars/adminlte/2.3.2/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
+<script src="/webjars/adminlte/2.3.2/plugins/input-mask/jquery.inputmask.numeric.extensions.js"></script>
+<script src="/webjars/adminlte/2.3.2/plugins/input-mask/jquery.inputmask.extensions.js"></script>
 <script th:src="@{js/is/app.js}"></script>
 <script th:src="@{js/is/controllers.js}"></script>
 </body>

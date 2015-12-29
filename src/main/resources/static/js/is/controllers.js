@@ -1,10 +1,9 @@
-/*jslint es5: true nomen: true forin: true vars: true*/
 (function (angular) {
 	"use strict";
 
 	var app = angular.module('fratis');
 
-	app.controller('UsersController', function ($scope, $modal, $window, api) {
+	app.controller('UsersController', function ($scope, $modal, api, notify) {
 
 		$scope.users = api.User.query();
 
@@ -70,30 +69,35 @@
 
 				modalScope.save = function (user) {
 					user.$save(function () {
-						modalScope.error = false;
 						api.User.query(function (users) {
 							$scope.users = users;
 						});
 						d.hide();
+						notify.success('Muudatused salvestatud!');
 					}, function () {
-						modalScope.error = true;
+						notify.error('Salvestamine ebaõnnestus, kontrolli andmeid!');
 					});
 				};
 
 				modalScope.delete = function (user) {
-					var confirmed = $window.confirm('Oled kindel, et tahad kasutaja kustutada?');
-					if (confirmed) {
-						user.$remove(function () {
-							$scope.users = $scope.users.filter(function (u) {
-								return user.id !== u.id;
+					d.hide();
+					notify.warning({
+						title: 'Oled kindel, et tahad liikme eemaldada?'
+					}, function (isConfirmed) {
+						if (isConfirmed) {
+							user.$remove(function () {
+								$scope.users = $scope.users.filter(function (u) {
+									return user.id !== u.id;
+								});
+								notify.success('Liige eemaldatud!');
+							}, function () {
+								notify.error('Ei õnnestunud liiget eemaldada!');
 							});
-							d.hide();
-						}, function () {
-							modalScope.error = true;
-						});
-					}
+						} else {
+							d.show();
+						}
+					});
 				};
-
 			});
 		};
 	});
@@ -134,7 +138,7 @@
 		};
 	});
 
-	app.controller('ProductsController', function ($scope, api, $modal, $window) {
+	app.controller('ProductsController', function ($scope, api, $modal, notify) {
 
 		$scope.products = api.Product.query();
 
@@ -186,33 +190,40 @@
 			});
 
 			modalScope.save = function (product) {
-				product.$save(function (data) {
-					modalScope.error = false;
+				product.$save(function () {
 					$scope.products = api.Product.query();
 					d.hide();
+					notify.success('Muudatused salvestatud!');
 				}, function () {
-					modalScope.error = true;
+					notify.error('Salvestamine ebaõnnestus, kontrolli andmeid!');
 				});
 			};
 
 			modalScope.delete = function (product) {
-				var confirmed = $window.confirm('Oled kindel, et tahad toote kustutada?');
-				if (confirmed) {
-					product.$remove(function () {
-						$scope.products = $scope.products.filter(function (u) {
-							return product.id !== u.id;
+				d.hide();
+				notify.warning({
+					title: 'Oled kindel, et tahad toote kustutada?'
+				}, function (isConfirmed) {
+					if (isConfirmed) {
+						product.$remove(function () {
+							$scope.products = $scope.products.filter(function (u) {
+								return product.id !== u.id;
+							});
+							d.hide();
+							notify.success('Toode eemaldatud!');
+						}, function () {
+							notify.error('Ei õnnestunud toodet kustutada!');
 						});
-						d.hide();
-					}, function () {
-						modalScope.error = true;
-					});
-				}
+					} else {
+						d.show();
+					}
+				});
 			};
 
 		};
 	});
 
-	app.controller('PaytypesController', function ($scope, api, $modal, $window) {
+	app.controller('PaytypesController', function ($scope, api, $modal, notify) {
 
 		$scope.paytypes = api.Paytype.query();
 
@@ -251,27 +262,33 @@
 							}
 						}
 					}
-					p.$save(function (data) {
-						modalScope.error = false;
+					p.$save(function () {
 						$scope.paytypes = api.Paytype.query();
 						d.hide();
+						notify.success('Muudatused salvestatud!');
 					}, function () {
-						modalScope.error = true;
+						notify.error('Salvestamine ebaõnnestus, kontrolli andmeid!');
 					});
 				};
 
 				modalScope.delete = function (paytype) {
-					var confirmed = $window.confirm('Oled kindel, et tahad makseviisi kustutada?');
-					if (confirmed) {
-						paytype.$remove(function () {
-							$scope.paytypes = $scope.paytypes.filter(function (u) {
-								return paytype.id !== u.id;
+					d.hide();
+					notify.warning({
+						title: 'Oled kindel, et tahad makseviisi kustutada?'
+					}, function (isConfirmed) {
+						if (isConfirmed) {
+							paytype.$remove(function () {
+								$scope.paytypes = $scope.paytypes.filter(function (u) {
+									return paytype.id !== u.id;
+								});
+								d.hide();
+							}, function () {
+								notify.error('Ei õnnestunud makseviisi kustutada!');
 							});
-							d.hide();
-						}, function () {
-							modalScope.error = true;
-						});
-					}
+						} else {
+							d.show();
+						}
+					});
 				};
 
 			});
@@ -284,7 +301,7 @@
 		};
 	});
 
-	app.controller('StatusesController', function ($scope, api, $modal, $window) {
+	app.controller('StatusesController', function ($scope, api, $modal, notify) {
 
 		$scope.statuses = api.Status.query();
 
@@ -299,31 +316,37 @@
 			});
 
 			modalScope.save = function (s) {
-				s.$save(function (data) {
-					modalScope.error = false;
+				s.$save(function () {
 					$scope.statuses = api.Status.query();
 					d.hide();
+					notify.success('Muudatused salvestatud!');
 				}, function () {
-					modalScope.error = true;
+					notify.error('Salvestamine ebaõnnestus, kontrolli andmeid!');
 				});
 			};
 			modalScope.delete = function (status) {
-				var confirmed = $window.confirm('Oled kindel, et tahad staatuse kustutada?');
-				if (confirmed) {
-					status.$remove(function () {
-						$scope.statuses = $scope.statuses.filter(function (u) {
-							return status.id !== u.id;
+				d.hide();
+				notify.warning({
+					title: 'Oled kindel, et tahad staatuse kustutada?'
+				}, function (isConfirmed) {
+					if (isConfirmed) {
+						status.$remove(function () {
+							$scope.statuses = $scope.statuses.filter(function (u) {
+								return status.id !== u.id;
+							});
+							notify.success('Staatus kustutatud!');
+						}, function () {
+							notify.error('Ei õnnestunud staatust kustutada!');
 						});
-						d.hide();
-					}, function () {
-						modalScope.error = true;
-					});
-				}
+					} else {
+						d.show();
+					}
+				});
 			};
 		};
 	});
 
-	app.controller('StocktakingController', function ($scope, api, $location, $window) {
+	app.controller('StocktakingController', function ($scope, api, $location, notify) {
 
 		$scope.stocktakings = api.Stocktaking.query();
 
@@ -332,13 +355,17 @@
 		};
 
 		$scope.stocktaking = function () {
-			var confirmed = $window.confirm('Oled kindel, et tahad teha inventuuri? Kasutajate saldod nullitakse ja tehingud eemaldatakse.');
-			if (confirmed) {
+			notify.warning({
+				title: 'Inventuur',
+				text: 'Oled kindel, et tahad teha inventuuri? Kasutajate saldod nullitakse ja tehingud eemaldatakse.',
+				confirmButtonText: "Jah, tee inventuur!"
+			}, function () {
 				var stocktaking = new api.Stocktaking();
 				stocktaking.$save(function (data) {
 					$scope.stocktakings.push(data);
+					notify.success('Inventuur tehtud');
 				});
-			}
+			});
 		};
 	});
 
@@ -348,7 +375,6 @@
 
 		api.Stocktaking.get({id: $routeParams.id - 1}, function (previous) {
 			$scope.previous = previous;
-			console.log(previous);
 		});
 
 		$scope.back = function () {
@@ -361,7 +387,7 @@
 
 	});
 
-	app.controller('FeedbackController', function ($scope, api) {
+	app.controller('FeedbackController', function ($scope, api, notify) {
 
 		$scope.feedbacks = api.Feedback.query();
 
@@ -370,6 +396,7 @@
 				$scope.feedbacks = $scope.feedbacks.filter(function (u) {
 					return feedback.id !== u.id;
 				});
+				notify.success('Tagasiside kustutatud!');
 			});
 		};
 	});
@@ -428,7 +455,7 @@
 
 	});
 
-	app.controller('RoleController', function ($scope, api) {
+	app.controller('RoleController', function ($scope, api, notify) {
 
 		$scope.permissions = api.Permission.query();
 		$scope.changedPermissions = {};
@@ -475,11 +502,55 @@
 					}
 				});
 			});
+			notify.success('Rollid muudetud');
 		};
 
 		$scope.change = function (permission, role, checked) {
 			$scope.changedPermissions[permission.id] = $scope.changedPermissions[permission.id] || {};
 			$scope.changedPermissions[permission.id][role.id] = checked;
+		};
+
+	});
+
+	app.controller('IncomeController', function ($scope, api, notify) {
+
+		$scope.users = api.User.query();
+		$scope.incomeTypes = api.IncomeType.query();
+		$scope.incomes = api.Income.query();
+
+		$scope.changeNewType = function (income) {
+			if (income.type) {
+				income.type = undefined;
+			}
+		};
+
+		$scope.changeType = function (income) {
+			if (income.newType) {
+				income.newType = undefined;
+			}
+		};
+
+		$scope.addIncome = function (income) {
+
+			var createIncome = function (incomeType) {
+				var i = new api.Income();
+				i.incomeType = incomeType;
+				i.user = income.user;
+				i.amount = income.amount;
+				i.dateCreated = income.date;
+				i.$save(function () {
+					$scope.income = undefined;
+					notify.success('Laekumine lisatud');
+				});
+			};
+
+			if (income.newType) {
+				var incomeType = new api.IncomeType();
+				incomeType.name = income.newType;
+				incomeType.$save(createIncome);
+			} else {
+				createIncome(income.type);
+			}
 		};
 
 	});
