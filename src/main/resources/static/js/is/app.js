@@ -1,7 +1,7 @@
 (function (angular, toastr, swal) {
 	"use strict";
 
-	var app = angular.module('fratis', ['ngRoute', 'ngResource', 'mgcrea.ngStrap'])
+	var app = angular.module('fratis', ['ngRoute', 'ngResource', 'mgcrea.ngStrap', 'ui.bootstrap.pagination', 'ui.bootstrap.tpls'])
 		.config(['$routeProvider', function ($routeProvider) {
 			$routeProvider
 				.when('/:page', {

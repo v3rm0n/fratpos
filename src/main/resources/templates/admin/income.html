@@ -3,56 +3,6 @@
 </section>
 <section class="content" ng-controller="IncomeController">
 	<div class="row">
-		<div class="col-md-6">
-			<div class="box box-primary">
-				<div class="box-header with-border">
-					<h3 class="box-title">Lisa laekumine</h3>
-				</div>
-				<!-- /.box-header -->
-				<!-- form start -->
-				<form role="form">
-					<div class="box-body">
-						<div class="form-group">
-							<label for="inputType">Tüüp</label>
-							<select select2="" ng-change="changeType(income)" ng-model="income.type" class="form-control" ng-options="type as type.name for type in incomeTypes">
-								<option value="">Vali tüüp...</option>
-							</select>
-						</div>
-						<div class="form-group">
-							<input type="text" ng-change="changeNewType(income)" ng-model="income.newType" class="form-control" id="inputType" placeholder="Või lisa uus"/>
-						</div>
-						<div class="form-group">
-							<label for="user">Kasutaja</label>
-							<select select2="" ng-model="income.user" id="user" class="form-control" ng-options="user as user.label for user in users">
-								<option value="">Vali kasutaja...</option>
-							</select>
-						</div>
-						<div class="form-group">
-							<label>Aeg</label>
-							<div class="input-group">
-								<div class="input-group-addon">
-									<i class="fa fa-calendar"></i>
-								</div>
-								<input type="text" ng-model="income.date" class="form-control" inputmaskdate="" />
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="control-label" for="amount">Summa</label>
-							<div class="input-group">
-								<input id="amount" ng-model="income.amount" type="number" class="form-control" />
-								<span class="input-group-addon">€</span>
-							</div>
-						</div>
-					</div>
-					<!-- /.box-body -->
-					<div class="box-footer">
-						<button type="submit" ng-click="addIncome(income)" class="btn btn-primary">Lisa</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-	<div class="row">
 		<div class="col-md-12">
 			<div class="box box-primary">
 				<div class="box-header with-border">
@@ -69,22 +19,27 @@
 						</tr>
 						</thead>
 						<tbody>
-						<tr ng-repeat="income in incomes">
+						<tr ng-repeat="income in filteredIncomes()">
 							<td ng-bind="income.incomeType.name"></td>
 							<td ng-bind="income.user.label"></td>
 							<td ng-bind="income.dateCreated"></td>
 							<td>{{income.amount}} €</td>
 						</tr>
 						</tbody>
-						<tfoot>
-						<tr>
-							<th></th>
-							<th></th>
-							<th>Kokku</th>
-							<th ng-bind-template="{{totalSum()}} €"></th>
-						</tr>
-						</tfoot>
 					</table>
+				</div>
+				<div class="box-footer clearfix no-border">
+					<uib-pagination class="pagination-sm no-margin pull-right" direction-links="false" total-items="totalIncomes" ng-model="currentPage"></uib-pagination>
+					<button type="button" ng-click="addNew()" class="btn btn-primary"><i class="fa fa-plus"></i> Lisa uus</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="box">
+				<div class="box-body">
+					<p>Kokku: <strong ng-bind-template="{{totalIncome}} €"></strong></p>
 				</div>
 			</div>
 		</div>

@@ -1,8 +1,8 @@
 <section class="content-header">
 	<h1>Tooted</h1>
 </section>
-<section class="content">
-	<div ng-controller="ProductsController" ng-show="products != null" class="row">
+<section class="content" ng-controller="ProductsController">
+	<div ng-show="products != null" class="row">
 		<div class="col-md-12">
 			<div class="box">
 				<div class="box-body">
@@ -22,16 +22,20 @@
 							<td ng-bind="product.quantity" ng-style="{color: rowColor(product)}"></td>
 						</tr>
 						</tbody>
-						<tfoot>
-						<tr>
-							<th></th>
-							<th>Kokku</th>
-							<th ng-bind="totalProducts()"></th>
-						</tr>
-						</tfoot>
 					</table>
-					<br/>
-					<button ng-click="openProductDialog()" class="btn btn-primary">Lisa toode</button>
+				</div>
+				<div class="box-footer clearfix no-border">
+					<uib-pagination class="pagination-sm no-margin pull-right" direction-links="false" total-items="totalProd" ng-model="currentPage"></uib-pagination>
+					<button type="button" ng-click="openProductDialog()" class="btn btn-primary"><i class="fa fa-plus"></i> Lisa toode</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div ng-show="products != null" class="row">
+		<div class="col-md-12">
+			<div class="box">
+				<div class="box-body">
+					<p>Tooteid laos kokku: <strong ng-bind="totalProducts"></strong></p>
 				</div>
 			</div>
 		</div>

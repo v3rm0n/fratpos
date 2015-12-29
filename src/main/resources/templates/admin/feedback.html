@@ -16,13 +16,16 @@
 						</tr>
 						</thead>
 						<tbody>
-						<tr ng-repeat="feedback in feedbacks">
+						<tr ng-repeat="feedback in filteredFeedbacks()">
 							<td ng-bind="feedback.formattedTime"></td>
 							<td ng-bind="feedback.content"></td>
 							<td><a ng-click="deleteFeedback(feedback)" class="btn btn-danger">Kustuta</a></td>
 						</tr>
 						</tbody>
 					</table>
+				</div>
+				<div class="box-footer clearfix no-border">
+					<uib-pagination class="pagination-sm no-margin pull-right" direction-links="false" total-items="totalFeedbacks" ng-model="currentPage"></uib-pagination>
 				</div>
 			</div>
 		</div>

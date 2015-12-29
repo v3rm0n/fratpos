@@ -7,6 +7,12 @@
 
 		$scope.users = api.User.query();
 
+		$scope.currentPage = 1;
+
+		$scope.users.$promise.then(function () {
+			$scope.totalUsers = $scope.users.length;
+		});
+
 		$scope.filteredUsers = function () {
 			var users = $scope.users;
 			if ($scope.filter !== undefined && $scope.filter.length > 0) {
@@ -24,7 +30,9 @@
 				};
 				users = users.sort(sort);
 			}
-			return users;
+			var currentPage = $scope.currentPage;
+			$scope.totalUsers = users.length;
+			return users.slice((currentPage - 1) * 10, currentPage * 10);
 		};
 
 		$scope.asc = true;
@@ -106,18 +114,24 @@
 
 		$scope.transactions = api.Transaction.query();
 
-		$scope.totalSum = function () {
+		$scope.currentPage = 1;
+
+		$scope.filteredTransactions = function () {
 			var transactions = $scope.transactions;
-			if (transactions !== undefined) {
-				return transactions.reduce(function (sum, transaction) {
-					if (!transaction.invalid) {
-						return sum + transaction.sum;
-					}
-					return sum;
-				}, 0);
-			}
-			return 0;
+			var currentPage = $scope.currentPage;
+			$scope.totalTransactions = transactions.length;
+			return transactions.slice((currentPage - 1) * 10, currentPage * 10);
 		};
+
+		$scope.transactions.$promise.then(function (transactions) {
+			$scope.totalTransactions = transactions.length;
+			$scope.totalSum = transactions.reduce(function (sum, transaction) {
+				if (!transaction.invalid) {
+					return sum + transaction.sum;
+				}
+				return sum;
+			}, 0);
+		});
 
 		$scope.openDialog = function (transaction) {
 
@@ -142,14 +156,14 @@
 
 		$scope.products = api.Product.query();
 
-		$scope.totalProducts = function () {
-			if ($scope.products !== undefined) {
-				return $scope.products.reduce(function (sum, product) {
-					return sum + product.quantity;
-				}, 0);
-			}
-			return 0;
-		};
+		$scope.currentPage = 1;
+
+		$scope.products.$promise.then(function () {
+			$scope.totalProd = $scope.products.length;
+			$scope.totalProducts = $scope.products.reduce(function (sum, product) {
+				return sum + product.quantity;
+			}, 0);
+		});
 
 		$scope.sortedProducts = function () {
 			var products = $scope.products;
@@ -163,7 +177,9 @@
 				};
 				products = products.sort(sort);
 			}
-			return products;
+			var currentPage = $scope.currentPage;
+			$scope.totalProd = products.length;
+			return products.slice((currentPage - 1) * 10, currentPage * 10);
 		};
 
 		$scope.asc = true;
@@ -350,6 +366,19 @@
 
 		$scope.stocktakings = api.Stocktaking.query();
 
+		$scope.currentPage = 1;
+
+		$scope.stocktakings.$promise.then(function () {
+			$scope.totalStocktakings = $scope.stocktakings.length;
+		});
+
+		$scope.filteredStocktakings = function () {
+			var stocktakings = $scope.stocktakings;
+			var currentPage = $scope.currentPage;
+			$scope.totalStocktakings = stocktakings.length;
+			return stocktakings.slice((currentPage - 1) * 10, currentPage * 10);
+		};
+
 		$scope.view = function (stocktaking) {
 			$location.url('/stocktaking/' + stocktaking.id);
 		};
@@ -390,6 +419,19 @@
 	app.controller('FeedbackController', function ($scope, api, notify) {
 
 		$scope.feedbacks = api.Feedback.query();
+
+		$scope.currentPage = 1;
+
+		$scope.feedbacks.$promise.then(function () {
+			$scope.totalFeedbacks = $scope.feedbacks.length;
+		});
+
+		$scope.filteredFeedbacks = function () {
+			var feedbacks = $scope.feedbacks;
+			var currentPage = $scope.currentPage;
+			$scope.totalFeedbacks = feedbacks.length;
+			return feedbacks.slice((currentPage - 1) * 10, currentPage * 10);
+		};
 
 		$scope.deleteFeedback = function (feedback) {
 			feedback.$remove(function () {
@@ -481,6 +523,7 @@
 			role.name = newRole;
 			role.$save(function () {
 				$scope.newRole = null;
+				notify.success('Roll ' + newRole + ' lisatud!');
 				initRoles();
 			});
 		};
@@ -512,11 +555,25 @@
 
 	});
 
-	app.controller('IncomeController', function ($scope, api, notify) {
+	app.controller('IncomeController', function ($scope, api, $modal, notify) {
 
 		$scope.users = api.User.query();
-		$scope.incomeTypes = api.IncomeType.query();
-		$scope.incomes = api.Income.query();
+
+		var init = function () {
+			$scope.incomeTypes = api.IncomeType.query();
+			$scope.incomes = api.Income.query();
+		};
+
+		init();
+
+		$scope.currentPage = 1;
+
+		$scope.filteredIncomes = function () {
+			var incomes = $scope.incomes;
+			var currentPage = $scope.currentPage;
+			$scope.totalIncomes = incomes.length;
+			return incomes.slice((currentPage - 1) * 10, currentPage * 10);
+		};
 
 		$scope.changeNewType = function (income) {
 			if (income.type) {
@@ -530,27 +587,45 @@
 			}
 		};
 
-		$scope.addIncome = function (income) {
+		$scope.incomes.$promise.then(function (incomes) {
+			$scope.totalIncomes = incomes.length;
+			$scope.totalIncome = incomes.reduce(function (sum, income) {
+				return sum + income.amount;
+			}, 0);
+		});
 
-			var createIncome = function (incomeType) {
-				var i = new api.Income();
-				i.incomeType = incomeType;
-				i.user = income.user;
-				i.amount = income.amount;
-				i.dateCreated = income.date;
-				i.$save(function () {
-					$scope.income = undefined;
-					notify.success('Laekumine lisatud');
-				});
+		$scope.addNew = function () {
+			var modalScope = $scope.$new();
+			var d = $modal({
+				templateUrl: '/dialog/income',
+				scope: modalScope
+			});
+
+			modalScope.save = function (income) {
+				var createIncome = function (incomeType) {
+					var i = new api.Income();
+					i.incomeType = incomeType;
+					i.user = income.user;
+					i.amount = income.amount;
+					i.dateCreated = income.date;
+					i.$save(function () {
+						$scope.income = undefined;
+						notify.success('Laekumine lisatud');
+						init();
+						d.hide();
+					}, function () {
+						notify.error('Laekumist ei õnnestunud lisada, kontrolli andmeid!');
+					});
+				};
+
+				if (income.newType) {
+					var incomeType = new api.IncomeType();
+					incomeType.name = income.newType;
+					incomeType.$save(createIncome);
+				} else {
+					createIncome(income.type);
+				}
 			};
-
-			if (income.newType) {
-				var incomeType = new api.IncomeType();
-				incomeType.name = income.newType;
-				incomeType.$save(createIncome);
-			} else {
-				createIncome(income.type);
-			}
 		};
 
 	});

@@ -18,7 +18,7 @@
 						</tr>
 						</thead>
 						<tbody>
-						<tr ng-repeat="stocktaking in stocktakings" ng-click="view(stocktaking)">
+						<tr ng-repeat="stocktaking in filteredStocktakings()" ng-click="view(stocktaking)">
 							<td ng-bind="stocktaking.formattedTime"></td>
 							<td>{{stocktaking.balancesSum}} €</td>
 							<td>{{stocktaking.transactionsSum}} €</td>
@@ -26,8 +26,10 @@
 						</tr>
 						</tbody>
 					</table>
-					<br/>
-					<button ng-click="stocktaking()" class="btn btn-danger">Inventuur</button>
+				</div>
+				<div class="box-footer clearfix no-border">
+					<uib-pagination class="pagination-sm no-margin pull-right" direction-links="false" total-items="totalStocktakings" ng-model="currentPage"></uib-pagination>
+					<button type="button" ng-click="stocktaking()" class="btn btn-danger"><i class="fa fa-check"></i> Inventuur</button>
 				</div>
 			</div>
 		</div>
