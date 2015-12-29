@@ -18,5 +18,5 @@ public class Obligation extends Model {
 	private String description;
 	private Date time;
 	private BigDecimal amount;
-	private Date dateCreated;
+	private Date dateCreated = new Date();
 }

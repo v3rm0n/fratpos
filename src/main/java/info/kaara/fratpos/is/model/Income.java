@@ -16,7 +16,7 @@ import java.util.Date;
 public class Income extends Model {
 	@ManyToOne
 	private IncomeType incomeType;
-	private Date dateCreated;
+	private Date dateCreated = new Date();
 	private BigDecimal amount;
 	@ManyToOne
 	private User user;
