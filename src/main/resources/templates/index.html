@@ -11,7 +11,7 @@
 	<link rel="stylesheet" th:href="@{/webjars/adminlte/2.3.2/bootstrap/css/bootstrap.min.css}" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"/>
 	<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"/>
-	<link rel="stylesheet" href="/webjars/adminlte/2.3.2/plugins/select2/select2.min.css"/>
+	<link rel="stylesheet" href="/webjars/angular-ui-select/0.13.2/dist/select.min.css"/>
 	<link rel="stylesheet" href="/webjars/adminlte/2.3.2/plugins/iCheck/flat/yellow.css"/>
 	<link rel="stylesheet" href="/webjars/adminlte/2.3.2/plugins/pace/pace.min.css"/>
 	<link rel="stylesheet" href="/webjars/toastr/2.1.2/build/toastr.min.css"/>
@@ -133,20 +133,25 @@
 <script src="/webjars/adminlte/2.3.2/plugins/pace/pace.min.js"></script>
 <script src="/webjars/toastr/2.1.2/build/toastr.min.js"></script>
 <script src="/webjars/bootstrap-sweetalert/0.4.5/lib/sweet-alert.min.js"></script>
-<script src="/webjars/adminlte/2.3.2/plugins/select2/select2.min.js"></script>
+<script src="/webjars/moment/2.10.6/min/moment-with-locales.min.js"></script>
 <script th:src="@{/webjars/adminlte/2.3.2/bootstrap/js/bootstrap.min.js}" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <script th:src="@{/webjars/adminlte/2.3.2/dist/js/app.min.js}" src="https://almsaeedstudio.com/themes/AdminLTE/dist/js/app.min.js"></script>
 <script th:src="@{/webjars/angularjs/1.4.8/angular.min.js}" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.8/angular.min.js"></script>
+<script th:src="@{/webjars/angularjs/1.4.8/angular-sanitize.min.js}" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.8/angular-sanitize.min.js"></script>
 <script th:src="@{/webjars/angularjs/1.4.8/angular-route.min.js}" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.8/angular-route.min.js"></script>
 <script th:src="@{/webjars/angularjs/1.4.8/angular-resource.min.js}" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.8/angular-resource.min.js"></script>
-<script src="/webjars/angular-strap/2.3.5/dist/angular-strap.min.js"></script>
-<script src="/webjars/angular-strap/2.3.5/dist/angular-strap.tpl.min.js"></script>
+<script src="/webjars/angular-ui-select/0.13.2/dist/select.min.js"></script>
 <script src="/webjars/angular-ui-bootstrap/0.14.3/ui-bootstrap-tpls.min.js"></script>
+<script src="/webjars/angular-moment/1.0.0-beta.3/angular-moment.min.js"></script>
 <script src="/webjars/adminlte/2.3.2/plugins/input-mask/jquery.inputmask.js"></script>
 <script src="/webjars/adminlte/2.3.2/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
 <script src="/webjars/adminlte/2.3.2/plugins/input-mask/jquery.inputmask.numeric.extensions.js"></script>
 <script src="/webjars/adminlte/2.3.2/plugins/input-mask/jquery.inputmask.extensions.js"></script>
+<script th:src="@{js/common.js}"></script>
 <script th:src="@{js/is/app.js}"></script>
 <script th:src="@{js/is/controllers.js}"></script>
+<script>
+	moment.locale('et');
+</script>
 </body>
 </html>

@@ -71,7 +71,7 @@ public abstract class RestBaseController<T, ID extends Serializable> {
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
-			T updated = repo.saveAndFlush(entity);
+			T updated = repo.save(entity);
 			log.info("updated entity: {}", updated);
 			return new ResponseEntity<>(updated, HttpStatus.OK);
 		}

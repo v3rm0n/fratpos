@@ -64,14 +64,19 @@ dependencies {
 
 	compile 'com.fasterxml.jackson.core:jackson-databind'
 
+	// Base
 	compile 'org.webjars:angularjs:1.4.8'
-	compile 'org.webjars.bower:angular-strap:2.3.5'
 	compile 'org.webjars.bower:lodash:3.10.1'
-	compile 'org.webjars.bower:chartjs:2.0.0-beta1'
+	// Themes
 	compile 'org.webjars.bower:Bootflat:2.0.4'
 	compile 'org.webjars.bower:adminlte:2.3.2'
+	// UI components
+	compile 'org.webjars.bower:chartjs:2.0.0-beta1'
 	compile 'org.webjars.bower:bootstrap-sweetalert:0.4.5'
+	compile 'org.webjars.bower:angular-ui-select:0.13.2'
 	compile 'org.webjars.npm:toastr:2.1.2'
+	compile 'org.webjars.npm:moment:2.10.6'
+	compile 'org.webjars.bower:angular-moment:1.0.0-beta.3'
 	compile 'org.webjars.npm:angular-ui-bootstrap:0.14.3'
 
 	testCompile 'com.h2database:h2'

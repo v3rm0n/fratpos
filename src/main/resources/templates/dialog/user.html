@@ -1,50 +1,43 @@
-<div class="modal">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" ng-click="$hide()" class="close">&times;</button>
-				<h4 class="modal-title">Lisa/Muuda kasutajat</h4>
-			</div>
-			<div class="modal-body">
-				<form role="form" ng-submit="save(user)" class="form-horizontal">
-					<div class="form-group">
-						<label for="inputStatus" class="control-label col-sm-2">Staatus</label>
-						<div class="col-sm-3">
-							<select id="inputStatus" ng-model="user.status" ng-options="status as status.name for status in statuses" required="required" focus-me="focus-me" class="form-control"></select>
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="inputFirstname" class="control-label col-sm-2">Eesnimi</label>
-						<div class="col-sm-5">
-							<input id="inputFirstname" type="text" placeholder="Eesnimi" ng-model="user.firstName" class="form-control"/>
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="inputLastname" class="control-label col-sm-2">Perenimi</label>
-						<div class="col-sm-5">
-							<input id="inputLastname" type="text" placeholder="Perenimi" ng-model="user.lastName" class="form-control"/>
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="inputBeername" class="control-label col-sm-2">Õllenimi</label>
-						<div class="col-sm-5">
-							<input id="inputBeername" type="text" placeholder="Õllenimi" ng-model="user.beerName" class="form-control"/>
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="inputBalance" class="control-label col-sm-2">Saldo</label>
-						<div class="col-sm-3">
-							<div class="input-group">
-								<input id="inputBalance" type="number" placeholder="0" ng-model="user.balance" class="form-control"/><span class="input-group-addon">€</span>
-							</div>
-						</div>
-					</div>
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button ng-show="user.id !== undefined" ng-click="delete(user)" class="btn btn-danger">Kustuta</button>
-				<button ng-click="save(user)" class="btn btn-success">Salvesta</button>
+<div class="modal-header">
+	<button type="button" ng-click="$dismiss()" class="close">&times;</button>
+	<h4 class="modal-title">Lisa liige</h4>
+</div>
+<div class="modal-body">
+	<form role="form" ng-submit="save(user)" class="form-horizontal">
+		<div class="form-group">
+			<label for="inputStatus" class="control-label col-sm-2">Staatus</label>
+			<div class="col-sm-3">
+				<select id="inputStatus" ng-model="vm.user.status" ng-options="status as status.name for status in vm.statuses track by status.id" required="required" focus-me="focus-me" class="form-control"></select>
 			</div>
 		</div>
-	</div>
+		<div class="form-group">
+			<label for="inputFirstname" class="control-label col-sm-2">Eesnimi</label>
+			<div class="col-sm-5">
+				<input id="inputFirstname" type="text" placeholder="Eesnimi" ng-model="vm.user.firstName" class="form-control"/>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="inputLastname" class="control-label col-sm-2">Perenimi</label>
+			<div class="col-sm-5">
+				<input id="inputLastname" type="text" placeholder="Perenimi" ng-model="vm.user.lastName" class="form-control"/>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="inputBeername" class="control-label col-sm-2">Õllenimi</label>
+			<div class="col-sm-5">
+				<input id="inputBeername" type="text" placeholder="Õllenimi" ng-model="vm.user.beerName" class="form-control"/>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="inputBalance" class="control-label col-sm-2">Saldo</label>
+			<div class="col-sm-3">
+				<div class="input-group">
+					<input id="inputBalance" type="number" placeholder="0" ng-model="vm.user.balance" class="form-control"/><span class="input-group-addon">€</span>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+<div class="modal-footer">
+	<button ng-click="vm.save(vm.user)" class="btn btn-success">Salvesta</button>
 </div>

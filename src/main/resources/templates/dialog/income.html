@@ -1,48 +1,58 @@
-<div class="modal">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" ng-click="$hide()" class="close">&times;</button>
-				<h4 class="modal-title">Lisa laekumine</h4>
-			</div>
-			<div class="modal-body">
-				<form role="form">
-					<div class="form-group">
-						<label for="inputType">Tüüp</label>
-						<select select2="" ng-change="changeType(income)" ng-model="income.type" class="form-control" ng-options="type as type.name for type in incomeTypes">
-							<option value="">Vali tüüp...</option>
-						</select>
-					</div>
-					<div class="form-group">
-						<input type="text" ng-change="changeNewType(income)" ng-model="income.newType" class="form-control" id="inputType" placeholder="Või lisa uus"/>
-					</div>
-					<div class="form-group">
-						<label for="user">Kasutaja</label>
-						<select select2="" ng-model="income.user" id="user" class="form-control" ng-options="user as user.label for user in users">
-							<option value="">Vali kasutaja...</option>
-						</select>
-					</div>
-					<div class="form-group">
-						<label>Aeg</label>
-						<div class="input-group">
-							<div class="input-group-addon">
-								<i class="fa fa-calendar"></i>
-							</div>
-							<input type="text" ng-model="income.date" class="form-control" inputmaskdate="" />
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="control-label" for="amount">Summa</label>
-						<div class="input-group">
-							<input id="amount" ng-model="income.amount" type="number" class="form-control" />
-							<span class="input-group-addon">€</span>
-						</div>
-					</div>
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button ng-click="save(income)" class="btn btn-success">Lisa</button>
+<div class="modal-header">
+	<button type="button" ng-click="$dismiss()" class="close">&times;</button>
+	<h4 class="modal-title">Lisa laekumine</h4>
+</div>
+<div class="modal-body">
+	<form role="form" class="form-horizontal">
+		<div class="form-group">
+			<label class="control-label col-sm-2">Tüüp</label>
+			<div class="col-sm-5">
+				<select ng-if="vm.incomeTypes.length > 0" ng-change="vm.changeType(vm)" ng-model="vm.type" class="form-control" ng-options="type as type.name for type in vm.incomeTypes">
+					<option value="">Vali tüüp...</option>
+				</select>
+				<input ng-if="vm.incomeTypes.length === 0" type="text" ng-change="vm.changeNewType(vm)" ng-model="vm.newType" class="form-control" placeholder="Laekumise tüüp (Sulas, Ülekanne)"/>
 			</div>
 		</div>
-	</div>
+		<div class="form-group" ng-if="vm.incomeTypes.length > 0">
+			<div class="col-sm-5 col-sm-offset-2">
+				<input type="text" ng-change="vm.changeNewType(vm)" ng-model="vm.newType" class="form-control" placeholder="või lisa uus..."/>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-sm-2">Kasutaja</label>
+			<div class="col-sm-5">
+				<ui-select ng-model="vm.user">
+					<ui-select-match placeholder="Vali kasutaja...">
+						<span ng-bind="$select.selected.label"></span>
+					</ui-select-match>
+					<ui-select-choices repeat="user in (vm.users | filter: $select.search) track by user.id">
+						<span ng-bind-html="user.label | highlight: $select.search"></span>
+					</ui-select-choices>
+				</ui-select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-sm-2">Aeg</label>
+			<div class="col-sm-4">
+				<div class="input-group">
+					<input type="text" ng-model="vm.date" class="form-control" inputmaskdate=""/>
+					<div class="input-group-addon">
+						<i class="fa fa-calendar"></i>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-sm-2">Summa</label>
+			<div class="col-sm-4">
+				<div class="input-group">
+					<input ng-model="vm.amount" type="number" class="form-control" />
+					<span class="input-group-addon">€</span>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+<div class="modal-footer">
+	<button ng-click="vm.save(vm)" class="btn btn-success"><i class="fa fa-plus"></i> Lisa</button>
 </div>

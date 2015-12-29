@@ -31,12 +31,12 @@
 						</tr>
 						</thead>
 						<tbody>
-						<tr ng-repeat="user in filteredUsers()" ng-click="openUserDialog(user)">
+						<tr ng-repeat="user in filteredUsers()" ng-click="openProfile(user)">
 							<td ng-bind="user.status.name"></td>
 							<td ng-bind="user.firstName"></td>
 							<td ng-bind="user.lastName"></td>
-							<td ng-click="openUserDialog(user)" ng-bind="user.beerName"></td>
-							<td ng-click="openUserDialog(user)" ng-bind-template="{{user.balance}} €"></td>
+							<td ng-bind="user.beerName"></td>
+							<td ng-bind-template="{{user.balance}} €"></td>
 						</tr>
 						</tbody>
 						<tfoot>

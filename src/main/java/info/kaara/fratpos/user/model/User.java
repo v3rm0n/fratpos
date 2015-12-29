@@ -33,7 +33,7 @@ public class User extends Model {
 	@JoinTable(inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private List<Role> roles;
 
-	@OneToOne
+	@OneToOne(mappedBy = "user")
 	private UserProfile userProfile;
 
 	@JsonIgnore

@@ -1,35 +1,29 @@
-<div class="modal">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" ng-click="$hide()" class="close">&times;</button>
-				<h4 class="modal-title">Tehingu info</h4>
-			</div>
-			<div class="modal-body">
-				<p>Aeg: <strong ng-bind="transaction.formattedTime"></strong></p>
-				<p>Nimi: <strong ng-bind="transaction.user.label"></strong></p>
-				<p>Makseviis: <strong ng-bind="transaction.paytype"></strong></p>
-				<h3>Tooted</h3>
-				<table class="table table-bordered table-condensed">
-					<thead>
-					<tr>
-						<th>Toode</th>
-						<th>Hind</th>
-						<th>Kogus</th>
-					</tr>
-					</thead>
-					<tbody>
-					<tr ng-repeat="product in transaction.products">
-						<td ng-bind="product.name"></td>
-						<td>{{product.price}} €</td>
-						<td ng-bind="product.quantity"></td>
-					</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="modal-footer">
-				<button ng-hide="transaction.invalid" ng-click="invalidate(transaction)" class="btn btn-danger">Katkesta tehing</button>
-			</div>
-		</div>
-	</div>
+<div class="modal-header">
+	<button type="button" ng-click="$dismiss()" class="close">&times;</button>
+	<h4 class="modal-title">Tehingu info</h4>
+</div>
+<div class="modal-body">
+	<p>Aeg: <strong ng-bind="vm.transaction.formattedTime"></strong></p>
+	<p>Nimi: <strong ng-bind="vm.transaction.user.label"></strong></p>
+	<p>Makseviis: <strong ng-bind="vm.transaction.paytype"></strong></p>
+	<h3>Tooted</h3>
+	<table class="table table-bordered table-condensed">
+		<thead>
+		<tr>
+			<th>Toode</th>
+			<th>Hind</th>
+			<th>Kogus</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr ng-repeat="product in vm.transaction.products">
+			<td ng-bind="product.name"></td>
+			<td>{{product.price}} €</td>
+			<td ng-bind="product.quantity"></td>
+		</tr>
+		</tbody>
+	</table>
+</div>
+<div class="modal-footer">
+	<button ng-hide="vm.transaction.invalid" ng-click="vm.invalidate(vm.transaction)" class="btn btn-danger">Katkesta tehing</button>
 </div>

@@ -1,13 +1,7 @@
-(function (angular, Chart, toastr) {
+(function (angular, Chart) {
 	"use strict";
 
-	var app = angular.module('fratpos', ['mgcrea.ngStrap', 'ngResource']);
-
-	app.run(function($http) {
-		var token = angular.element("meta[name='_csrf']").attr("content");
-		var header = angular.element("meta[name='_csrf_header']").attr("content");
-		$http.defaults.headers.common[header] = token;
-	});
+	var app = angular.module('fratpos', ['ui.bootstrap', 'ngResource', 'common']);
 
 	//Focuses an input element after rendering
 	app.directive('focusMe', function ($timeout) {
@@ -49,22 +43,6 @@
 		};
 	});
 
-	app.factory('notify', function () {
-		toastr.options = {
-			"positionClass": "toast-bottom-right",
-			"preventDuplicates": true,
-			"timeOut": "2000"
-		};
-		return {
-			success: function (text) {
-				toastr.success(text);
-			},
-			error: function (text) {
-				toastr.error(text);
-			}
-		};
-	});
-
 	app.factory('api', function ($http, $resource) {
 		return {
 			posdata: function () {
@@ -88,4 +66,4 @@
 		};
 	});
 
-}(window.angular, window.Chart, window.toastr));
+}(window.angular, window.Chart));

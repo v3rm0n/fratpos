@@ -1,7 +1,7 @@
-(function (angular, toastr, swal) {
+(function (angular) {
 	"use strict";
 
-	var app = angular.module('fratis', ['ngRoute', 'ngResource', 'mgcrea.ngStrap', 'ui.bootstrap.pagination', 'ui.bootstrap.tpls'])
+	var app = angular.module('fratis', ['common', 'ngRoute', 'ngResource', 'ui.bootstrap', 'ui.select', 'ngSanitize', 'angularMoment'])
 		.config(['$routeProvider', function ($routeProvider) {
 			$routeProvider
 				.when('/:page', {
@@ -9,42 +9,10 @@
 						return "admin/" + params.page;
 					}
 				})
+				.when('/profile/:id', {templateUrl: "/admin/profile"})
 				.when('/stocktaking/:id', {templateUrl: "/admin/stocktaking", controller: "StocktakingViewController"})
 				.otherwise({redirectTo: "/users"});
 		}]);
-
-	app.run(function ($http) {
-		var token = angular.element("meta[name='_csrf']").attr("content");
-		var header = angular.element("meta[name='_csrf_header']").attr("content");
-		$http.defaults.headers.common[header] = token;
-	});
-
-	app.factory('notify', function () {
-		toastr.options = {
-			"positionClass": "toast-bottom-right",
-			"preventDuplicates": true,
-			"timeOut": "2000"
-		};
-		return {
-			warning: function (config, success) {
-				var defaults = {
-					type: 'warning',
-					showCancelButton: true,
-					cancelButtonText: "Katkesta",
-					confirmButtonClass: "btn-warning",
-					confirmButtonText: "Jah!"
-				};
-				angular.extend(defaults, config);
-				swal(defaults, success);
-			},
-			success: function (text) {
-				toastr.success(text);
-			},
-			error: function (text) {
-				toastr.error(text);
-			}
-		};
-	});
 
 	//Nice looking checkboxes and radio buttons
 	app.directive('icheck', ['$timeout', function ($timeout) {
@@ -83,23 +51,6 @@
 		};
 	}]);
 
-	app.directive('select2', ['$timeout', function ($timeout) {
-		return {
-			restrict: 'A',
-			link: function ($scope, element, attrs) {
-				var refreshSelect = function () {
-					$timeout(function () {
-						element.trigger('change');
-					});
-				};
-				$scope.$watch(attrs.ngModel, refreshSelect);
-				return $timeout(function () {
-					return angular.element(element).select2();
-				});
-			}
-		};
-	}]);
-
 	app.directive('inputmaskdate', ['$timeout', function ($timeout) {
 		return {
 			restrict: 'A',
@@ -129,6 +80,16 @@
 					url: '/user/:id/role/:roleId',
 					params: {id: '@id', roleId: '@roleId'},
 					method: 'DELETE'
+				},
+				addProfile: {
+					url: '/user/:id/userprofile',
+					params: {id: '@id', userProfileId: '@userProfileId'},
+					method: 'POST'
+				},
+				updateProfile: {
+					url: '/user/:id/userprofile/:userProfileId',
+					params: {id: '@id', userProfileId: '@userProfileId'},
+					method: 'POST'
 				}
 			}),
 			Product: $resource('/product/:id', {id: '@id'}),
@@ -157,4 +118,4 @@
 		};
 	});
 
-}(window.angular, window.toastr, window.swal));
+}(window.angular));

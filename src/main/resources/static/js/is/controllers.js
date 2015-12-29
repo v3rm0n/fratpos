@@ -3,7 +3,7 @@
 
 	var app = angular.module('fratis');
 
-	app.controller('UsersController', function ($scope, $modal, api, notify) {
+	app.controller('UsersController', function ($scope, $uibModal, api, notify, $location) {
 
 		$scope.users = api.User.query();
 
@@ -54,63 +54,47 @@
 			return 0;
 		};
 
+		$scope.openProfile = function (user) {
+			$location.url('/profile/' + user.id);
+		};
+
 		$scope.openUserDialog = function (user) {
 
-			api.Status.query(function (statuses) {
+			var d = $uibModal.open({
+				templateUrl: '/dialog/user',
+				controller: 'UserModalController',
+				controllerAs: 'vm'
+			});
 
-				var modalScope = $scope.$new();
-				modalScope.user = angular.copy(user) || new api.User();
-				modalScope.statuses = statuses;
-
-				var i;
-				for (i = 0; i < statuses.length; i += 1) {
-					if (modalScope.user.status === undefined || (user && statuses[i].id === user.status.id)) {
-						modalScope.user.status = statuses[i];
-						break;
-					}
-				}
-
-				var d = $modal({
-					templateUrl: '/dialog/user',
-					scope: modalScope
+			d.result.then(function () {
+				api.User.query(function (users) {
+					$scope.users = users;
 				});
-
-				modalScope.save = function (user) {
-					user.$save(function () {
-						api.User.query(function (users) {
-							$scope.users = users;
-						});
-						d.hide();
-						notify.success('Muudatused salvestatud!');
-					}, function () {
-						notify.error('Salvestamine ebaõnnestus, kontrolli andmeid!');
-					});
-				};
-
-				modalScope.delete = function (user) {
-					d.hide();
-					notify.warning({
-						title: 'Oled kindel, et tahad liikme eemaldada?'
-					}, function (isConfirmed) {
-						if (isConfirmed) {
-							user.$remove(function () {
-								$scope.users = $scope.users.filter(function (u) {
-									return user.id !== u.id;
-								});
-								notify.success('Liige eemaldatud!');
-							}, function () {
-								notify.error('Ei õnnestunud liiget eemaldada!');
-							});
-						} else {
-							d.show();
-						}
-					});
-				};
 			});
 		};
 	});
 
-	app.controller('TransactionsController', function ($scope, api, $modal) {
+	app.controller('UserModalController', function ($uibModalInstance, api, notify, $location) {
+
+		var vm = this;
+
+		vm.user = new api.User();
+
+		vm.statuses = api.Status.query();
+
+		vm.save = function (user) {
+			user.$save(function (user) {
+				$uibModalInstance.close();
+				notify.success('Liige edukalt lisatud!');
+				$location.url('/profile/' + user.id);
+			}, function () {
+				notify.error('Salvestamine ebaõnnestus, kontrolli andmeid!');
+			});
+		};
+
+	});
+
+	app.controller('TransactionsController', function ($scope, api, $uibModal) {
 
 		$scope.transactions = api.Transaction.query();
 
@@ -135,24 +119,35 @@
 
 		$scope.openDialog = function (transaction) {
 
-			var modalScope = $scope.$new();
-			modalScope.transaction = transaction;
-
-			var d = $modal({
+			$uibModal.open({
 				templateUrl: '/dialog/transaction',
-				scope: modalScope
+				controller: 'TransactionsModalController',
+				controllerAs: 'vm',
+				resolve: {
+					transaction: function () {
+						return transaction;
+					}
+				}
 			});
-
-			modalScope.invalidate = function (transaction) {
-				transaction.$invalidate(function () {
-					transaction.invalid = true;
-					d.hide();
-				});
-			};
 		};
 	});
 
-	app.controller('ProductsController', function ($scope, api, $modal, notify) {
+	app.controller('TransactionsModalController', function ($uibModalInstance, notify, transaction) {
+
+		this.transaction = transaction;
+
+		this.invalidate = function (transaction) {
+			transaction.$invalidate(function () {
+				transaction.invalid = true;
+				$uibModalInstance.close();
+				notify.success('Tehing tagasi võetud!');
+			}, function () {
+				notify.error('Tehingut ei õnnestunud tagasi võtta!');
+			});
+		};
+	});
+
+	app.controller('ProductsController', function ($scope, api, $uibModal, notify) {
 
 		$scope.products = api.Product.query();
 
@@ -197,115 +192,90 @@
 
 		$scope.openProductDialog = function (product) {
 
-			var modalScope = $scope.$new();
-			modalScope.product = angular.copy(product) || new api.Product();
-
-			var d = $modal({
+			var d = $uibModal.open({
 				templateUrl: '/dialog/product',
-				scope: modalScope
+				controller: 'ProductsModalController',
+				controllerAs: 'vm',
+				resolve: {
+					product: function () {
+						return angular.copy(product) || new api.Product();
+					}
+				}
 			});
 
-			modalScope.save = function (product) {
-				product.$save(function () {
-					$scope.products = api.Product.query();
-					d.hide();
-					notify.success('Muudatused salvestatud!');
-				}, function () {
-					notify.error('Salvestamine ebaõnnestus, kontrolli andmeid!');
-				});
-			};
-
-			modalScope.delete = function (product) {
-				d.hide();
-				notify.warning({
-					title: 'Oled kindel, et tahad toote kustutada?'
-				}, function (isConfirmed) {
-					if (isConfirmed) {
-						product.$remove(function () {
-							$scope.products = $scope.products.filter(function (u) {
-								return product.id !== u.id;
-							});
-							d.hide();
-							notify.success('Toode eemaldatud!');
-						}, function () {
-							notify.error('Ei õnnestunud toodet kustutada!');
-						});
-					} else {
-						d.show();
-					}
-				});
-			};
+			d.result.then(function () {
+				$scope.products = api.Product.query();
+			}, function (reason) {
+				if (reason !== undefined) {
+					$scope.openProductDialog(product);
+				}
+			});
 
 		};
 	});
 
-	app.controller('PaytypesController', function ($scope, api, $modal, notify) {
+	app.controller('ProductsModalController', function ($uibModalInstance, product, notify, $q) {
+
+		this.product = product;
+
+		this.save = function (product) {
+			product.$save(function () {
+				$uibModalInstance.close();
+				notify.success('Muudatused salvestatud!');
+			}, function () {
+				notify.error('Salvestamine ebaõnnestus, kontrolli andmeid!');
+			});
+		};
+
+		this.delete = function (product) {
+			var defer = $q.defer();
+			$uibModalInstance.close(defer.promise);
+			notify.warning({
+				title: 'Oled kindel, et tahad toote kustutada?'
+			}, function (isConfirmed) {
+				if (isConfirmed) {
+					product.$remove(function () {
+						defer.resolve();
+						notify.success('Toode eemaldatud!');
+					}, function () {
+						defer.reject("Error");
+						notify.error('Ei õnnestunud toodet kustutada!');
+					});
+				} else {
+					defer.reject("Cancel");
+				}
+			});
+		};
+	});
+
+	app.controller('PaytypesController', function ($scope, api, $uibModal) {
 
 		$scope.paytypes = api.Paytype.query();
 
 		$scope.openPaytypeDialog = function (paytype) {
 			api.Status.query(function (statuses) {
 
-				var modalScope = $scope.$new();
-				modalScope.paytype = angular.copy(paytype) || new api.Paytype();
-				modalScope.statuses = statuses;
-				modalScope.checked = {};
-				modalScope.allowedForStatus = {};
-
-				if (paytype !== undefined) {
-					paytype.allowedForStatus.forEach(function (status) {
-						modalScope.allowedForStatus[status.id] = true;
-					});
-				}
-
-				var d = $modal({
+				var d = $uibModal.open({
 					templateUrl: '/dialog/paytype',
-					scope: modalScope
-				});
-
-				modalScope.save = function (p) {
-					if (p !== undefined) {
-						p.allowedForStatus = [];
-						var selected, i;
-						for (selected in modalScope.allowedForStatus) {
-							if (modalScope.allowedForStatus[selected]) {
-								for (i = 0; i < statuses.length; i += 1) {
-									var status = statuses[i];
-									if (status.id === parseInt(selected, 10)) {
-										p.allowedForStatus.push(status);
-									}
-								}
-							}
+					controller: 'PaytypesModalController',
+					controllerAs: 'vm',
+					resolve: {
+						statuses: function () {
+							return statuses;
+						},
+						paytype: function () {
+							return angular.copy(paytype) || new api.Paytype();
 						}
 					}
-					p.$save(function () {
-						$scope.paytypes = api.Paytype.query();
-						d.hide();
-						notify.success('Muudatused salvestatud!');
-					}, function () {
-						notify.error('Salvestamine ebaõnnestus, kontrolli andmeid!');
-					});
-				};
+				});
 
-				modalScope.delete = function (paytype) {
-					d.hide();
-					notify.warning({
-						title: 'Oled kindel, et tahad makseviisi kustutada?'
-					}, function (isConfirmed) {
-						if (isConfirmed) {
-							paytype.$remove(function () {
-								$scope.paytypes = $scope.paytypes.filter(function (u) {
-									return paytype.id !== u.id;
-								});
-								d.hide();
-							}, function () {
-								notify.error('Ei õnnestunud makseviisi kustutada!');
-							});
-						} else {
-							d.show();
-						}
-					});
-				};
+				d.result.then(function () {
+					$scope.paytypes = api.Paytype.query();
+				}, function (reason) {
+					if (reason !== undefined) {
+						$scope.openPaytypeDialog(paytype);
+					}
+				});
 
 			});
 		};
@@ -317,48 +287,125 @@
 		};
 	});
 
-	app.controller('StatusesController', function ($scope, api, $modal, notify) {
+	app.controller('PaytypesModalController', function ($uibModalInstance, api, notify, paytype, statuses, $q) {
+
+		var vm = this;
+
+		vm.statuses = statuses;
+		vm.paytype = paytype;
+		vm.checked = {};
+		vm.allowedForStatus = {};
+
+		if (paytype.allowedForStatus) {
+			paytype.allowedForStatus.forEach(function (status) {
+				vm.allowedForStatus[status.id] = true;
+			});
+		}
+
+		vm.save = function (p) {
+			if (p !== undefined) {
+				p.allowedForStatus = [];
+				var selected, i;
+				for (selected in vm.allowedForStatus) {
+					if (vm.allowedForStatus[selected]) {
+						for (i = 0; i < statuses.length; i += 1) {
+							var status = statuses[i];
+							if (status.id === parseInt(selected, 10)) {
+								p.allowedForStatus.push(status);
+							}
+						}
+					}
+				}
+			}
+			p.$save(function () {
+				$uibModalInstance.close();
+				notify.success('Muudatused salvestatud!');
+			}, function () {
+				notify.error('Salvestamine ebaõnnestus, kontrolli andmeid!');
+			});
+		};
+
+		vm.delete = function (paytype) {
+			var defer = $q.defer();
+			$uibModalInstance.close(defer.promise);
+			notify.warning({
+				title: 'Oled kindel, et tahad makseviisi kustutada?'
+			}, function (isConfirmed) {
+				if (isConfirmed) {
+					paytype.$remove(function () {
+						defer.resolve();
+					}, function () {
+						defer.reject('Error');
+						notify.error('Ei õnnestunud makseviisi kustutada!');
+					});
+				} else {
+					defer.reject('Cancel');
+				}
+			});
+		};
+	});
+
+	app.controller('StatusesController', function ($scope, api, $uibModal) {
 
 		$scope.statuses = api.Status.query();
 
 		$scope.openStatusDialog = function (status) {
 
-			var modalScope = $scope.$new();
-			modalScope.status = angular.copy(status) || new api.Status();
-
-			var d = $modal({
+			var d = $uibModal.open({
 				templateUrl: '/dialog/status',
-				scope: modalScope
+				controller: 'StatusesModalController',
+				controllerAs: 'vm',
+				resolve: {
+					status: function () {
+						return angular.copy(status) || new api.Status();
+					}
+				}
 			});
 
-			modalScope.save = function (s) {
-				s.$save(function () {
-					$scope.statuses = api.Status.query();
-					d.hide();
-					notify.success('Muudatused salvestatud!');
-				}, function () {
-					notify.error('Salvestamine ebaõnnestus, kontrolli andmeid!');
-				});
-			};
-			modalScope.delete = function (status) {
-				d.hide();
-				notify.warning({
-					title: 'Oled kindel, et tahad staatuse kustutada?'
-				}, function (isConfirmed) {
-					if (isConfirmed) {
-						status.$remove(function () {
-							$scope.statuses = $scope.statuses.filter(function (u) {
-								return status.id !== u.id;
-							});
-							notify.success('Staatus kustutatud!');
-						}, function () {
-							notify.error('Ei õnnestunud staatust kustutada!');
-						});
-					} else {
-						d.show();
-					}
-				});
-			};
+			d.result.then(function () {
+				$scope.statuses = api.Status.query();
+			}, function (reason) {
+				if (reason) {
+					$scope.openStatusDialog(status);
+				}
+			});
+
+		};
+	});
+
+	app.controller('StatusesModalController', function ($uibModalInstance, notify, $q, status) {
+
+		var vm = this;
+
+		vm.status = status;
+
+		vm.save = function (s) {
+			s.$save(function () {
+				$uibModalInstance.close();
+				notify.success('Muudatused salvestatud!');
+			}, function () {
+				notify.error('Salvestamine ebaõnnestus, kontrolli andmeid!');
+			});
+		};
+
+		vm.delete = function (status) {
+			var defer = $q.defer();
+			$uibModalInstance.close(defer.promise);
+			notify.warning({
+				title: 'Oled kindel, et tahad staatuse kustutada?'
+			}, function (isConfirmed) {
+				if (isConfirmed) {
+					status.$remove(function () {
+						defer.resolve();
+						notify.success('Staatus kustutatud!');
+					}, function () {
+						defer.reject('Error');
+						notify.error('Ei õnnestunud staatust kustutada!');
+					});
+				} else {
+					defer.reject('Cancel');
+				}
+			});
 		};
 	});
 
@@ -469,6 +516,8 @@
 
 		initUser();
 
+		$scope.$on('user:changed', initUser);
+
 		$scope.roles = api.Role.query();
 
 		var initAvailableRoles = function () {
@@ -495,6 +544,64 @@
 			api.User.removeRole({id: $scope.user.id, roleId: role.id}, initUser);
 		};
 
+	});
+
+	app.controller('SettingsController', function ($scope, $rootScope, api, $routeParams, notify, moment, $location) {
+		$scope.statuses = api.Status.query();
+
+		if ($routeParams.id) {
+			$scope.user = api.User.get({id: $routeParams.id});
+		} else {
+			$scope.user = api.User.me();
+		}
+
+		$scope.user.$promise.then(function (user) {
+			if (user.userProfile) {
+				$scope.maskedBirthDate = moment(user.userProfile.birthdate).format('DD/MM/YYYY');
+				$scope.userProfile = angular.copy(user.userProfile);
+			}
+		});
+
+		$scope.save = function (user, userProfile, maskedBirthDate) {
+			user.$save(function () {
+				var birthdate = moment(maskedBirthDate, 'YYYY-MM-DD');
+				if (birthdate.isValid()) {
+					userProfile.birthdate = moment(maskedBirthDate, 'YYYY-MM-DD');
+				}
+				if (userProfile.id) {
+					api.User.updateProfile({id: user.id, userProfileId: userProfile.id}, userProfile, function () {
+						$rootScope.$broadcast('user:changed');
+						notify.success('Liikme ' + user.label + ' andmed muudetud!');
+					}, function () {
+						notify.error('Liikme ' + user.label + ' andmete muutmine ebaõnnestus!');
+					});
+				} else {
+					api.User.addProfile({id: user.id}, userProfile, function (userProfile) {
+						$scope.userProfile = userProfile;
+						$rootScope.$broadcast('user:changed');
+						notify.success('Liikme ' + user.label + ' andmed muudetud!');
+					}, function () {
+						notify.error('Liikme ' + user.label + ' andmete muutmine ebaõnnestus!');
+					});
+				}
+
+			}, function () {
+				notify.error('Liikme ' + user.label + ' andmete muutmine ebaõnnestus!');
+			});
+		};
+
+		$scope.delete = function (user) {
+			notify.warning({
+				title: 'Liikme kustutamine',
+				text: 'Oled kindel, et tahad liikme kustutada? Seda tegevust, ei ole võimalik tagasi keerata.',
+				confirmButtonText: "Jah, kustuta!"
+			}, function () {
+				user.$delete(function () {
+					notify.success('Liige ' + user.label + ' kustutatud!');
+					$location.url('/users');
+				});
+			});
+		};
 	});
 
 	app.controller('RoleController', function ($scope, api, notify) {
@@ -525,6 +632,8 @@
 				$scope.newRole = null;
 				notify.success('Roll ' + newRole + ' lisatud!');
 				initRoles();
+			}, function () {
+				notify.error('Rolli ei õnnestunud lisada, kontrolli andmeid!');
 			});
 		};
 
@@ -555,12 +664,9 @@
 
 	});
 
-	app.controller('IncomeController', function ($scope, api, $modal, notify) {
-
-		$scope.users = api.User.query();
+	app.controller('IncomeController', function ($scope, api, $uibModal) {
 
 		var init = function () {
-			$scope.incomeTypes = api.IncomeType.query();
 			$scope.incomes = api.Income.query();
 		};
 
@@ -575,18 +681,6 @@
 			return incomes.slice((currentPage - 1) * 10, currentPage * 10);
 		};
 
-		$scope.changeNewType = function (income) {
-			if (income.type) {
-				income.type = undefined;
-			}
-		};
-
-		$scope.changeType = function (income) {
-			if (income.newType) {
-				income.newType = undefined;
-			}
-		};
-
 		$scope.incomes.$promise.then(function (incomes) {
 			$scope.totalIncomes = incomes.length;
 			$scope.totalIncome = incomes.reduce(function (sum, income) {
@@ -595,39 +689,56 @@
 		});
 
 		$scope.addNew = function () {
-			var modalScope = $scope.$new();
-			var d = $modal({
+			var modal = $uibModal.open({
 				templateUrl: '/dialog/income',
-				scope: modalScope
+				controller: 'IncomeModalController',
+				controllerAs: 'vm'
 			});
 
-			modalScope.save = function (income) {
-				var createIncome = function (incomeType) {
-					var i = new api.Income();
-					i.incomeType = incomeType;
-					i.user = income.user;
-					i.amount = income.amount;
-					i.dateCreated = income.date;
-					i.$save(function () {
-						$scope.income = undefined;
-						notify.success('Laekumine lisatud');
-						init();
-						d.hide();
-					}, function () {
-						notify.error('Laekumist ei õnnestunud lisada, kontrolli andmeid!');
-					});
-				};
-
-				if (income.newType) {
-					var incomeType = new api.IncomeType();
-					incomeType.name = income.newType;
-					incomeType.$save(createIncome);
-				} else {
-					createIncome(income.type);
-				}
-			};
+			modal.result.then(init);
 		};
 
+	});
+
+	app.controller('IncomeModalController', function ($uibModalInstance, api, notify) {
+
+		var vm = this;
+
+		vm.users = api.User.query();
+
+		vm.incomeTypes = api.IncomeType.query();
+
+		vm.changeType = function (income) {
+			income.newType = undefined;
+		};
+
+		vm.changeNewType = function (income) {
+			income.type = undefined;
+		};
+
+		vm.save = function (income) {
+			var createIncome = function (incomeType) {
+				var i = new api.Income();
+				i.incomeType = incomeType;
+				i.user = income.user;
+				i.amount = income.amount;
+				i.dateCreated = income.date;
+				i.$save(function () {
+					notify.success('Laekumine lisatud');
+					$uibModalInstance.close();
+				}, function () {
+					notify.error('Laekumist ei õnnestunud lisada, kontrolli andmeid!');
+				});
+			};
+
+			if (income.newType) {
+				var incomeType = new api.IncomeType();
+				incomeType.name = income.newType;
+				incomeType.$save(createIncome);
+			} else {
+				createIncome(income.type);
+			}
+		};
 	});
 
 }(this.angular));

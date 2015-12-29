@@ -1,38 +1,32 @@
-<div class="modal">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" ng-click="$hide()" class="close">&times;</button>
-				<h4 class="modal-title">Lisa/Muuda toodet</h4>
-			</div>
-			<div class="modal-body">
-				<form role="form" ng-submit="save(product)" class="form-horizontal">
-					<div class="form-group">
-						<label for="inputName" class="control-label col-sm-2">Nimi</label>
-						<div class="col-sm-7">
-							<input id="inputName" type="text" placeholder="Toote nimi" ng-model="product.name" focus-me="focus-me" class="form-control"/>
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="inputPrice" class="control-label col-sm-2">Hind</label>
-						<div class="col-sm-3">
-							<div class="input-group">
-								<input id="inputPrice" type="number" placeholder="0.0" ng-model="product.price" class="form-control"/><span class="input-group-addon">€</span>
-							</div>
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="inputQty" class="control-label col-sm-2">Laoseis</label>
-						<div class="col-sm-2">
-							<input id="inputQty" type="number" placeholder="0" ng-model="product.quantity" class="form-control"/>
-						</div>
-					</div>
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button ng-show="product.id !== undefined" ng-click="delete(product)" class="btn btn-danger">Kustuta</button>
-				<button ng-click="save(product)" class="btn btn-success">Salvesta</button>
+<div class="modal-header">
+	<button type="button" ng-click="$dismiss()" class="close">&times;</button>
+	<h4 class="modal-title">Lisa/Muuda toodet</h4>
+</div>
+<div class="modal-body">
+	<form role="form" ng-submit="vm.save(vm.product)" class="form-horizontal">
+		<div class="form-group">
+			<label for="inputName" class="control-label col-sm-2">Nimi</label>
+			<div class="col-sm-7">
+				<input id="inputName" type="text" placeholder="Toote nimi" ng-model="vm.product.name" focus-me="focus-me" class="form-control"/>
 			</div>
 		</div>
-	</div>
+		<div class="form-group">
+			<label for="inputPrice" class="control-label col-sm-2">Hind</label>
+			<div class="col-sm-3">
+				<div class="input-group">
+					<input id="inputPrice" type="number" placeholder="0.0" ng-model="vm.product.price" class="form-control"/><span class="input-group-addon">€</span>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="inputQty" class="control-label col-sm-2">Laoseis</label>
+			<div class="col-sm-2">
+				<input id="inputQty" type="number" placeholder="0" ng-model="vm.product.quantity" class="form-control"/>
+			</div>
+		</div>
+	</form>
+</div>
+<div class="modal-footer">
+	<button ng-show="vm.product.id !== undefined" ng-click="vm.delete(vm.product)" class="btn btn-danger">Kustuta</button>
+	<button ng-click="vm.save(vm.product)" class="btn btn-success">Salvesta</button>
 </div>

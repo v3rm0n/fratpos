@@ -1,51 +1,45 @@
-<div class="modal">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" ng-click="$hide()" class="close">&times;</button>
-				<h4 class="modal-title">Lisa/Muuda makseviisi</h4>
-			</div>
-			<div class="modal-body">
-				<form role="form" ng-submit="save(paytype)" class="form-horizontal">
-					<div class="form-group">
-						<label for="paytypeName" class="control-label col-sm-2">Nimetus</label>
-						<div class="col-sm-5">
-							<input id="paytypeName" type="text" placeholder="Nimetus" ng-model="paytype.name" focus-me="focus-me" class="form-control"/>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-sm-2"></div>
-						<div class="col-sm-5">
-							<div class="checkbox">
-								<input id="affectsBalance" type="checkbox" ng-model="paytype.affectsBalance" icheck="icheck"/>
-								<label for="affectsBalance">Mõjutab saldot</label>
-							</div>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-sm-2"></div>
-						<div class="col-sm-5">
-							<div class="checkbox">
-								<input id="affectsQuantity" type="checkbox" ng-model="paytype.affectsQuantity" icheck="icheck"/>
-								<label for="affectsQuantity">Mõjutab laoseisu</label>
-							</div>
-						</div>
-					</div><br/>
-					<div class="form-group">
-						<label class="control-label col-sm-2">Lubatud staatustele</label>
-						<div class="col-sm-5">
-							<div ng-repeat="status in statuses" class="checkbox">
-								<input type="checkbox" id="status_{{status.id}}" ng-model="allowedForStatus[status.id]" icheck="icheck"/>
-								<label for="status_{{status.id}}">{{status.name}}</label>
-							</div>
-						</div>
-					</div>
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button ng-show="paytype.id !== undefined" ng-click="delete(paytype)" class="btn btn-danger">Kustuta</button>
-				<button ng-click="save(paytype)" class="btn btn-success">Salvesta</button>
+<div class="modal-header">
+	<button type="button" ng-click="$dismiss()" class="close">&times;</button>
+	<h4 class="modal-title">Lisa/Muuda makseviisi</h4>
+</div>
+<div class="modal-body">
+	<form role="form" ng-submit="vm.save(vm.paytype)" class="form-horizontal">
+		<div class="form-group">
+			<label for="paytypeName" class="control-label col-sm-2">Nimetus</label>
+			<div class="col-sm-5">
+				<input id="paytypeName" type="text" placeholder="Nimetus" ng-model="vm.paytype.name" focus-me="focus-me" class="form-control"/>
 			</div>
 		</div>
-	</div>
+		<div class="form-group">
+			<div class="col-sm-2"></div>
+			<div class="col-sm-5">
+				<div class="checkbox">
+					<input id="affectsBalance" type="checkbox" ng-model="vm.paytype.affectsBalance" icheck="icheck"/>
+					<label for="affectsBalance">Mõjutab saldot</label>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-2"></div>
+			<div class="col-sm-5">
+				<div class="checkbox">
+					<input id="affectsQuantity" type="checkbox" ng-model="vm.paytype.affectsQuantity" icheck="icheck"/>
+					<label for="affectsQuantity">Mõjutab laoseisu</label>
+				</div>
+			</div>
+		</div><br/>
+		<div class="form-group">
+			<label class="control-label col-sm-2">Lubatud staatustele</label>
+			<div class="col-sm-5">
+				<div ng-repeat="status in vm.statuses" class="checkbox">
+					<input type="checkbox" id="status_{{status.id}}" ng-model="vm.allowedForStatus[status.id]" icheck="icheck"/>
+					<label for="status_{{status.id}}">{{status.name}}</label>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+<div class="modal-footer">
+	<button ng-show="vm.paytype.id !== undefined" ng-click="vm.delete(vm.paytype)" class="btn btn-danger">Kustuta</button>
+	<button ng-click="vm.save(vm.paytype)" class="btn btn-success">Salvesta</button>
 </div>

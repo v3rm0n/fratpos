@@ -1,9 +1,10 @@
 CREATE TABLE IF NOT EXISTS user_profile (
-	id        BIGINT(20)  NOT NULL,
-	email     VARCHAR(45) NULL DEFAULT NULL,
-	phone     VARCHAR(45) NULL DEFAULT NULL,
-	address   VARCHAR(60) NULL DEFAULT NULL,
-	birthdate DATE        NULL DEFAULT NULL,
+	id        BIGINT(20)  NOT NULL AUTO_INCREMENT,
+	email     VARCHAR(45) NULL     DEFAULT NULL,
+	phone     VARCHAR(45) NULL     DEFAULT NULL,
+	address   VARCHAR(60) NULL     DEFAULT NULL,
+	birthdate DATE        NULL     DEFAULT NULL,
+	user_id   BIGINT(20)  NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE INDEX email_UNIQUE (email ASC)
 );
@@ -11,12 +12,9 @@ CREATE TABLE IF NOT EXISTS user_profile (
 ALTER TABLE user ADD COLUMN password CHAR(60) BINARY NULL DEFAULT NULL
 AFTER balance;
 
-ALTER TABLE user ADD COLUMN user_profile_id BIGINT(20) NULL DEFAULT NULL
-AFTER password;
-
-ALTER TABLE user ADD CONSTRAINT fk_user_user_profile
-FOREIGN KEY (user_profile_id)
-REFERENCES user_profile (id)
+ALTER TABLE user_profile ADD CONSTRAINT fk_user_profile_user
+FOREIGN KEY (user_id)
+REFERENCES user (id)
 	ON DELETE CASCADE;
 
 CREATE TABLE IF NOT EXISTS role (

@@ -18,3 +18,7 @@
 .modal-backdrop.am-fade.ng-leave, .modal-backdrop.am-fade.ng-leave-active {
 	opacity: 0;
 }
+
+.ui-select-toggle {
+	background-color: white;
+}

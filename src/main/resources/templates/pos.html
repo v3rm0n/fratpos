@@ -24,10 +24,10 @@
 	<div class="row">
 		<div class="col-md-4">
 			<div ng-hide="isUserSelected()" class="form-search userform has-feedback search-only has-error"><i class="search-icon glyphicon glyphicon-search"></i>
-				<input id="usernotselected" type="text" placeholder="Kliendi nimi" th:placeholder="#{pos.client}" ng-model="user" data-animation="am-flip-x" bs-options="user as user.label for user in users | filter:$viewValue" bs-typeahead="bs-typeahead" focus-me="focus-me" class="form-control search-query"/><span class="glyphicon glyphicon-remove form-control-feedback"></span>
+				<input id="usernotselected" type="text" placeholder="Kliendi nimi" th:placeholder="#{pos.client}" ng-model="user" data-animation="am-flip-x" uib-typeahead="user as user.label for user in users | filter:$viewValue | limitTo:8" focus-me="focus-me" class="form-control search-query"/><span class="glyphicon glyphicon-remove form-control-feedback"></span>
 			</div>
 			<div ng-show="isUserSelected()" ng-cloak="ng-cloak" class="form-search userform has-feedback input-group has-success">
-				<input type="text" placeholder="Kliendi nimi" th:placeholder="#{pos.client}" ng-model="user" data-animation="am-flip-x" bs-options="user as user.label for user in users | filter:$viewValue" bs-typeahead="bs-typeahead" ng-click="clear()" class="form-control search-query"/><span class="input-group-btn">
+				<input type="text" placeholder="Kliendi nimi" th:placeholder="#{pos.client}" ng-model="user" data-animation="am-flip-x" uib-typeahead="user as user.label for user in users | filter:$viewValue | limitTo:8" ng-click="clear()" class="form-control search-query"/><span class="input-group-btn">
           <button data-type="last" ng-click="openInfoDialog(user)" class="btn btn-primary" th:text="#{pos.info}">Info</button></span>
 			</div>
 		</div>
@@ -103,10 +103,9 @@
 <script th:src="@{/webjars/Bootflat/2.0.4/js/jquery-1.10.1.min.js}" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 <script src="/webjars/toastr/2.1.2/build/toastr.min.js"></script>
 <script type="text/javascript" src="/webjars/angularjs/1.4.8/angular.min.js"></script>
-<script type="text/javascript" src="/webjars/angularjs/1.4.8/angular-route.min.js"></script>
 <script type="text/javascript" src="/webjars/angularjs/1.4.8/angular-resource.min.js"></script>
-<script type="text/javascript" src="/webjars/angular-strap/2.3.5/dist/angular-strap.min.js"></script>
-<script type="text/javascript" src="/webjars/angular-strap/2.3.5/dist/angular-strap.tpl.min.js"></script>
+<script src="/webjars/angular-ui-bootstrap/0.14.3/ui-bootstrap-tpls.min.js"></script>
+<script type="text/javascript" src="/js/common.js"></script>
 <script type="text/javascript" src="/js/pos/app.js"></script>
 <script type="text/javascript" src="/js/pos/controllers.js"></script>
 </body>
