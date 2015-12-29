@@ -10,4 +10,4 @@ echo "Before restart"
 
 echo "Build finished"
 
-#cp build/libs/fratpos-1.0-SNAPSHOT.jar /var/app/fratpos-test/fratpos-test.jar
+cp build/libs/fratpos-1.0-SNAPSHOT.jar /home/fratpos/app/fratpos-test/fratpos-test.jar
