@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS obligation (
 	description        VARCHAR(80)    NULL     DEFAULT NULL,
 	time               DATETIME       NULL     DEFAULT NULL,
 	total              DECIMAL(10, 2) NOT NULL,
-	date_created       DATETIME       NOT NULL DEFAULT NOW(),
+	date_created       DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (id),
 	INDEX fk_obligation_obligation_type_idx (obligation_type_id ASC),
 	CONSTRAINT fk_obligation_obligation_type
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS income (
 	user_id        BIGINT(20)     NOT NULL,
 	income_type_id BIGINT(20)     NOT NULL,
 	amount         DECIMAL(10, 2) NOT NULL,
-	date_created   DATETIME       NOT NULL DEFAULT NOW(),
+	date_created   DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (id),
 	INDEX fk_income_user_idx (user_id ASC),
 	INDEX fk_income_income_type_idx (income_type_id ASC),
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS notification (
 	id           BIGINT(20)  NOT NULL AUTO_INCREMENT,
 	user_id      BIGINT(20)  NOT NULL,
 	type         VARCHAR(45) NOT NULL,
-	date_created DATETIME    NOT NULL DEFAULT NOW(),
+	date_created DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (id),
 	INDEX fk_notification_user_idx (user_id ASC),
 	CONSTRAINT fk_notification_user
