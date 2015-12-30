@@ -43,27 +43,4 @@
 		};
 	});
 
-	app.factory('api', function ($http, $resource) {
-		return {
-			posdata: function () {
-				return $http.get('/posdata');
-			},
-			invalidate: function (transaction) {
-				return $http.post('/transaction/invalid/' + transaction.id);
-			},
-			stat: function (user) {
-				return $http.get('/stat/' + user.id);
-			},
-			User: $resource('/user/:id', {id: '@id'}),
-			Product: $resource('/product/:id', {id: '@id'}),
-			Status: $resource('/status/:id', {id: '@id'}),
-			Paytype: $resource('/paytype/:id', {id: '@id'}),
-			Transaction: $resource('/transaction/:id', {id: '@id'}, {
-				invalidate: {url: '/transaction/invalid/:id', method: 'POST'}
-			}),
-			Feedback: $resource('/feedback/:id', {id: '@id'}),
-			Stocktaking: $resource('/stocktaking/:id', {id: '@id'})
-		};
-	});
-
 }(window.angular, window.Chart));

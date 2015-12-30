@@ -1,6 +1,6 @@
 package info.kaara.fratpos.security.model;
 
-import info.kaara.fratpos.pos.model.Model;
+import info.kaara.fratpos.common.model.Model;
 import lombok.*;
 
 import javax.persistence.Entity;

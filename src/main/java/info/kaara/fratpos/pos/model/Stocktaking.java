@@ -1,6 +1,7 @@
 package info.kaara.fratpos.pos.model;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import info.kaara.fratpos.common.model.Model;
 import info.kaara.fratpos.helper.Json;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -31,7 +32,7 @@ public class Stocktaking extends Model {
 	private String transactions;
 
 	public String getFormattedTime() {
-		DateFormat df = new SimpleDateFormat("HH:mm dd.MM.YYYY");
+		DateFormat df = new SimpleDateFormat("HH:mm dd.MM.yyyy");
 		return df.format(created);
 	}
 

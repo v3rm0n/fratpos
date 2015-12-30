@@ -1,0 +1,58 @@
+<div class="modal-header">
+	<button type="button" ng-click="$dismiss()" class="close">&times;</button>
+	<h4 class="modal-title">Lisa kohustus</h4>
+</div>
+<div class="modal-body">
+	<form role="form" class="form-horizontal">
+		<div class="form-group">
+			<label class="control-label col-sm-2">Tüüp</label>
+			<div class="col-sm-5">
+				<select ng-if="vm.obligationTypes.length > 0" ng-change="vm.changeType(vm)" ng-model="vm.type" class="form-control" ng-options="type as type.name for type in vm.obligationTypes">
+					<option value="">Vali tüüp...</option>
+				</select>
+				<input ng-if="vm.obligationTypes.length === 0" type="text" ng-change="vm.changeNewType(vm)" ng-model="vm.newType" class="form-control" placeholder="Kohustuse tüüp (Repart, Liikmemaks)"/>
+			</div>
+		</div>
+		<div class="form-group" ng-if="vm.obligationTypes.length > 0">
+			<div class="col-sm-5 col-sm-offset-2">
+				<input type="text" ng-change="vm.changeNewType(vm)" ng-model="vm.newType" class="form-control" placeholder="või lisa uus..."/>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-sm-2">Kasutaja</label>
+			<div class="col-sm-5">
+				<ui-select ng-model="vm.user">
+					<ui-select-match placeholder="Vali kasutaja...">
+						<span ng-bind="$select.selected.label"></span>
+					</ui-select-match>
+					<ui-select-choices repeat="user in (vm.users | filter: $select.search) track by user.id">
+						<span ng-bind-html="user.label | highlight: $select.search"></span>
+					</ui-select-choices>
+				</ui-select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-sm-2">Aeg</label>
+			<div class="col-sm-4">
+				<div class="input-group">
+					<input type="text" ng-model="vm.date" class="form-control" inputmaskdate=""/>
+					<div class="input-group-addon">
+						<i class="fa fa-calendar"></i>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-sm-2">Summa</label>
+			<div class="col-sm-4">
+				<div class="input-group">
+					<input ng-model="vm.amount" type="number" class="form-control" />
+					<span class="input-group-addon">€</span>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+<div class="modal-footer">
+	<button ng-click="vm.save(vm)" class="btn btn-success"><i class="fa fa-plus"></i> Lisa</button>
+</div>

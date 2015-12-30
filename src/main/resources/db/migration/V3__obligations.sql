@@ -9,9 +9,9 @@ CREATE TABLE IF NOT EXISTS obligation (
 	id                 BIGINT(20)     NOT NULL AUTO_INCREMENT,
 	obligation_type_id BIGINT(20)     NOT NULL,
 	description        VARCHAR(80)    NULL     DEFAULT NULL,
-	time               DATETIME       NULL     DEFAULT NULL,
-	total              DECIMAL(10, 2) NOT NULL,
-	date_created       DATETIME       NULL     DEFAULT NULL,
+	date               DATE           NULL     DEFAULT NULL,
+	amount             DECIMAL(10, 2) NOT NULL,
+	created            TIMESTAMP      NULL     DEFAULT NULL,
 	PRIMARY KEY (id),
 	INDEX fk_obligation_obligation_type_idx (obligation_type_id ASC),
 	CONSTRAINT fk_obligation_obligation_type
@@ -53,8 +53,9 @@ CREATE TABLE IF NOT EXISTS income (
 	id             BIGINT(20)     NOT NULL AUTO_INCREMENT,
 	user_id        BIGINT(20)     NOT NULL,
 	income_type_id BIGINT(20)     NOT NULL,
+	date           DATE           NULL     DEFAULT NULL,
 	amount         DECIMAL(10, 2) NOT NULL,
-	date_created   DATETIME       NULL     DEFAULT NULL,
+	created        TIMESTAMP      NULL     DEFAULT NULL,
 	PRIMARY KEY (id),
 	INDEX fk_income_user_idx (user_id ASC),
 	INDEX fk_income_income_type_idx (income_type_id ASC),
@@ -71,10 +72,10 @@ CREATE TABLE IF NOT EXISTS income (
 );
 
 CREATE TABLE IF NOT EXISTS notification (
-	id           BIGINT(20)  NOT NULL AUTO_INCREMENT,
-	user_id      BIGINT(20)  NOT NULL,
-	type         VARCHAR(45) NOT NULL,
-	date_created DATETIME    NULL     DEFAULT NULL,
+	id      BIGINT(20)  NOT NULL AUTO_INCREMENT,
+	user_id BIGINT(20)  NOT NULL,
+	type    VARCHAR(45) NOT NULL,
+	created TIMESTAMP   NULL     DEFAULT NULL,
 	PRIMARY KEY (id),
 	INDEX fk_notification_user_idx (user_id ASC),
 	CONSTRAINT fk_notification_user

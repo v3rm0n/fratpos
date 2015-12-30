@@ -1,4 +1,4 @@
-(function (angular) {
+(function (angular, _) {
 	"use strict";
 
 	var app = angular.module('fratpos');
@@ -6,12 +6,10 @@
 	app.controller('PosController', function ($scope, api, $timeout, $uibModal, notify) {
 
 		var getData = function () {
-			api.posdata().success(function (data) {
-				$scope.users = data.users;
-				$scope.transactions = data.transactions;
-				$scope.products = data.products;
-				$scope.paytypes = data.paytypes;
-			});
+			$scope.users = api.User.query();
+			$scope.transactions = api.Transaction.query();
+			$scope.products = api.Product.query();
+			$scope.paytypes = api.Paytype.query();
 		};
 
 		getData();
@@ -39,12 +37,13 @@
 		};
 
 		$scope.filteredProducts = function () {
-			if ($scope.showAllProducts || $scope.products === undefined) {
-				return $scope.products;
+			var chain = _.chain($scope.products).sortBy('name');
+			if ($scope.showAllProducts || !$scope.products) {
+				return chain.value();
 			}
-			return $scope.products.filter(function (product) {
+			return chain.filter(function (product) {
 				return product.quantity > 0;
-			});
+			}).value();
 		};
 
 		$scope.haveZeroQuantity = function () {
@@ -81,23 +80,15 @@
 		};
 
 		$scope.sum = function () {
-			var sum = 0, id;
-			for (id in $scope.selectedProducts) {
-				var product = $scope.selectedProducts[id];
-				sum += product.price * product.quantity;
-			}
-			return sum;
+			return _.reduce($scope.selectedProducts, function (sum, product) {
+				return sum + product.price * product.quantity;
+
+			}, 0);
 		};
 
 		$scope.isDisabled = function (paytype) {
-			if ($scope.user) {
-				var i, status;
-				for (i = 0; i < paytype.allowedForStatus.length; i += 1) {
-					status = paytype.allowedForStatus[i];
-					if ($scope.user.status !== undefined && status.name === $scope.user.status.name) {
-						return false;
-					}
-				}
+			if ($scope.user && $scope.user.status) {
+				return !_.any(paytype.allowedForStatus, {name: $scope.user.status.name});
 			}
 			return true;
 		};
@@ -111,28 +102,16 @@
 		};
 
 		var productsArray = function (products) {
-			var arr = [], p;
-			for (p in products) {
-				var product = products[p];
+			return _.map(products, function (product) {
 				var transactionProduct = angular.copy(product);
 				transactionProduct.product = product;
 				transactionProduct.id = null;
-				arr.push(transactionProduct);
-			}
-			return arr;
+				return transactionProduct;
+			});
 		};
 
 		$scope.pay = function (paytype) {
-			var isEmpty = function (o) {
-				var i;
-				for (i in o) {
-					if (Object.prototype.hasOwnProperty.call(o, i)) {
-						return false;
-					}
-				}
-				return true;
-			};
-			if (!isEmpty($scope.selectedProducts) && $scope.user !== undefined) {
+			if (!_.isEmpty($scope.selectedProducts) && $scope.user) {
 				var transaction = new api.Transaction({
 					products: productsArray($scope.selectedProducts),
 					paytype: paytype,
@@ -140,7 +119,7 @@
 				});
 				transaction.$save(function () {
 					updateStatus('Tooted läksid edukalt kirja!', false);
-					$scope.user = null;
+					$scope.user = undefined;
 					$scope.selectedProducts = {};
 					getData();
 					$scope.$broadcast("paid");
@@ -158,11 +137,11 @@
 		};
 
 		$scope.filteredTransactions = function () {
-			var transactions = $scope.transactions || [];
-			if ($scope.showAllTransactions || transactions.length <= 5) {
-				return transactions;
+			var chain = _.chain($scope.transactions).filter({invalid: false}).sortByOrder(['created'], ['desc']);
+			if ($scope.showAllTransactions || chain.size() <= 5) {
+				return chain.value();
 			} else {
-				return transactions.slice(0, 5);
+				return chain.take(5).value();
 			}
 		};
 
@@ -214,7 +193,7 @@
 				}
 			});
 
-			d.result.then(function(){
+			d.result.then(function () {
 				updateStatus('Tehing tagasi võetud!', false);
 				getData();
 			});
@@ -257,16 +236,14 @@
 		});
 	});
 
-	app.controller('TransactionModalController', function ($uibModalInstance, transaction, api) {
+	app.controller('TransactionModalController', function ($uibModalInstance, transaction) {
 		var vm = this;
 
 		vm.transaction = transaction;
 
 		vm.invalidate = function (transaction) {
-			api.invalidate(transaction).success(function () {
-				$uibModalInstance.close();
-			});
+			transaction.$invalidate($uibModalInstance.close);
 		};
 	});
 
-}(this.angular));
+}(window.angular, window._));

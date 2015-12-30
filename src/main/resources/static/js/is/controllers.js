@@ -8,6 +8,7 @@
 		$scope.users = api.User.query();
 
 		$scope.currentPage = 1;
+		$scope.sortfield = 'label';
 
 		$scope.users.$promise.then(function () {
 			$scope.totalUsers = $scope.users.length;
@@ -20,16 +21,7 @@
 					return user.label.toLowerCase().indexOf($scope.filter.toLowerCase()) !== -1;
 				});
 			}
-			if ($scope.sortfield !== undefined) {
-				var sort = function (a, b) {
-					if ($scope.asc) {
-						return String(a[$scope.sortfield]).localeCompare(b[$scope.sortfield]);
-					} else {
-						return String(b[$scope.sortfield]).localeCompare(a[$scope.sortfield]);
-					}
-				};
-				users = users.sort(sort);
-			}
+			users = _.sortByOrder(users, [$scope.sortfield], [$scope.asc ? 'asc' : 'desc']);
 			var currentPage = $scope.currentPage;
 			$scope.totalUsers = users.length;
 			return users.slice((currentPage - 1) * 10, currentPage * 10);
@@ -67,9 +59,7 @@
 			});
 
 			d.result.then(function () {
-				api.User.query(function (users) {
-					$scope.users = users;
-				});
+				$scope.users = api.User.query();
 			});
 		};
 	});
@@ -147,11 +137,12 @@
 		};
 	});
 
-	app.controller('ProductsController', function ($scope, api, $uibModal, notify) {
+	app.controller('ProductsController', function ($scope, api, $uibModal) {
 
 		$scope.products = api.Product.query();
 
 		$scope.currentPage = 1;
+		$scope.sortfield = 'name';
 
 		$scope.products.$promise.then(function () {
 			$scope.totalProd = $scope.products.length;
@@ -161,17 +152,7 @@
 		});
 
 		$scope.sortedProducts = function () {
-			var products = $scope.products;
-			if ($scope.sortfield !== undefined) {
-				var sort = function (a, b) {
-					if ($scope.asc) {
-						return String(a[$scope.sortfield]).localeCompare(b[$scope.sortfield]);
-					} else {
-						return String(b[$scope.sortfield]).localeCompare(a[$scope.sortfield]);
-					}
-				};
-				products = products.sort(sort);
-			}
+			var products = _.sortByOrder($scope.products, [$scope.sortfield], [$scope.asc ? 'asc' : 'desc']);
 			var currentPage = $scope.currentPage;
 			$scope.totalProd = products.length;
 			return products.slice((currentPage - 1) * 10, currentPage * 10);
@@ -304,18 +285,12 @@
 
 		vm.save = function (p) {
 			if (p !== undefined) {
-				p.allowedForStatus = [];
-				var selected, i;
-				for (selected in vm.allowedForStatus) {
-					if (vm.allowedForStatus[selected]) {
-						for (i = 0; i < statuses.length; i += 1) {
-							var status = statuses[i];
-							if (status.id === parseInt(selected, 10)) {
-								p.allowedForStatus.push(status);
-							}
-						}
+				p.allowedForStatus = _.chain(vm.allowedForStatus).map(function (selected, id) {
+					if (selected) {
+						return _.filter(statuses, {id: parseInt(id, 10)});
 					}
-				}
+					return [];
+				}).flatten().value();
 			}
 			p.$save(function () {
 				$uibModalInstance.close();
@@ -722,7 +697,7 @@
 				i.incomeType = incomeType;
 				i.user = income.user;
 				i.amount = income.amount;
-				i.dateCreated = moment(income.date, 'DD/MM/YYYY');
+				i.date = moment(income.date, 'DD/MM/YYYY').format('YYYY-MM-DD');
 				i.$save(function () {
 					notify.success('Laekumine lisatud');
 					$uibModalInstance.close();
@@ -741,4 +716,80 @@
 		};
 	});
 
-}(this.angular));
+	app.controller('ObligationsController', function ($scope, api, $uibModal) {
+
+		var init = function () {
+			$scope.obligations = api.Obligation.query();
+		};
+
+		init();
+
+		$scope.currentPage = 1;
+
+		$scope.filteredObligations = function () {
+			var obligations = $scope.obligations;
+			var currentPage = $scope.currentPage;
+			$scope.totalObligations = obligations.length;
+			return obligations.slice((currentPage - 1) * 10, currentPage * 10);
+		};
+
+		$scope.obligations.$promise.then(function (obligations) {
+			$scope.totalObligations = obligations.length;
+			$scope.totalObligation = obligations.reduce(function (sum, obligation) {
+				return sum + obligation.amount;
+			}, 0);
+		});
+
+		$scope.addNew = function () {
+			var modal = $uibModal.open({
+				templateUrl: '/dialog/obligation',
+				controller: 'ObligationModalController',
+				controllerAs: 'vm'
+			});
+
+			modal.result.then(init);
+		};
+	});
+
+	app.controller('ObligationModalController', function ($uibModalInstance, api, notify, moment) {
+
+		var vm = this;
+
+		vm.users = api.User.query();
+
+		vm.obligationTypes = api.ObligationType.query();
+
+		vm.changeType = function (obligation) {
+			obligation.newType = undefined;
+		};
+
+		vm.changeNewType = function (obligation) {
+			obligation.type = undefined;
+		};
+
+		vm.save = function (obligation) {
+			var createObligation = function (obligationType) {
+				var o = new api.Obligation();
+				o.obligationType = obligationType;
+				o.user = obligation.user;
+				o.amount = obligation.amount;
+				o.date = moment(obligation.date, 'DD/MM/YYYY').format('YYYY-MM-DD');
+				o.$save(function () {
+					notify.success('Laekumine lisatud');
+					$uibModalInstance.close();
+				}, function () {
+					notify.error('Laekumist ei õnnestunud lisada, kontrolli andmeid!');
+				});
+			};
+
+			if (obligation.newType) {
+				var obligationType = new api.ObligationType();
+				obligationType.name = obligation.newType;
+				obligationType.$save(createObligation);
+			} else {
+				createObligation(obligation.type);
+			}
+		};
+	});
+
+}(window.angular));

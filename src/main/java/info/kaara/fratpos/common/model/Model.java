@@ -1,7 +1,5 @@
-package info.kaara.fratpos.pos.model;
+package info.kaara.fratpos.common.model;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import info.kaara.fratpos.helper.Json;
 import lombok.Data;
 
 import javax.persistence.GeneratedValue;
@@ -16,9 +14,5 @@ public abstract class Model implements Serializable {
 	@Id
 	@GeneratedValue
 	private Long id;
-
-	public JsonNode toJson() {
-		return Json.toJson(this);
-	}
 
 }

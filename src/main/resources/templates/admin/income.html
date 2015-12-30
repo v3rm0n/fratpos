@@ -22,7 +22,7 @@
 						<tr ng-repeat="income in filteredIncomes()">
 							<td ng-bind="income.incomeType.name"></td>
 							<td ng-bind="income.user.label"></td>
-							<td ng-bind="income.dateCreated | amUtc | amDateFormat:'LL'"></td>
+							<td ng-bind="income.date | amDateFormat:'LL'"></td>
 							<td>{{income.amount}} €</td>
 						</tr>
 						</tbody>

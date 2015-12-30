@@ -61,8 +61,11 @@ dependencies {
 
 	runtime 'mysql:mysql-connector-java'
 	compile 'org.flywaydb:flyway-core'
+	compile 'org.hibernate:hibernate-java8:5.0.6.Final'
 
 	compile 'com.fasterxml.jackson.core:jackson-databind'
+	// JDK8 Date API support
+	compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
 	// Base
 	compile 'org.webjars:angularjs:1.4.8'

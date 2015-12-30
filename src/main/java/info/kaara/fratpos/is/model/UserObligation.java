@@ -1,6 +1,6 @@
 package info.kaara.fratpos.is.model;
 
-import info.kaara.fratpos.pos.model.Model;
+import info.kaara.fratpos.common.model.Model;
 import info.kaara.fratpos.user.model.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

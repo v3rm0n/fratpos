@@ -72,7 +72,7 @@
 	<div class="row">
 		<div class="col-md-12">
 			<h4 th:text="#{pos.transactions.title}">Viimased tehingud</h4>
-			<table ng-show="transactions.length &gt; 0" class="table table-bordered table-hover">
+			<table ng-show="transactions.length > 0" class="table table-bordered table-hover">
 				<thead>
 				<tr>
 					<th th:text="#{pos.transactions.table.time}">Aeg</th>
@@ -101,6 +101,7 @@
 </div>
 <script type="text/javascript" src="/webjars/chartjs/2.0.0-beta1/Chart.min.js"></script>
 <script th:src="@{/webjars/Bootflat/2.0.4/js/jquery-1.10.1.min.js}" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+<script src="/webjars/lodash/3.10.1/lodash.min.js"></script>
 <script src="/webjars/toastr/2.1.2/build/toastr.min.js"></script>
 <script type="text/javascript" src="/webjars/angularjs/1.4.8/angular.min.js"></script>
 <script type="text/javascript" src="/webjars/angularjs/1.4.8/angular-resource.min.js"></script>

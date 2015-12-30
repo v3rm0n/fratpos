@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS permission (
 	UNIQUE INDEX name_UNIQUE (name ASC)
 );
 
-CREATE TABLE IF NOT EXISTS role_permissions (
+CREATE TABLE IF NOT EXISTS role_permission (
 	role_id       BIGINT(20) NOT NULL,
 	permission_id BIGINT(20) NOT NULL,
 	PRIMARY KEY (role_id, permission_id),
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS role_permissions (
 		ON UPDATE NO ACTION
 );
 
-CREATE TABLE IF NOT EXISTS user_roles (
+CREATE TABLE IF NOT EXISTS user_role (
 	user_id BIGINT(20) NOT NULL,
 	role_id BIGINT(20) NOT NULL,
 	PRIMARY KEY (user_id, role_id),

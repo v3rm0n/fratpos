@@ -1,6 +1,7 @@
 package info.kaara.fratpos.pos.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import info.kaara.fratpos.common.model.Model;
 import info.kaara.fratpos.user.model.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -1,7 +1,7 @@
 package info.kaara.fratpos.user.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import info.kaara.fratpos.pos.model.Model;
+import info.kaara.fratpos.common.model.Model;
 import info.kaara.fratpos.security.model.Role;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

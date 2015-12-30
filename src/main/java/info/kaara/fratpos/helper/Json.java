@@ -11,14 +11,6 @@ public class Json {
 
 	private static final ObjectMapper mapper = new ObjectMapper();
 
-	public static ObjectNode newObject() {
-		return mapper.createObjectNode();
-	}
-
-	public static ArrayNode newArray() {
-		return mapper.createArrayNode();
-	}
-
 	public static JsonNode toJson(Object obj) {
 		return mapper.convertValue(obj, JsonNode.class);
 	}
