@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -12,6 +13,6 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 @DiscriminatorValue("1")
 public class RecurringUserObligation extends UserObligation {
-	private Date startDate;
-	private Date endDate;
+	private LocalDate startDate;
+	private LocalDate endDate;
 }

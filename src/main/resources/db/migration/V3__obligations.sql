@@ -22,13 +22,14 @@ CREATE TABLE IF NOT EXISTS obligation (
 );
 
 CREATE TABLE IF NOT EXISTS user_obligation (
+	id            BIGINT(20)     NOT NULL AUTO_INCREMENT,
 	obligation_id BIGINT(20)     NOT NULL,
 	user_id       BIGINT(20)     NOT NULL,
 	amount        DECIMAL(10, 2) NOT NULL,
-	recurring     TINYINT(1)     NULL DEFAULT 0,
-	start_date    DATE           NULL DEFAULT NULL,
-	end_date      DATE           NULL DEFAULT NULL,
-	PRIMARY KEY (obligation_id, user_id),
+	recurring     TINYINT(1)     NULL     DEFAULT 0,
+	start_date    DATE           NULL     DEFAULT NULL,
+	end_date      DATE           NULL     DEFAULT NULL,
+	PRIMARY KEY (id),
 	INDEX fk_user_obligation_user_idx (user_id ASC),
 	CONSTRAINT fk_user_obligation_user
 	FOREIGN KEY (user_id)

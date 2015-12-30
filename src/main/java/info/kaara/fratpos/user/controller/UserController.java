@@ -1,6 +1,11 @@
 package info.kaara.fratpos.user.controller;
 
 import info.kaara.fratpos.common.controller.RestBaseController;
+import info.kaara.fratpos.is.model.Obligation;
+import info.kaara.fratpos.is.model.RecurringUserObligation;
+import info.kaara.fratpos.is.model.UserObligation;
+import info.kaara.fratpos.is.repository.ObligationRepository;
+import info.kaara.fratpos.is.repository.UserObligationRepository;
 import info.kaara.fratpos.security.model.Role;
 import info.kaara.fratpos.security.repository.RoleRepository;
 import info.kaara.fratpos.user.model.User;
@@ -28,6 +33,12 @@ public class UserController extends RestBaseController<User, Long> {
 
 	@Autowired
 	private UserProfileRepository userProfileRepository;
+
+	@Autowired
+	private UserObligationRepository userObligationRepository;
+
+	@Autowired
+	private ObligationRepository obligationRepository;
 
 	private final Object UPDATE_LOCK = new Object();
 
@@ -137,6 +148,36 @@ public class UserController extends RestBaseController<User, Long> {
 			UserProfile updated = userProfileRepository.save(entity);
 			log.info("updated entity: {}", updated);
 			return new ResponseEntity<>(updated, HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+	}
+
+	@RequestMapping(value = "/{id}/obligation/{obligationId}", method = RequestMethod.POST, consumes = {MediaType.APPLICATION_JSON_VALUE})
+	@ResponseBody
+	public ResponseEntity<UserObligation> createObligation(@RequestBody UserObligation json, @PathVariable("id") Long id, @PathVariable("obligationId") Long obligationId, SecurityContextHolderAwareRequestWrapper request) {
+		log.info("create() with body {} of type {}", json, json.getClass());
+		if (canModify(request)) {
+			User user = repo.findOne(id);
+			Obligation obligation = obligationRepository.findOne(obligationId);
+			json.setUser(user);
+			json.setObligation(obligation);
+			UserObligation userObligation = userObligationRepository.save(json);
+			return new ResponseEntity<>(userObligation, HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+	}
+
+	@RequestMapping(value = "/{id}/obligation/{obligationId}/recurring", method = RequestMethod.POST, consumes = {MediaType.APPLICATION_JSON_VALUE})
+	@ResponseBody
+	public ResponseEntity<RecurringUserObligation> createRecurringObligation(@RequestBody RecurringUserObligation json, @PathVariable("id") Long id, @PathVariable("obligationId") Long obligationId, SecurityContextHolderAwareRequestWrapper request) {
+		log.info("create() with body {} of type {}", json, json.getClass());
+		if (canModify(request)) {
+			User user = repo.findOne(id);
+			Obligation obligation = obligationRepository.findOne(obligationId);
+			json.setUser(user);
+			json.setObligation(obligation);
+			RecurringUserObligation userObligation = userObligationRepository.save(json);
+			return new ResponseEntity<>(userObligation, HttpStatus.OK);
 		}
 		return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 	}

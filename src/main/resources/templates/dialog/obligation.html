@@ -5,7 +5,7 @@
 <div class="modal-body">
 	<form role="form" class="form-horizontal">
 		<div class="form-group">
-			<label class="control-label col-sm-2">Tüüp</label>
+			<label class="control-label col-sm-3">Tüüp</label>
 			<div class="col-sm-5">
 				<select ng-if="vm.obligationTypes.length > 0" ng-change="vm.changeType(vm)" ng-model="vm.type" class="form-control" ng-options="type as type.name for type in vm.obligationTypes">
 					<option value="">Vali tüüp...</option>
@@ -14,12 +14,17 @@
 			</div>
 		</div>
 		<div class="form-group" ng-if="vm.obligationTypes.length > 0">
-			<div class="col-sm-5 col-sm-offset-2">
-				<input type="text" ng-change="vm.changeNewType(vm)" ng-model="vm.newType" class="form-control" placeholder="või lisa uus..."/>
+			<div class="col-sm-4 col-sm-offset-3">
+				või
+			</div>
+		</div>
+		<div class="form-group" ng-if="vm.obligationTypes.length > 0">
+			<div class="col-sm-5 col-sm-offset-3">
+				<input type="text" ng-change="vm.changeNewType(vm)" ng-model="vm.newType" class="form-control" placeholder="lisa uus..."/>
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="control-label col-sm-2">Kasutaja</label>
+			<label class="control-label col-sm-3">Kasutaja</label>
 			<div class="col-sm-5">
 				<ui-select multiple="" ng-model="vm.user">
 					<ui-select-match placeholder="Vali liikmed...">
@@ -32,7 +37,13 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<div class="col-sm-2"></div>
+			<label class="control-label col-sm-3">Kirjeldus</label>
+			<div class="col-sm-5">
+				<textarea class="form-control" rows="5" ng-model="vm.description"></textarea>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-3"></div>
 			<div class="col-sm-4">
 				<div class="checkbox">
 					<input id="recurring" type="checkbox" ng-model="vm.recurring" icheck="icheck"/>
@@ -41,7 +52,7 @@
 			</div>
 		</div>
 		<div class="form-group" ng-if="!vm.recurring">
-			<label class="control-label col-sm-2">Aeg</label>
+			<label class="control-label col-sm-3">Aeg</label>
 			<div class="col-sm-4">
 				<div class="input-group">
 					<input type="text" ng-model="vm.date" class="form-control" inputmaskdate=""/>
@@ -52,7 +63,7 @@
 			</div>
 		</div>
 		<div class="form-group" ng-if="vm.recurring">
-			<label class="control-label col-sm-2">Periood</label>
+			<label class="control-label col-sm-3">Periood</label>
 			<div class="col-sm-3">
 				<div class="input-group">
 					<button type="button" class="btn btn-default" periodpicker="" period-start="vm.periodStart" period-end="vm.periodEnd">
@@ -63,15 +74,29 @@
 			</div>
 		</div>
 		<div class="form-group" ng-if="vm.recurring &amp;&amp; vm.periodStart">
-			<div class="col-sm-offset-2 col-sm-8">
+			<div class="col-sm-offset-3 col-sm-8">
 				Valitud: <span ng-bind="vm.periodStart | amDateFormat: 'll'"></span> - <span ng-bind="vm.periodEnd | amDateFormat: 'll'"></span>
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="control-label col-sm-2">Summa</label>
+			<label class="control-label col-sm-3">Summa kokku</label>
 			<div class="col-sm-4">
 				<div class="input-group">
-					<input ng-model="vm.amount" type="number" class="form-control" />
+					<input ng-model="vm.amount" type="number" class="form-control" ng-change="vm.changeAmount(vm)" />
+					<span class="input-group-addon">€</span>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-4 col-sm-offset-3">
+				või
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-sm-3">Liikme kohta</label>
+			<div class="col-sm-4">
+				<div class="input-group">
+					<input ng-model="vm.amountPerUser" type="number" class="form-control"  ng-change="vm.changeAmountPerUser(vm)" />
 					<span class="input-group-addon">€</span>
 				</div>
 			</div>

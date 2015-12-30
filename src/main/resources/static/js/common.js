@@ -62,6 +62,16 @@
 					url: '/user/:id/userprofile/:userProfileId',
 					params: {id: '@id', userProfileId: '@userProfileId'},
 					method: 'POST'
+				},
+				addObligation: {
+					url: '/user/:id/obligation/:obligationId',
+					params: {id: '@id', obligationId: '@obligationId'},
+					method: 'POST'
+				},
+				addRecurringObligation: {
+					url: '/user/:id/obligation/:obligationId/recurring',
+					params: {id: '@id', obligationId: '@obligationId'},
+					method: 'POST'
 				}
 			}),
 			Product: $resource('/product/:id', {id: '@id'}),

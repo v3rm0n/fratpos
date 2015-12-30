@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
 
 import static javax.persistence.DiscriminatorType.INTEGER;
@@ -18,7 +19,11 @@ import static javax.persistence.DiscriminatorType.INTEGER;
 @DiscriminatorColumn(name = "recurring", discriminatorType = INTEGER)
 @DiscriminatorValue("0")
 public class UserObligation extends Model {
+
+	@ManyToOne
 	private User user;
+	@ManyToOne
 	private Obligation obligation;
+
 	private BigDecimal amount;
 }

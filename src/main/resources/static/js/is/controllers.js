@@ -751,7 +751,7 @@
 		};
 	});
 
-	app.controller('ObligationModalController', function ($uibModalInstance, api, notify, moment) {
+	app.controller('ObligationModalController', function ($uibModalInstance, api, notify, moment, $q) {
 
 		var vm = this;
 
@@ -759,35 +759,80 @@
 
 		vm.obligationTypes = api.ObligationType.query();
 
-		vm.changeType = function (obligation) {
-			obligation.newType = undefined;
+		vm.changeType = function (vm) {
+			vm.newType = undefined;
 		};
 
-		vm.changeNewType = function (obligation) {
-			obligation.type = undefined;
+		vm.changeNewType = function (vm) {
+			vm.type = undefined;
 		};
 
-		vm.save = function (obligation) {
+		vm.changeAmount = function (vm) {
+			vm.amountPerUser = undefined;
+		};
+
+		vm.changeAmountPerUser = function (vm) {
+			vm.amount = undefined;
+		};
+
+		var amountPerUser = function (vm) {
+			if (vm.amountPerUser) {
+				return vm.amountPerUser;
+			} else {
+				return vm.amount / vm.user.length;
+			}
+		};
+
+		var totalAmount = function (vm) {
+			if (vm.amountPerUser) {
+				return vm.amountPerUser * vm.user.length;
+			} else {
+				return vm.amount;
+			}
+		};
+
+		var createUserObligation = function (obligation, vm) {
+			return function (user) {
+				var userObligation = {};
+				userObligation.amount = amountPerUser(vm);
+				if (vm.recurring) {
+					userObligation.startDate = vm.periodStart.format('YYYY-MM-DD');
+					userObligation.endDate = vm.periodEnd.format('YYYY-MM-DD');
+					return api.User.addRecurringObligation({id: user.id, obligationId: obligation.id}, userObligation).$promise;
+				}
+				return api.User.addObligation({id: user.id, obligationId: obligation.id}, userObligation).$promise;
+			};
+		};
+
+		vm.save = function (vm) {
 			var createObligation = function (obligationType) {
 				var o = new api.Obligation();
 				o.obligationType = obligationType;
-				o.user = obligation.user;
-				o.amount = obligation.amount;
-				o.date = moment(obligation.date, 'DD/MM/YYYY').format('YYYY-MM-DD');
-				o.$save(function () {
-					notify.success('Laekumine lisatud');
-					$uibModalInstance.close();
+				o.description = vm.description;
+				o.amount = totalAmount(vm);
+				var date = moment(vm.date, 'DD/MM/YYYY');
+				if (date.isValid()) {
+					o.date = date.format('YYYY-MM-DD');
+				}
+				o.$save(function (obligation) {
+					$q.all(vm.user.map(createUserObligation(obligation, vm))).then(function () {
+						notify.success('Laekumine lisatud');
+						$uibModalInstance.close();
+					}, function () {
+						notify.error('Laekumist ei õnnestunud lisada, kontrolli andmeid!');
+
+					});
 				}, function () {
 					notify.error('Laekumist ei õnnestunud lisada, kontrolli andmeid!');
 				});
 			};
 
-			if (obligation.newType) {
+			if (vm.newType) {
 				var obligationType = new api.ObligationType();
-				obligationType.name = obligation.newType;
+				obligationType.name = vm.newType;
 				obligationType.$save(createObligation);
 			} else {
-				createObligation(obligation.type);
+				createObligation(vm.type);
 			}
 		};
 	});
