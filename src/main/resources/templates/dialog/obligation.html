@@ -21,9 +21,9 @@
 		<div class="form-group">
 			<label class="control-label col-sm-2">Kasutaja</label>
 			<div class="col-sm-5">
-				<ui-select ng-model="vm.user">
-					<ui-select-match placeholder="Vali kasutaja...">
-						<span ng-bind="$select.selected.label"></span>
+				<ui-select multiple="" ng-model="vm.user">
+					<ui-select-match placeholder="Vali liikmed...">
+						{{$item.label}}
 					</ui-select-match>
 					<ui-select-choices repeat="user in (vm.users | filter: $select.search) track by user.id">
 						<span ng-bind-html="user.label | highlight: $select.search"></span>
@@ -32,6 +32,15 @@
 			</div>
 		</div>
 		<div class="form-group">
+			<div class="col-sm-2"></div>
+			<div class="col-sm-4">
+				<div class="checkbox">
+					<input id="recurring" type="checkbox" ng-model="vm.recurring" icheck="icheck"/>
+					<label for="recurring">Korduv</label>
+				</div>
+			</div>
+		</div>
+		<div class="form-group" ng-if="!vm.recurring">
 			<label class="control-label col-sm-2">Aeg</label>
 			<div class="col-sm-4">
 				<div class="input-group">
@@ -40,6 +49,22 @@
 						<i class="fa fa-calendar"></i>
 					</div>
 				</div>
+			</div>
+		</div>
+		<div class="form-group" ng-if="vm.recurring">
+			<label class="control-label col-sm-2">Periood</label>
+			<div class="col-sm-3">
+				<div class="input-group">
+					<button type="button" class="btn btn-default" periodpicker="" period-start="vm.periodStart" period-end="vm.periodEnd">
+						<i class="fa fa-calendar"></i> Vali periood
+						<i class="fa fa-caret-down"></i>
+					</button>
+				</div>
+			</div>
+		</div>
+		<div class="form-group" ng-if="vm.recurring &amp;&amp; vm.periodStart">
+			<div class="col-sm-offset-2 col-sm-8">
+				Valitud: <span ng-bind="vm.periodStart | amDateFormat: 'll'"></span> - <span ng-bind="vm.periodEnd | amDateFormat: 'll'"></span>
 			</div>
 		</div>
 		<div class="form-group">

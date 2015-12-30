@@ -64,4 +64,45 @@
 		};
 	}]);
 
+	app.directive('periodpicker', ['moment', '$parse', function (moment) {
+		return {
+			scope: {
+				periodStart: '=periodStart',
+				periodEnd: '=periodEnd'
+			},
+			link: function ($scope, element) {
+				return angular.element(element).daterangepicker(
+					{
+						format: 'DD/MM/YYYY',
+						locale: {
+							applyLabel: 'OK',
+							cancelLabel: 'Katkesta',
+							fromLabel: 'Alates',
+							toLabel: 'Kuni',
+							weekLabel: 'N',
+							customRangeLabel: 'Täpsusta',
+							daysOfWeek: moment.weekdaysMin(),
+							monthNames: moment.monthsShort(),
+							firstDay: moment.localeData()._week.dow
+						},
+						ranges: {
+							'Kolm kuud': [moment(), moment().add(3, 'months')],
+							'Pool aastat': [moment(), moment().add(6, 'months')],
+							'Aasta': [moment(), moment().add(1, 'year')],
+							'Kaks aastat': [moment(), moment().add(2, 'years')],
+							'Viis aastat': [moment(), moment().add(5, 'years')]
+						}
+					},
+					function (start, end) {
+						$scope.$apply(function () {
+							$scope.periodStart = start;
+							$scope.periodEnd = end;
+						});
+
+					}
+				);
+			}
+		};
+	}]);
+
 }(window.angular));
