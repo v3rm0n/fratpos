@@ -37,7 +37,7 @@ public class Transaction extends Model {
 	private Paytype paytype;
 
 	public String getFormattedTime() {
-		DateFormat df = new SimpleDateFormat("HH:mm dd.MM.YYYY");
+		DateFormat df = new SimpleDateFormat("HH:mm dd.MM.yyyy");
 		return df.format(created);
 	}
 

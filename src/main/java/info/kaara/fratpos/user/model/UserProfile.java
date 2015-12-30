@@ -8,6 +8,8 @@ import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Entity
@@ -20,6 +22,15 @@ public class UserProfile extends Model {
 	private String phone;
 	private String address;
 	private Date birthdate;
+
+	public String getFormattedBirthdate() {
+		if (birthdate != null) {
+			DateFormat df = new SimpleDateFormat("HH:mm dd.MM.yyyy");
+			return df.format(birthdate);
+		} else {
+			return null;
+		}
+	}
 
 	@OneToOne
 	@JsonIgnore

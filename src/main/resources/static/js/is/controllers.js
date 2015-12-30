@@ -557,16 +557,16 @@
 
 		$scope.user.$promise.then(function (user) {
 			if (user.userProfile) {
-				$scope.maskedBirthDate = moment(user.userProfile.birthdate).format('DD/MM/YYYY');
+				$scope.maskedBirthDate = moment(user.userProfile.formattedBirthdate, 'HH:mm DD.MM.YYYY').format('DD/MM/YYYY');
 				$scope.userProfile = angular.copy(user.userProfile);
 			}
 		});
 
 		$scope.save = function (user, userProfile, maskedBirthDate) {
 			user.$save(function () {
-				var birthdate = moment(maskedBirthDate, 'YYYY-MM-DD');
+				var birthdate = moment(maskedBirthDate, 'DD/MM/YYYY');
 				if (birthdate.isValid()) {
-					userProfile.birthdate = moment(maskedBirthDate, 'YYYY-MM-DD');
+					userProfile.birthdate = birthdate;
 				}
 				if (userProfile.id) {
 					api.User.updateProfile({id: user.id, userProfileId: userProfile.id}, userProfile, function () {
@@ -700,7 +700,7 @@
 
 	});
 
-	app.controller('IncomeModalController', function ($uibModalInstance, api, notify) {
+	app.controller('IncomeModalController', function ($uibModalInstance, api, notify, moment) {
 
 		var vm = this;
 
@@ -722,7 +722,7 @@
 				i.incomeType = incomeType;
 				i.user = income.user;
 				i.amount = income.amount;
-				i.dateCreated = income.date;
+				i.dateCreated = moment(income.date, 'DD/MM/YYYY');
 				i.$save(function () {
 					notify.success('Laekumine lisatud');
 					$uibModalInstance.close();

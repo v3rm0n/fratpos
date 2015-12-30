@@ -57,10 +57,7 @@
 			link: function ($scope, element) {
 				return $timeout(function () {
 					return angular.element(element).inputmask('dd/mm/yyyy', {
-						placeholder: 'pp/kk/aaaa', autoUnmask: true, onUnMask: function (maskedValue) {
-							var date = maskedValue.split('/');
-							return date[2] + '-' + date[1] + '-' + date[0];
-						}
+						placeholder: 'pp/kk/aaaa'
 					});
 				});
 			}
