@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/income")
+@RequestMapping("/incomes")
 public class IncomeController extends RestBaseController<Income, Long> {
 
 	@Autowired
 	public IncomeController(IncomeRepository repo) {
-		super(repo, "INCOME");
+		super(repo, "ROLE_INCOME");
 	}
 }

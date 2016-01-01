@@ -1,7 +1,7 @@
 (function (angular) {
 	"use strict";
 
-	var app = angular.module('fratis', ['common', 'ngRoute', 'ngResource', 'ui.bootstrap', 'ui.select', 'ngSanitize', 'angularMoment'])
+	var app = angular.module('fratis', ['common', 'ngRoute', 'ui.bootstrap', 'ui.select', 'ngSanitize', 'angularMoment'])
 		.config(['$routeProvider', function ($routeProvider) {
 			$routeProvider
 				.when('/:page', {

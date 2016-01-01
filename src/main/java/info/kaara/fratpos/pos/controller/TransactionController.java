@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 
 @RestController
-@RequestMapping(value = "/transaction")
+@RequestMapping(value = "/transactions")
 @Slf4j
 public class TransactionController extends RestBaseController<Transaction, Long> {
 
@@ -33,13 +33,8 @@ public class TransactionController extends RestBaseController<Transaction, Long>
 		super(transactionRepository);
 	}
 
-	@RequestMapping(value = "/invalid/{id}", method = RequestMethod.POST)
+	@RequestMapping(value = "/{id}/invalid", method = RequestMethod.POST)
 	public void invalidate(@PathVariable("id") Long id) {
-		invalidateTransaction(id);
-	}
-
-	@RequestMapping(value = "/invalid/admin/{id}", method = RequestMethod.POST)
-	public void invalidateAdmin(@PathVariable("id") Long id) {
 		invalidateTransaction(id);
 	}
 

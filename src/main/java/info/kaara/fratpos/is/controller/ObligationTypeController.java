@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/obligationtype")
+@RequestMapping("/obligationtypes")
 public class ObligationTypeController extends RestBaseController<ObligationType, Long> {
 
 	@Autowired

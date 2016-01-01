@@ -14,7 +14,7 @@ import org.springframework.security.web.servletapi.SecurityContextHolderAwareReq
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/role")
+@RequestMapping("/roles")
 @Slf4j
 public class RoleController extends RestBaseController<Role, Long> {
 
@@ -28,7 +28,7 @@ public class RoleController extends RestBaseController<Role, Long> {
 		super(roleRepository, "ROLE_ROLES");
 	}
 
-	@RequestMapping(value = "/{roleId}/permission/{permissionId}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/{roleId}/permissions/{permissionId}", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<Role> addPermission(@PathVariable("roleId") Long roleId, @PathVariable("permissionId") Long permissionId, SecurityContextHolderAwareRequestWrapper request) {
 		if (canModify(request)) {
@@ -46,7 +46,7 @@ public class RoleController extends RestBaseController<Role, Long> {
 		return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 	}
 
-	@RequestMapping(value = "/{roleId}/permission/{permissionId}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/{roleId}/permissions/{permissionId}", method = RequestMethod.DELETE)
 	@ResponseBody
 	public ResponseEntity<Role> removePermission(@PathVariable("roleId") Long roleId, @PathVariable("permissionId") Long permissionId, SecurityContextHolderAwareRequestWrapper request) {
 		if (canModify(request)) {

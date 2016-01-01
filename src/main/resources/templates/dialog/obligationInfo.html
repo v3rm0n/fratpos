@@ -1,0 +1,39 @@
+<div class="modal-header">
+	<button type="button" ng-click="$dismiss()" class="close">&times;</button>
+	<h4 class="modal-title">Kohustus</h4>
+</div>
+<div class="modal-body">
+	<dl class="dl-horizontal">
+		<dt>Tüüp</dt>
+		<dd ng-bind="vm.obligation.obligationType.name"></dd>
+		<dd ng-if="vm.obligation.recurring">Igakuine kohustus</dd>
+		<dd ng-if="!vm.obligation.recurring">Ühekordne kohustus</dd>
+		<dt>Kirjeldus</dt>
+		<dd ng-bind="vm.obligation.description"></dd>
+		<dt>Loomise aeg</dt>
+		<dd ng-bind="vm.obligation.created | amDateFormat:'LLL'"></dd>
+		<dt ng-if="!vm.obligation.recurring">Laekumise aeg</dt>
+		<dd ng-if="!vm.obligation.recurring" ng-bind="vm.obligation.startDate | amDateFormat:'LL'"></dd>
+		<dt ng-if="vm.obligation.recurring">Laekumise periood</dt>
+		<dd ng-if="vm.obligation.recurring" ng-bind-template="{{vm.obligation.startDate | amDateFormat:'LL'}} - {{vm.obligation.endDate | amDateFormat:'LL'}}"></dd>
+		<dt>Summa</dt>
+		<dd ng-bind-template="{{vm.obligation.amount}} €"></dd>
+	</dl>
+	<table class="table table-bordered table-hover">
+		<thead>
+		<tr>
+			<th>Kasutaja</th>
+			<th>Summa</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr ng-repeat="userObligation in vm.userObligations">
+			<td ng-bind="userObligation.user.label"></td>
+			<td>{{userObligation.amount}} €</td>
+		</tr>
+		</tbody>
+	</table>
+</div>
+<div class="modal-footer">
+	<button ng-click="vm.delete(vm.obligation)" class="btn btn-danger"><i class="fa fa-times"></i> Kustuta</button>
+</div>

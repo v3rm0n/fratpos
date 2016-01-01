@@ -1,5 +1,7 @@
 package info.kaara.fratpos.common.controller;
 
+import info.kaara.fratpos.helper.PermissionChecker;
+import lombok.experimental.Delegate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,7 +18,8 @@ public abstract class RestBaseController<T, ID extends Serializable> {
 
 	protected JpaRepository<T, ID> repo;
 
-	protected String permissionPrefix;
+	@Delegate
+	private PermissionChecker permissionChecker = new PermissionChecker();
 
 	public RestBaseController(JpaRepository<T, ID> repo) {
 		this.repo = repo;
@@ -24,7 +27,7 @@ public abstract class RestBaseController<T, ID extends Serializable> {
 
 	public RestBaseController(JpaRepository<T, ID> repo, String permissionPrefix) {
 		this(repo);
-		this.permissionPrefix = permissionPrefix;
+		this.setPermissionPrefix(permissionPrefix);
 	}
 
 	@RequestMapping
@@ -59,7 +62,7 @@ public abstract class RestBaseController<T, ID extends Serializable> {
 		return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.POST, consumes = {MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseBody
 	public ResponseEntity<T> update(@PathVariable ID id, @RequestBody T json, SecurityContextHolderAwareRequestWrapper request) {
 		log.info("update() of id {} with body {}", id, json);
@@ -86,13 +89,5 @@ public abstract class RestBaseController<T, ID extends Serializable> {
 			return new ResponseEntity<>(HttpStatus.OK);
 		}
 		return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-	}
-
-	protected boolean canRead(SecurityContextHolderAwareRequestWrapper request) {
-		return permissionPrefix == null || request.isUserInRole(permissionPrefix + "_VIEW");
-	}
-
-	protected boolean canModify(SecurityContextHolderAwareRequestWrapper request) {
-		return permissionPrefix == null || request.isUserInRole(permissionPrefix + "_MODIFY");
 	}
 }

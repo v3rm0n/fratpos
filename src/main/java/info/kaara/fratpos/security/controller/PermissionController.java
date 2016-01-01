@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/permission")
+@RequestMapping("/permissions")
 public class PermissionController extends RestBaseController<Permission, Long> {
 
 	@Autowired

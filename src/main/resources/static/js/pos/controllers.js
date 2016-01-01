@@ -6,10 +6,10 @@
 	app.controller('PosController', function ($scope, api, $timeout, $uibModal, notify) {
 
 		var getData = function () {
-			$scope.users = api.User.query();
-			$scope.transactions = api.Transaction.query();
-			$scope.products = api.Product.query();
-			$scope.paytypes = api.Paytype.query();
+			$scope.users = api.Users.getList().$object;
+			$scope.transactions = api.Transactions.getList().$object;
+			$scope.products = api.Products.getList().$object;
+			$scope.paytypes = api.Paytypes.getList().$object;
 		};
 
 		getData();
@@ -112,12 +112,11 @@
 
 		$scope.pay = function (paytype) {
 			if (!_.isEmpty($scope.selectedProducts) && $scope.user) {
-				var transaction = new api.Transaction({
+				api.Transactions.post({
 					products: productsArray($scope.selectedProducts),
 					paytype: paytype,
 					user: $scope.user
-				});
-				transaction.$save(function () {
+				}).then(function () {
 					updateStatus('Tooted läksid edukalt kirja!', false);
 					$scope.user = undefined;
 					$scope.selectedProducts = {};
@@ -150,12 +149,7 @@
 			var d = $uibModal.open({
 				templateUrl: '/dialog/feedback',
 				controller: 'FeedbackModalController',
-				controllerAs: 'vm',
-				resolve: {
-					feedback: function () {
-						return new api.Feedback();
-					}
-				}
+				controllerAs: 'vm'
 			});
 
 			d.result.then(function () {
@@ -200,13 +194,11 @@
 		};
 	});
 
-	app.controller('FeedbackModalController', function ($uibModalInstance, feedback) {
+	app.controller('FeedbackModalController', function ($uibModalInstance, api) {
 		var vm = this;
 
-		vm.feedback = feedback;
-
 		vm.save = function (feedback) {
-			feedback.$save(function () {
+			api.Feedbacks.post(feedback).then(function () {
 				$uibModalInstance.close();
 			}, function () {
 				$uibModalInstance.dismiss('Error');
@@ -242,7 +234,7 @@
 		vm.transaction = transaction;
 
 		vm.invalidate = function (transaction) {
-			transaction.$invalidate($uibModalInstance.close);
+			transaction.invalidate().then($uibModalInstance.close);
 		};
 	});
 

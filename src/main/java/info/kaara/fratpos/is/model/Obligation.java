@@ -19,5 +19,7 @@ public class Obligation extends Model {
 	private String description;
 	private BigDecimal amount;
 	private LocalDateTime created = LocalDateTime.now();
-	private LocalDate date;
+	private Boolean recurring = Boolean.FALSE;
+	private LocalDate startDate;
+	private LocalDate endDate;
 }

@@ -13,15 +13,15 @@
 						<thead>
 						<tr>
 							<th>Tüüp</th>
-							<th>Kasutaja</th>
-							<th>Aeg</th>
+							<th>Kirjeldus</th>
+							<th>Lisamise aeg</th>
 							<th>Summa</th>
 						</tr>
 						</thead>
 						<tbody>
-						<tr ng-repeat="obligation in filteredObligations()">
+						<tr ng-click="obligationInfo(obligation)" ng-repeat="obligation in filteredObligations()">
 							<td ng-bind="obligation.obligationType.name"></td>
-							<td ng-bind="obligation.user.label"></td>
+							<td ng-bind="obligation.description"></td>
 							<td ng-bind="obligation.dateCreated | amUtc | amDateFormat:'LL'"></td>
 							<td>{{obligation.amount}} €</td>
 						</tr>
@@ -29,7 +29,7 @@
 					</table>
 				</div>
 				<div class="box-footer clearfix no-border">
-					<uib-pagination class="pagination-sm no-margin pull-right" direction-links="false" total-items="totalObligations" ng-model="currentPage"></uib-pagination>
+					<uib-pagination ng-if="totalObligations > 10" class="pagination-sm no-margin pull-right" direction-links="false" total-items="totalObligations" ng-model="currentPage"></uib-pagination>
 					<button type="button" ng-click="addNew()" class="btn btn-primary"><i class="fa fa-plus"></i> Lisa uus</button>
 				</div>
 			</div>

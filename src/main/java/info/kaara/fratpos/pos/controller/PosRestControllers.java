@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PosRestControllers {
 
 	@RestController
-	@RequestMapping(value = "/feedback")
+	@RequestMapping(value = "/feedbacks")
 	public static class Feedbacks extends RestBaseController<Feedback, Long> {
 
 		@Autowired
@@ -26,7 +26,7 @@ public class PosRestControllers {
 	}
 
 	@RestController
-	@RequestMapping(value = "/paytype")
+	@RequestMapping(value = "/paytypes")
 	public static class Paytypes extends RestBaseController<Paytype, Long> {
 
 		@Autowired
@@ -36,7 +36,7 @@ public class PosRestControllers {
 	}
 
 	@RestController
-	@RequestMapping(value = "/product")
+	@RequestMapping(value = "/products")
 	public static class Products extends RestBaseController<Product, Long> {
 
 		@Autowired

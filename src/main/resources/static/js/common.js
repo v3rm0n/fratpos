@@ -1,7 +1,7 @@
 (function (angular, toastr, swal) {
 	"use strict";
 
-	var app = angular.module('common', []);
+	var app = angular.module('common', ['restangular']);
 
 	app.run(function ($http) {
 		var token = angular.element("meta[name='_csrf']").attr("content");
@@ -36,70 +36,70 @@
 		};
 	});
 
-	app.factory('api', function ($http, $resource) {
-		return {
+	app.config(function (RestangularProvider) {
+		RestangularProvider.addElementTransformer('transactions', false, function (transaction) {
+			// signature is (name, operation, path, params, headers, elementToPost)
+			transaction.addRestangularMethod('invalidate', 'post', 'invalid');
+			return transaction;
+		});
+	});
+
+	var createResource = function (Restangular, path) {
+		var resource = Restangular.all(path);
+		resource.create = function () {
+			return Restangular.restangularizeElement(undefined, {}, path);
+		};
+		return resource;
+	};
+
+	app.factory('api', function ($http, Restangular) {
+		var resources = {
 			stat: function (user) {
 				return $http.get('/stat/' + user.id);
 			},
-			User: $resource('/user/:id', {id: '@id'}, {
-				me: {url: '/user/me', method: 'GET'},
-				addRole: {
-					url: '/user/:id/role/:roleId',
-					params: {id: '@id', roleId: '@roleId'},
-					method: 'PUT'
-				},
-				removeRole: {
-					url: '/user/:id/role/:roleId',
-					params: {id: '@id', roleId: '@roleId'},
-					method: 'DELETE'
-				},
-				addProfile: {
-					url: '/user/:id/userprofile',
-					params: {id: '@id', userProfileId: '@userProfileId'},
-					method: 'POST'
-				},
-				updateProfile: {
-					url: '/user/:id/userprofile/:userProfileId',
-					params: {id: '@id', userProfileId: '@userProfileId'},
-					method: 'POST'
-				},
-				addObligation: {
-					url: '/user/:id/obligation/:obligationId',
-					params: {id: '@id', obligationId: '@obligationId'},
-					method: 'POST'
-				},
-				addRecurringObligation: {
-					url: '/user/:id/obligation/:obligationId/recurring',
-					params: {id: '@id', obligationId: '@obligationId'},
-					method: 'POST'
-				}
-			}),
-			Product: $resource('/product/:id', {id: '@id'}),
-			Status: $resource('/status/:id', {id: '@id'}),
-			Paytype: $resource('/paytype/:id', {id: '@id'}),
-			Transaction: $resource('/transaction/:id', {id: '@id'}, {
-				invalidate: {url: '/transaction/invalid/:id', method: 'POST'}
-			}),
-			Feedback: $resource('/feedback/:id', {id: '@id'}),
-			Stocktaking: $resource('/stocktaking/:id', {id: '@id'}),
-			Role: $resource('/role/:id', {id: '@id'}, {
-				addPermission: {
-					url: '/role/:id/permission/:permissionId',
-					params: {id: '@id', permissionId: '@permissionId'},
-					method: 'PUT'
-				},
-				removePermission: {
-					url: '/role/:id/permission/:permissionId',
-					params: {id: '@id', permissionId: '@permissionId'},
-					method: 'DELETE'
-				}
-			}),
-			Permission: $resource('/permission/:id', {id: '@id'}),
-			Income: $resource('/income/:id', {id: '@id'}),
-			IncomeType: $resource('/incometype/:id', {id: '@id'}),
-			Obligation: $resource('/obligation/:id', {id: '@id'}),
-			ObligationType: $resource('/obligationtype/:id', {id: '@id'})
+			Me: Restangular.oneUrl('users', '/users/me'),
+			Users: createResource(Restangular, 'users'),
+			Products: createResource(Restangular, 'products'),
+			Statuses: createResource(Restangular, 'statuses'),
+			Paytypes: createResource(Restangular, 'paytypes'),
+			Transactions: createResource(Restangular, 'transactions'),
+			Feedbacks: createResource(Restangular, 'feedbacks'),
+			Stocktakings: createResource(Restangular, 'stocktakings'),
+			Roles: createResource(Restangular, 'roles'),
+			Permissions: createResource(Restangular, 'permissions'),
+			Incomes: createResource(Restangular, 'incomes'),
+			IncomeTypes: createResource(Restangular, 'incometypes'),
+			Obligations: createResource(Restangular, 'obligations'),
+			ObligationTypes: createResource(Restangular, 'obligationtypes')
 		};
+		Restangular.extendModel('users', function (user) {
+			user.addRole = function (role) {
+				return user.one('roles', role.id).save();
+			};
+			user.removeRole = function (role) {
+				return user.one('roles', role.id).remove();
+			};
+			user.addProfile = function (profile) {
+				return user.all('profile').post(profile);
+			};
+			user.updateProfile = function (profile) {
+				return Restangular.restangularizeElement(user, profile, 'profile').put();
+			};
+			user.addObligation = function (userObligation) {
+				return Restangular.restangularizeElement(user, userObligation, 'obligations').post();
+			};
+			return user;
+		});
+		Restangular.extendModel('roles', function (role) {
+			role.addPermission = function (permissionId) {
+				return role.one('permissions', permissionId).save();
+			};
+			role.removePermission = function (permissionId) {
+				return role.one('permissions', permissionId).remove();
+			};
+			return role;
+		});
+		return resources;
 	});
 
 }(window.angular, window.toastr, window.swal));

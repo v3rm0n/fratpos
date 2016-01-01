@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/stocktaking")
+@RequestMapping(value = "/stocktakings")
 @Slf4j
 public class StocktakingController extends RestBaseController<Stocktaking, Long> {
 

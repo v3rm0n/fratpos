@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/status")
+@RequestMapping(value = "/statuses")
 public class StatusController extends RestBaseController<Status, Long> {
 
 	@Autowired

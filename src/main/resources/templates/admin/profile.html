@@ -18,7 +18,7 @@
 							<b>Staatus</b> <a class="pull-right" ng-bind="user.status.name"></a>
 						</li>
 						<li class="list-group-item">
-							<b>Saldo</b> <a class="pull-right" ng-bind="user.balance"></a>
+							<b>Kassa saldo</b> <a class="pull-right" ng-bind="user.balance"></a>
 						</li>
 					</ul>
 
@@ -62,10 +62,10 @@
 
 					<strong><i class="fa fa-lock margin-r-5"></i> Rollid</strong>
 					<p>
-						<span class="label label-success" style="margin-right: 5px;white-space: normal;" ng-repeat="role in user.roles">{{role.name}} <i class="fa fa-times" style="cursor: pointer;" ng-click="removeRole(role)"></i></span>
+						<span class="label label-success" style="margin-right: 5px;white-space: normal;" ng-repeat="role in user.roles">{{role.name}} <i class="fa fa-times" style="cursor: pointer;" ng-click="removeRole(user, role)"></i></span>
 					</p>
 					<div sec:authorize="hasRole('ROLES_MODIFY')" ng-if="availableRoles.length > 0">
-						<select ng-change="addRole(newRole)" class="form-control" ng-options="role as role.name for role in availableRoles track by role.id" ng-model="newRole">
+						<select ng-change="addRole(user, newRole)" class="form-control" ng-options="role as role.name for role in availableRoles track by role.id" ng-model="newRole">
 							<option value="">Lisa roll...</option>
 						</select>
 					</div>
@@ -79,85 +79,67 @@
 		<div class="col-md-9">
 			<div class="nav-tabs-custom">
 				<ul class="nav nav-tabs">
-					<li class="active"><a href="#timeline" onclick="return false;" data-toggle="tab">Tegevused</a></li>
-					<li><a href="#settings" ng-click="$event.preventDefault();openSettings()" data-toggle="tab">Muuda andmeid</a></li>
+					<li class="active"><a href="#obligations" ng-click="$event.preventDefault()" data-toggle="tab">Kohustused</a></li>
+					<li><a href="#incomes" ng-click="$event.preventDefault()" data-toggle="tab">Laekumised</a></li>
+					<li><a href="#settings" ng-click="$event.preventDefault()" data-toggle="tab">Muuda profiili</a></li>
 				</ul>
 				<div class="tab-content">
-					<div class="tab-pane active" id="timeline">
-						<!-- The timeline -->
-						<ul class="timeline timeline-inverse">
-							<!-- timeline time label -->
-							<li class="time-label">
-                        <span class="bg-red">
-                          Veebruar 2015
-                        </span>
-							</li>
-							<!-- /.timeline-label -->
-							<!-- timeline item -->
-							<li>
-								<i class="fa fa-envelope bg-blue"></i>
-
-								<div class="timeline-item">
-									<span class="time"><i class="fa fa-clock-o"></i> 12:05</span>
-
-									<h3 class="timeline-header"><a href="#">Osales üritusel</a> Eesti Vabariigi aastapäev</h3>
-
-									<div class="timeline-body">
-										Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
-										weebly ning heekya handango imeem plugg dopplr jibjab, movity
-										jajah plickers sifteo edmodo ifttt zimbra. Babblely odeo kaboodle
-										quora plaxo ideeli hulu weebly balihoo...
-									</div>
-								</div>
-							</li>
-							<!-- END timeline item -->
-							<!-- timeline item -->
-							<li>
-								<i class="fa fa-user bg-aqua"></i>
-								<div class="timeline-item">
-									<span class="time"><i class="fa fa-clock-o"></i> 5 mins ago</span>
-									<h3 class="timeline-header no-border"><a href="#">Laekumine</a> ülekandega 30 €</h3>
-								</div>
-							</li>
-							<!-- END timeline item -->
-							<!-- timeline item -->
-							<li>
-								<i class="fa fa-comments bg-yellow"></i>
-
-								<div class="timeline-item">
-									<span class="time"><i class="fa fa-clock-o"></i> 27 mins ago</span>
-
-									<h3 class="timeline-header"><a href="#">Konvendi rent</a> 30 €</h3>
-
-									<div class="timeline-body">
-										Toimub sünnipäev või mingi muu kommentaar
-									</div>
-								</div>
-							</li>
-							<!-- END timeline item -->
-							<!-- timeline time label -->
-							<li class="time-label">
-                        <span class="bg-green">
-                          Jaanuar 2015
-                        </span>
-							</li>
-							<!-- /.timeline-label -->
-							<!-- timeline item -->
-							<li>
-								<i class="fa fa-user bg-aqua"></i>
-								<div class="timeline-item">
-									<span class="time"><i class="fa fa-clock-o"></i> 5 mins ago</span>
-									<h3 class="timeline-header no-border"><a href="#">Laekumine</a> sulas 20 €</h3>
-								</div>
-							</li>
-							<!-- END timeline item -->
-							<li>
-								<i class="fa fa-clock-o bg-gray"></i>
-							</li>
-						</ul>
+					<div class="tab-pane active" id="obligations" ng-controller="UserObligationsController">
+						<h4>Igakuised</h4>
+						<table class="table table-bordered table-hover">
+							<thead>
+							<tr>
+								<th>Tüüp</th>
+								<th>Algus</th>
+								<th>Lõpp</th>
+								<th>Summa</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr ng-repeat="userObligation in recurringObligations">
+								<td ng-bind="userObligation.obligation.obligationType.name"></td>
+								<td ng-bind="userObligation.obligation.startDate | amUtc | amDateFormat:'LL'"></td>
+								<td ng-bind="userObligation.obligation.endDate | amUtc | amDateFormat:'LL'"></td>
+								<td>{{userObligation.amount}} €</td>
+							</tr>
+							</tbody>
+						</table>
+						<h4>Ühekordsed</h4>
+						<table class="table table-bordered table-hover">
+							<thead>
+							<tr>
+								<th>Tüüp</th>
+								<th>Aeg</th>
+								<th>Summa</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr ng-repeat="userObligation in obligations">
+								<td ng-bind="userObligation.obligation.obligationType.name"></td>
+								<td ng-bind="userObligation.obligation.startDate | amUtc | amDateFormat:'LL'"></td>
+								<td>{{userObligation.amount}} €</td>
+							</tr>
+							</tbody>
+						</table>
 					</div>
-					<!-- /.tab-pane -->
-
+					<div class="tab-pane" id="incomes" ng-controller="UserIncomesController">
+						<table class="table table-bordered table-hover">
+							<thead>
+							<tr>
+								<th>Tüüp</th>
+								<th>Aeg</th>
+								<th>Summa</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr ng-repeat="income in incomes">
+								<td ng-bind="income.incomeType.name"></td>
+								<td ng-bind="income.date | amDateFormat:'LL'"></td>
+								<td>{{income.amount}} €</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
 					<div class="tab-pane" id="settings" ng-controller="SettingsController">
 						<form role="form" ng-submit="save(user, userProfile, maskedBirthDate)" class="form-horizontal">
 							<h4>Üldinfo</h4>

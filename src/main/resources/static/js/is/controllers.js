@@ -5,14 +5,13 @@
 
 	app.controller('UsersController', function ($scope, $uibModal, api, notify, $location) {
 
-		$scope.users = api.User.query();
+		api.Users.getList().then(function (users) {
+			$scope.users = users;
+			$scope.totalUsers = users.length;
+		});
 
 		$scope.currentPage = 1;
 		$scope.sortfield = 'label';
-
-		$scope.users.$promise.then(function () {
-			$scope.totalUsers = $scope.users.length;
-		});
 
 		$scope.filteredUsers = function () {
 			var users = $scope.users;
@@ -59,7 +58,9 @@
 			});
 
 			d.result.then(function () {
-				$scope.users = api.User.query();
+				api.Users.getList().then(function (users) {
+					$scope.users = users;
+				});
 			});
 		};
 	});
@@ -68,12 +69,10 @@
 
 		var vm = this;
 
-		vm.user = new api.User();
-
-		vm.statuses = api.Status.query();
+		vm.statuses = api.Statuses.getList().$object;
 
 		vm.save = function (user) {
-			user.$save(function (user) {
+			api.Users.post(user).then(function (user) {
 				$uibModalInstance.close();
 				notify.success('Liige edukalt lisatud!');
 				$location.url('/profile/' + user.id);
@@ -86,7 +85,16 @@
 
 	app.controller('TransactionsController', function ($scope, api, $uibModal) {
 
-		$scope.transactions = api.Transaction.query();
+		api.Transactions.getList().then(function (transactions) {
+			$scope.transactions = transactions;
+			$scope.totalTransactions = transactions.length;
+			$scope.totalSum = transactions.reduce(function (sum, transaction) {
+				if (!transaction.invalid) {
+					return sum + transaction.sum;
+				}
+				return sum;
+			}, 0);
+		});
 
 		$scope.currentPage = 1;
 
@@ -96,16 +104,6 @@
 			$scope.totalTransactions = transactions.length;
 			return transactions.slice((currentPage - 1) * 10, currentPage * 10);
 		};
-
-		$scope.transactions.$promise.then(function (transactions) {
-			$scope.totalTransactions = transactions.length;
-			$scope.totalSum = transactions.reduce(function (sum, transaction) {
-				if (!transaction.invalid) {
-					return sum + transaction.sum;
-				}
-				return sum;
-			}, 0);
-		});
 
 		$scope.openDialog = function (transaction) {
 
@@ -127,7 +125,7 @@
 		this.transaction = transaction;
 
 		this.invalidate = function (transaction) {
-			transaction.$invalidate(function () {
+			transaction.invalidate().then(function () {
 				transaction.invalid = true;
 				$uibModalInstance.close();
 				notify.success('Tehing tagasi võetud!');
@@ -139,17 +137,20 @@
 
 	app.controller('ProductsController', function ($scope, api, $uibModal) {
 
-		$scope.products = api.Product.query();
+		var init = function () {
+			api.Products.getList().then(function (products) {
+				$scope.products = products;
+				$scope.totalProd = products.length;
+				$scope.totalProducts = products.reduce(function (sum, product) {
+					return sum + product.quantity;
+				}, 0);
+			});
+		};
+
+		init();
 
 		$scope.currentPage = 1;
 		$scope.sortfield = 'name';
-
-		$scope.products.$promise.then(function () {
-			$scope.totalProd = $scope.products.length;
-			$scope.totalProducts = $scope.products.reduce(function (sum, product) {
-				return sum + product.quantity;
-			}, 0);
-		});
 
 		$scope.sortedProducts = function () {
 			var products = _.sortByOrder($scope.products, [$scope.sortfield], [$scope.asc ? 'asc' : 'desc']);
@@ -179,14 +180,12 @@
 				controllerAs: 'vm',
 				resolve: {
 					product: function () {
-						return angular.copy(product) || new api.Product();
+						return product ? product.clone() : api.Products.create();
 					}
 				}
 			});
 
-			d.result.then(function () {
-				$scope.products = api.Product.query();
-			}, function (reason) {
+			d.result.then(init, function (reason) {
 				if (reason !== undefined) {
 					$scope.openProductDialog(product);
 				}
@@ -200,7 +199,7 @@
 		this.product = product;
 
 		this.save = function (product) {
-			product.$save(function () {
+			product.save().then(function () {
 				$uibModalInstance.close();
 				notify.success('Muudatused salvestatud!');
 			}, function () {
@@ -215,7 +214,7 @@
 				title: 'Oled kindel, et tahad toote kustutada?'
 			}, function (isConfirmed) {
 				if (isConfirmed) {
-					product.$remove(function () {
+					product.remove().then(function () {
 						defer.resolve();
 						notify.success('Toode eemaldatud!');
 					}, function () {
@@ -231,10 +230,10 @@
 
 	app.controller('PaytypesController', function ($scope, api, $uibModal) {
 
-		$scope.paytypes = api.Paytype.query();
+		$scope.paytypes = api.Paytypes.getList().$object;
 
 		$scope.openPaytypeDialog = function (paytype) {
-			api.Status.query(function (statuses) {
+			api.Statuses.getList().then(function (statuses) {
 
 				var d = $uibModal.open({
 					templateUrl: '/dialog/paytype',
@@ -245,13 +244,13 @@
 							return statuses;
 						},
 						paytype: function () {
-							return angular.copy(paytype) || new api.Paytype();
+							return paytype.clone() || api.Paytypes.create();
 						}
 					}
 				});
 
 				d.result.then(function () {
-					$scope.paytypes = api.Paytype.query();
+					$scope.paytypes = api.Paytypes.getList().$object;
 				}, function (reason) {
 					if (reason !== undefined) {
 						$scope.openPaytypeDialog(paytype);
@@ -292,7 +291,7 @@
 					return [];
 				}).flatten().value();
 			}
-			p.$save(function () {
+			p.save().then(function () {
 				$uibModalInstance.close();
 				notify.success('Muudatused salvestatud!');
 			}, function () {
@@ -307,7 +306,7 @@
 				title: 'Oled kindel, et tahad makseviisi kustutada?'
 			}, function (isConfirmed) {
 				if (isConfirmed) {
-					paytype.$remove(function () {
+					paytype.remove().then(function () {
 						defer.resolve();
 					}, function () {
 						defer.reject('Error');
@@ -322,7 +321,7 @@
 
 	app.controller('StatusesController', function ($scope, api, $uibModal) {
 
-		$scope.statuses = api.Status.query();
+		$scope.statuses = api.Statuses.getList().$object;
 
 		$scope.openStatusDialog = function (status) {
 
@@ -332,13 +331,13 @@
 				controllerAs: 'vm',
 				resolve: {
 					status: function () {
-						return angular.copy(status) || new api.Status();
+						return status.clone() || api.Statuses.create();
 					}
 				}
 			});
 
 			d.result.then(function () {
-				$scope.statuses = api.Status.query();
+				$scope.statuses = api.Statuses.getList().$object;
 			}, function (reason) {
 				if (reason) {
 					$scope.openStatusDialog(status);
@@ -355,7 +354,7 @@
 		vm.status = status;
 
 		vm.save = function (s) {
-			s.$save(function () {
+			s.save().then(function () {
 				$uibModalInstance.close();
 				notify.success('Muudatused salvestatud!');
 			}, function () {
@@ -370,7 +369,7 @@
 				title: 'Oled kindel, et tahad staatuse kustutada?'
 			}, function (isConfirmed) {
 				if (isConfirmed) {
-					status.$remove(function () {
+					status.remove().then(function () {
 						defer.resolve();
 						notify.success('Staatus kustutatud!');
 					}, function () {
@@ -386,13 +385,14 @@
 
 	app.controller('StocktakingController', function ($scope, api, $location, notify) {
 
-		$scope.stocktakings = api.Stocktaking.query();
+		$scope.stocktakings = [];
+
+		api.Stocktakings.getList().then(function (stocktakings) {
+			$scope.stocktakings = stocktakings;
+			$scope.totalStocktakings = stocktakings.length;
+		});
 
 		$scope.currentPage = 1;
-
-		$scope.stocktakings.$promise.then(function () {
-			$scope.totalStocktakings = $scope.stocktakings.length;
-		});
 
 		$scope.filteredStocktakings = function () {
 			var stocktakings = $scope.stocktakings;
@@ -411,8 +411,8 @@
 				text: 'Oled kindel, et tahad teha inventuuri? Kasutajate saldod nullitakse ja tehingud eemaldatakse.',
 				confirmButtonText: "Jah, tee inventuur!"
 			}, function () {
-				var stocktaking = new api.Stocktaking();
-				stocktaking.$save(function (data) {
+				var stocktaking = api.Stocktakings.create();
+				stocktaking.save().then(function (data) {
 					$scope.stocktakings.push(data);
 					notify.success('Inventuur tehtud');
 				});
@@ -422,9 +422,9 @@
 
 	app.controller('StocktakingViewController', function ($scope, api, $location, $routeParams, $window) {
 
-		$scope.stocktaking = api.Stocktaking.get({id: $routeParams.id});
+		$scope.stocktaking = api.Stocktakings.get($routeParams.id).$object;
 
-		api.Stocktaking.get({id: $routeParams.id - 1}, function (previous) {
+		api.Stocktakings.get($routeParams.id - 1).then(function (previous) {
 			$scope.previous = previous;
 		});
 
@@ -440,13 +440,14 @@
 
 	app.controller('FeedbackController', function ($scope, api, notify) {
 
-		$scope.feedbacks = api.Feedback.query();
+		$scope.feedbacks = [];
+
+		api.Feedbacks.getList().then(function (feedbacks) {
+			$scope.feedbacks = feedbacks;
+			$scope.totalFeedbacks = feedbacks.length;
+		});
 
 		$scope.currentPage = 1;
-
-		$scope.feedbacks.$promise.then(function () {
-			$scope.totalFeedbacks = $scope.feedbacks.length;
-		});
 
 		$scope.filteredFeedbacks = function () {
 			var feedbacks = $scope.feedbacks;
@@ -456,7 +457,7 @@
 		};
 
 		$scope.deleteFeedback = function (feedback) {
-			feedback.$remove(function () {
+			feedback.remove().then(function () {
 				$scope.feedbacks = $scope.feedbacks.filter(function (u) {
 					return feedback.id !== u.id;
 				});
@@ -483,20 +484,27 @@
 
 		var initUser = function () {
 			if ($routeParams.id) {
-				$scope.user = api.User.get({id: $routeParams.id});
+				$scope.userPromise = api.Users.get($routeParams.id);
 			} else {
-				$scope.user = api.User.me();
+				$scope.userPromise = api.Me.get();
 			}
+			$scope.userPromise.then(function (user) {
+				$scope.user = user;
+			});
 		};
 
 		initUser();
 
 		$scope.$on('user:changed', initUser);
 
-		$scope.roles = api.Role.query();
+		var rolesPromise = api.Roles.getList();
+
+		rolesPromise.then(function (roles) {
+			$scope.roles = roles;
+		});
 
 		var initAvailableRoles = function () {
-			$q.all([$scope.roles.$promise, $scope.user.$promise]).then(function (values) {
+			$q.all([rolesPromise, $scope.userPromise]).then(function (values) {
 				var contains = function (role) {
 					return _.find(values[1].roles, {id: role.id}) === undefined;
 				};
@@ -508,50 +516,48 @@
 
 		$scope.$watch('user', initAvailableRoles);
 
-		$scope.addRole = function (role) {
+		$scope.addRole = function (user, role) {
 			if (!role) {
 				return;
 			}
-			api.User.addRole({id: $scope.user.id, roleId: role.id}, initUser);
+			user.addRole(role).then(initUser);
 		};
 
-		$scope.removeRole = function (role) {
-			api.User.removeRole({id: $scope.user.id, roleId: role.id}, initUser);
+		$scope.removeRole = function (user, role) {
+			user.removeRole(role).then(initUser);
 		};
 
 	});
 
-	app.controller('SettingsController', function ($scope, $rootScope, api, $routeParams, notify, moment, $location) {
-		$scope.statuses = api.Status.query();
+	app.controller('SettingsController', function ($scope, $rootScope, api, notify, moment, $location) {
 
-		if ($routeParams.id) {
-			$scope.user = api.User.get({id: $routeParams.id});
-		} else {
-			$scope.user = api.User.me();
-		}
+		$scope.statuses = api.Statuses.getList().$object;
 
-		$scope.user.$promise.then(function (user) {
+		var initUser = function (user) {
+			$scope.user = user;
 			if (user.userProfile) {
 				$scope.maskedBirthDate = moment(user.userProfile.formattedBirthdate, 'HH:mm DD.MM.YYYY').format('DD/MM/YYYY');
 				$scope.userProfile = angular.copy(user.userProfile);
 			}
-		});
+		};
+
+		$scope.$parent.userPromise.then(initUser);
 
 		$scope.save = function (user, userProfile, maskedBirthDate) {
-			user.$save(function () {
+			user.save().then(function (user) {
 				var birthdate = moment(maskedBirthDate, 'DD/MM/YYYY');
 				if (birthdate.isValid()) {
 					userProfile.birthdate = birthdate;
 				}
 				if (userProfile.id) {
-					api.User.updateProfile({id: user.id, userProfileId: userProfile.id}, userProfile, function () {
+					user.updateProfile(userProfile).then(function () {
 						$rootScope.$broadcast('user:changed');
 						notify.success('Liikme ' + user.label + ' andmed muudetud!');
 					}, function () {
 						notify.error('Liikme ' + user.label + ' andmete muutmine ebaõnnestus!');
 					});
 				} else {
-					api.User.addProfile({id: user.id}, userProfile, function (userProfile) {
+					user.addProfile(userProfile).then(function (userProfile) {
 						$scope.userProfile = userProfile;
 						$rootScope.$broadcast('user:changed');
 						notify.success('Liikme ' + user.label + ' andmed muudetud!');
@@ -571,7 +577,7 @@
 				text: 'Oled kindel, et tahad liikme kustutada? Seda tegevust, ei ole võimalik tagasi keerata.',
 				confirmButtonText: "Jah, kustuta!"
 			}, function () {
-				user.$delete(function () {
+				user.remove().then(function () {
 					notify.success('Liige ' + user.label + ' kustutatud!');
 					$location.url('/users');
 				});
@@ -581,18 +587,22 @@
 
 	app.controller('RoleController', function ($scope, api, notify) {
 
-		$scope.permissions = api.Permission.query();
+		$scope.roles = [];
+
+		api.Permissions.getList().then(function (permissions) {
+			$scope.permissions = permissions;
+		});
+
 		$scope.changedPermissions = {};
 
 		var initRoles = function () {
-			$scope.roles = api.Role.query(function (roles) {
+			api.Roles.getList().then(function (roles) {
+				$scope.roles = roles;
 				$scope.rolePermissions = {};
 				roles.forEach(function (role) {
-					$scope.permissions.$promise.then(function () {
-						role.permissions.forEach(function (permission) {
-							$scope.rolePermissions[permission.id] = $scope.rolePermissions[permission.id] || {};
-							$scope.rolePermissions[permission.id][role.id] = true;
-						});
+					role.permissions.forEach(function (permission) {
+						$scope.rolePermissions[permission.id] = $scope.rolePermissions[permission.id] || {};
+						$scope.rolePermissions[permission.id][role.id] = true;
 					});
 				});
 			});
@@ -601,9 +611,9 @@
 		initRoles();
 
 		$scope.addRole = function (newRole) {
-			var role = new api.Role();
+			var role = api.Roles.create();
 			role.name = newRole;
-			role.$save(function () {
+			role.save().then(function () {
 				$scope.newRole = null;
 				notify.success('Roll ' + newRole + ' lisatud!');
 				initRoles();
@@ -612,20 +622,20 @@
 			});
 		};
 
-		var addPermissionToRole = function (roleId, permissionId) {
-			api.Role.addPermission({id: roleId, permissionId: permissionId});
+		var addPermissionToRole = function (role, permissionId) {
+			role.addPermission(permissionId);
 		};
-		var removePermissionFromRole = function (roleId, permissionId) {
-			api.Role.removePermission({id: roleId, permissionId: permissionId});
+		var removePermissionFromRole = function (role, permissionId) {
+			role.removePermission(permissionId);
 		};
 
 		$scope.save = function () {
 			angular.forEach($scope.changedPermissions, function (roles, permissionId) {
-				angular.forEach(roles, function (checked, roleId) {
-					if (checked) {
-						addPermissionToRole(roleId, permissionId);
+				angular.forEach(roles, function (obj) {
+					if (obj.checked) {
+						addPermissionToRole(obj.role, permissionId);
 					} else {
-						removePermissionFromRole(roleId, permissionId);
+						removePermissionFromRole(obj.role, permissionId);
 					}
 				});
 			});
@@ -634,15 +644,23 @@
 
 		$scope.change = function (permission, role, checked) {
 			$scope.changedPermissions[permission.id] = $scope.changedPermissions[permission.id] || {};
-			$scope.changedPermissions[permission.id][role.id] = checked;
+			$scope.changedPermissions[permission.id][role.id] = {checked: checked, role: role};
 		};
 
 	});
 
 	app.controller('IncomeController', function ($scope, api, $uibModal) {
 
+		$scope.incomes = [];
+
 		var init = function () {
-			$scope.incomes = api.Income.query();
+			api.Incomes.getList().then(function (incomes) {
+				$scope.incomes = incomes;
+				$scope.totalIncomes = incomes.length;
+				$scope.totalIncome = incomes.reduce(function (sum, income) {
+					return sum + income.amount;
+				}, 0);
+			});
 		};
 
 		init();
@@ -655,13 +673,6 @@
 			$scope.totalIncomes = incomes.length;
 			return incomes.slice((currentPage - 1) * 10, currentPage * 10);
 		};
-
-		$scope.incomes.$promise.then(function (incomes) {
-			$scope.totalIncomes = incomes.length;
-			$scope.totalIncome = incomes.reduce(function (sum, income) {
-				return sum + income.amount;
-			}, 0);
-		});
 
 		$scope.addNew = function () {
 			var modal = $uibModal.open({
@@ -679,9 +690,9 @@
 
 		var vm = this;
 
-		vm.users = api.User.query();
+		vm.users = api.Users.getList().$object;
 
-		vm.incomeTypes = api.IncomeType.query();
+		vm.incomeTypes = api.IncomeTypes.getList().$object;
 
 		vm.changeType = function (income) {
 			income.newType = undefined;
@@ -693,12 +704,12 @@
 
 		vm.save = function (income) {
 			var createIncome = function (incomeType) {
-				var i = new api.Income();
+				var i = api.Incomes.create();
 				i.incomeType = incomeType;
 				i.user = income.user;
 				i.amount = income.amount;
 				i.date = moment(income.date, 'DD/MM/YYYY').format('YYYY-MM-DD');
-				i.$save(function () {
+				i.save().then(function () {
 					notify.success('Laekumine lisatud');
 					$uibModalInstance.close();
 				}, function () {
@@ -707,9 +718,9 @@
 			};
 
 			if (income.newType) {
-				var incomeType = new api.IncomeType();
+				var incomeType = api.IncomeTypes.create();
 				incomeType.name = income.newType;
-				incomeType.$save(createIncome);
+				incomeType.save().then(createIncome);
 			} else {
 				createIncome(income.type);
 			}
@@ -718,8 +729,16 @@
 
 	app.controller('ObligationsController', function ($scope, api, $uibModal) {
 
+		$scope.obligations = [];
+
 		var init = function () {
-			$scope.obligations = api.Obligation.query();
+			api.Obligations.getList().then(function (obligations) {
+				$scope.obligations = obligations;
+				$scope.totalObligations = obligations.length;
+				$scope.totalObligation = obligations.reduce(function (sum, obligation) {
+					return sum + obligation.amount;
+				}, 0);
+			});
 		};
 
 		init();
@@ -733,12 +752,24 @@
 			return obligations.slice((currentPage - 1) * 10, currentPage * 10);
 		};
 
-		$scope.obligations.$promise.then(function (obligations) {
-			$scope.totalObligations = obligations.length;
-			$scope.totalObligation = obligations.reduce(function (sum, obligation) {
-				return sum + obligation.amount;
-			}, 0);
-		});
+		$scope.obligationInfo = function (obligation) {
+			var modal = $uibModal.open({
+				templateUrl: '/dialog/obligationInfo',
+				controller: 'ObligationInfoController',
+				controllerAs: 'vm',
+				resolve: {
+					obligation: function () {
+						return obligation;
+					}
+				}
+			});
+
+			modal.result.then(init, function (reason) {
+				if (reason) {
+					$scope.obligationInfo(obligation);
+				}
+			});
+		};
 
 		$scope.addNew = function () {
 			var modal = $uibModal.open({
@@ -755,9 +786,11 @@
 
 		var vm = this;
 
-		vm.users = api.User.query();
+		vm.users = api.Users.getList().$object;
 
-		vm.obligationTypes = api.ObligationType.query();
+		vm.obligationTypes = api.ObligationTypes.getList().$object;
+
+		vm.recurring = false;
 
 		vm.changeType = function (vm) {
 			vm.newType = undefined;
@@ -795,26 +828,29 @@
 			return function (user) {
 				var userObligation = {};
 				userObligation.amount = amountPerUser(vm);
-				if (vm.recurring) {
-					userObligation.startDate = vm.periodStart.format('YYYY-MM-DD');
-					userObligation.endDate = vm.periodEnd.format('YYYY-MM-DD');
-					return api.User.addRecurringObligation({id: user.id, obligationId: obligation.id}, userObligation).$promise;
-				}
-				return api.User.addObligation({id: user.id, obligationId: obligation.id}, userObligation).$promise;
+				userObligation.obligation = obligation;
+				userObligation.user = user;
+				return user.addObligation(userObligation);
 			};
 		};
 
 		vm.save = function (vm) {
 			var createObligation = function (obligationType) {
-				var o = new api.Obligation();
+				var o = api.Obligations.create();
 				o.obligationType = obligationType;
 				o.description = vm.description;
+				o.recurring = vm.recurring;
 				o.amount = totalAmount(vm);
-				var date = moment(vm.date, 'DD/MM/YYYY');
-				if (date.isValid()) {
-					o.date = date.format('YYYY-MM-DD');
+				if (vm.recurring) {
+					o.startDate = vm.periodStart.format('YYYY-MM-DD');
+					o.endDate = vm.periodEnd.format('YYYY-MM-DD');
+				} else {
+					var date = moment(vm.date, 'DD/MM/YYYY');
+					if (date.isValid()) {
+						o.startDate = date.format('YYYY-MM-DD');
+					}
 				}
-				o.$save(function (obligation) {
+				o.save().then(function (obligation) {
 					$q.all(vm.user.map(createUserObligation(obligation, vm))).then(function () {
 						notify.success('Laekumine lisatud');
 						$uibModalInstance.close();
@@ -828,13 +864,69 @@
 			};
 
 			if (vm.newType) {
-				var obligationType = new api.ObligationType();
+				var obligationType = api.ObligationTypes.create();
 				obligationType.name = vm.newType;
-				obligationType.$save(createObligation);
+				obligationType.save().then(createObligation);
 			} else {
 				createObligation(vm.type);
 			}
 		};
+	});
+
+	app.controller('ObligationInfoController', function ($uibModalInstance, obligation, notify, $q) {
+		var vm = this;
+
+		vm.obligation = obligation;
+
+		obligation.all('userobligations').getList().then(function (userObligations) {
+			vm.userObligations = userObligations;
+		});
+
+		vm.delete = function (obligation) {
+			var defer = $q.defer();
+			$uibModalInstance.close(defer.promise);
+			notify.warning({
+				title: 'Kohustuse kustutamine',
+				text: 'Oled kindel, et tahad kohustuse kustutada? Seda tegevust, ei ole võimalik tagasi keerata.',
+				confirmButtonText: "Jah, kustuta!"
+			}, function (isConfirmed) {
+				if (isConfirmed) {
+					obligation.remove().then(function () {
+						defer.resolve();
+						notify.success('Kohustus kustutatud!');
+					}, function () {
+						defer.reject('Error');
+						notify.error('Ei õnnestunud kohustust kustutada!');
+					});
+				} else {
+					defer.reject('Cancel');
+				}
+			});
+		};
+	});
+
+	app.controller('UserObligationsController', function ($scope) {
+
+		$scope.recurringObligations = [];
+		$scope.obligations = [];
+
+		$scope.$parent.userPromise.then(function (user) {
+			user.all('obligations').getList().then(function (obligations) {
+				$scope.recurringObligations = _.filter(obligations, {obligation: {recurring: true}});
+				$scope.obligations = _.filter(obligations, {obligation: {recurring: false}});
+			});
+		});
+
+	});
+	app.controller('UserIncomesController', function ($scope) {
+
+		$scope.incomes = [];
+
+		$scope.$parent.userPromise.then(function (user) {
+			user.all('incomes').getList().then(function (incomes) {
+				$scope.incomes = incomes;
+			});
+		});
 	});
 
 }(window.angular));

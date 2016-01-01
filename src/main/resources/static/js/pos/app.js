@@ -1,7 +1,7 @@
 (function (angular, Chart) {
 	"use strict";
 
-	var app = angular.module('fratpos', ['ui.bootstrap', 'ngResource', 'common']);
+	var app = angular.module('fratpos', ['ui.bootstrap', 'common']);
 
 	//Focuses an input element after rendering
 	app.directive('focusMe', function ($timeout) {

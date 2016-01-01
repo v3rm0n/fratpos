@@ -9,8 +9,10 @@ CREATE TABLE IF NOT EXISTS obligation (
 	id                 BIGINT(20)     NOT NULL AUTO_INCREMENT,
 	obligation_type_id BIGINT(20)     NOT NULL,
 	description        VARCHAR(80)    NULL     DEFAULT NULL,
-	date               DATE           NULL     DEFAULT NULL,
 	amount             DECIMAL(10, 2) NOT NULL,
+	recurring          TINYINT(1)     NULL     DEFAULT 0,
+	start_date         DATE           NULL     DEFAULT NULL,
+	end_date           DATE           NULL     DEFAULT NULL,
 	created            TIMESTAMP      NULL     DEFAULT NULL,
 	PRIMARY KEY (id),
 	INDEX fk_obligation_obligation_type_idx (obligation_type_id ASC),
@@ -26,20 +28,17 @@ CREATE TABLE IF NOT EXISTS user_obligation (
 	obligation_id BIGINT(20)     NOT NULL,
 	user_id       BIGINT(20)     NOT NULL,
 	amount        DECIMAL(10, 2) NOT NULL,
-	recurring     TINYINT(1)     NULL     DEFAULT 0,
-	start_date    DATE           NULL     DEFAULT NULL,
-	end_date      DATE           NULL     DEFAULT NULL,
 	PRIMARY KEY (id),
 	INDEX fk_user_obligation_user_idx (user_id ASC),
 	CONSTRAINT fk_user_obligation_user
 	FOREIGN KEY (user_id)
 	REFERENCES user (id)
-		ON DELETE RESTRICT
+		ON DELETE CASCADE
 		ON UPDATE RESTRICT,
 	CONSTRAINT fk_user_obligation_obligation
 	FOREIGN KEY (obligation_id)
 	REFERENCES obligation (id)
-		ON DELETE RESTRICT
+		ON DELETE CASCADE
 		ON UPDATE RESTRICT
 );
 

@@ -69,6 +69,7 @@ dependencies {
 
 	// Base
 	compile 'org.webjars:angularjs:1.4.8'
+	compile 'org.webjars.npm:restangular:1.5.1'
 	compile 'org.webjars.bower:lodash:3.10.1'
 	// Themes
 	compile 'org.webjars.bower:Bootflat:2.0.4'
