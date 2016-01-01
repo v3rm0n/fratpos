@@ -3,6 +3,7 @@ package info.kaara.fratpos.helper;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -11,14 +12,14 @@ import java.io.IOException;
 @Component
 public class Json {
 
-	private static ObjectMapper mapper;
+	private static ObjectMapper mapper = new ObjectMapper();
 
 	@Autowired
 	private ObjectMapper objectMapper;
 
 	@PostConstruct
 	public void init() {
-		mapper = objectMapper;
+			mapper = objectMapper;
 	}
 
 	public static JsonNode toJson(Object obj) {
