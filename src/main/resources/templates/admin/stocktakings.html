@@ -28,7 +28,7 @@
 					</table>
 				</div>
 				<div class="box-footer clearfix no-border">
-					<uib-pagination ng-if="totalStocktakings > 10" class="pagination-sm no-margin pull-right" direction-links="false" total-items="totalStocktakings" ng-model="currentPage"></uib-pagination>
+					<uib-pagination ng-show="totalStocktakings > 10" class="pagination-sm no-margin pull-right" direction-links="false" total-items="totalStocktakings" ng-model="currentPage"></uib-pagination>
 					<button type="button" ng-click="stocktaking()" class="btn btn-danger"><i class="fa fa-check"></i> Inventuur</button>
 				</div>
 			</div>

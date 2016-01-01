@@ -29,7 +29,7 @@
 					</table>
 				</div>
 				<div class="box-footer clearfix no-border">
-					<uib-pagination ng-if="totalObligations > 10" class="pagination-sm no-margin pull-right" direction-links="false" total-items="totalObligations" ng-model="currentPage"></uib-pagination>
+					<uib-pagination ng-show="totalObligations > 10" class="pagination-sm no-margin pull-right" direction-links="false" total-items="totalObligations" ng-model="currentPage"></uib-pagination>
 					<button type="button" ng-click="addNew()" class="btn btn-primary"><i class="fa fa-plus"></i> Lisa uus</button>
 				</div>
 			</div>

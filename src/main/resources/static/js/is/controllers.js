@@ -85,6 +85,8 @@
 
 	app.controller('TransactionsController', function ($scope, api, $uibModal) {
 
+		$scope.transactions = [];
+
 		api.Transactions.getList().then(function (transactions) {
 			$scope.transactions = transactions;
 			$scope.totalTransactions = transactions.length;
@@ -136,6 +138,8 @@
 	});
 
 	app.controller('ProductsController', function ($scope, api, $uibModal) {
+
+		$scope.products = [];
 
 		var init = function () {
 			api.Products.getList().then(function (products) {
