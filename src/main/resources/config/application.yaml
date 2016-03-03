@@ -2,7 +2,7 @@ spring:
   application:
     name: fratpos
   datasource:
-    url: jdbc:mysql://192.168.99.100:32770/fratpos?characterEncoding=UTF-8
+    url: jdbc:mysql://192.168.99.100:13306/fratpos?characterEncoding=UTF-8
     driver-class-name: com.mysql.jdbc.Driver
     username: fratpos
     password: fratpos
