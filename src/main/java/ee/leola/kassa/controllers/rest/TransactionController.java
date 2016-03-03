@@ -50,7 +50,8 @@ public class TransactionController extends RestBaseController<Transaction, Long>
 		}
 
 		if (transaction.getPaytype().isAffectsBalance()) {
-			BigDecimal balance = transaction.getProducts().stream().map(TransactionProduct::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
+			BigDecimal balance = transaction.getProducts().stream().map((product -> product.getPrice().multiply(BigDecimal.valueOf(product.getQuantity()))))
+					.reduce(BigDecimal.ZERO, BigDecimal::add);
 			//Increment user balance
 			changeUserBalance(transaction.getUser().getId(), balance);
 		}
@@ -72,13 +73,12 @@ public class TransactionController extends RestBaseController<Transaction, Long>
 
 		//Decrement product quantities and save
 		if (transaction.getPaytype().isAffectsQuantity()) {
-			transaction.getProducts().stream().forEach(product -> {
-				incrementProductQuantity(product.getProduct().getId(), -product.getQuantity());
-			});
+			transaction.getProducts().stream().forEach(product -> incrementProductQuantity(product.getProduct().getId(), -product.getQuantity()));
 		}
 
 		if (transaction.getPaytype().isAffectsBalance()) {
-			BigDecimal balance = transaction.getProducts().stream().map(TransactionProduct::getPrice).reduce(BigDecimal.ZERO, BigDecimal::subtract);
+			BigDecimal balance = transaction.getProducts().stream().map((product -> product.getPrice().multiply(BigDecimal.valueOf(product.getQuantity()))))
+					.reduce(BigDecimal.ZERO, BigDecimal::subtract);
 			//Decrement user balance
 			changeUserBalance(transaction.getUser().getId(), balance);
 		}
