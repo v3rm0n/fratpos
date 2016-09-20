@@ -5,7 +5,6 @@ import info.kaara.fratpos.is.model.Obligation;
 import info.kaara.fratpos.is.model.UserObligation;
 import info.kaara.fratpos.is.repository.ObligationRepository;
 import info.kaara.fratpos.is.repository.UserObligationRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
@@ -20,12 +19,11 @@ import java.util.List;
 @RequestMapping("/obligations")
 public class ObligationController extends RestBaseController<Obligation, Long> {
 
-	@Autowired
-	private UserObligationRepository userObligationRepository;
+	private final UserObligationRepository userObligationRepository;
 
-	@Autowired
-	public ObligationController(ObligationRepository repo) {
+	public ObligationController(ObligationRepository repo, UserObligationRepository userObligationRepository) {
 		super(repo, "ROLE_OBLIGATIONS");
+		this.userObligationRepository = userObligationRepository;
 	}
 
 	@ResponseBody

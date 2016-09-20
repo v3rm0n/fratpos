@@ -7,9 +7,9 @@ import info.kaara.fratpos.is.repository.ObligationRepository;
 import info.kaara.fratpos.is.repository.UserObligationRepository;
 import info.kaara.fratpos.user.model.User;
 import info.kaara.fratpos.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.Delegate;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,16 +21,14 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserObligationController {
 
-	@Autowired
-	private ObligationRepository obligationRepository;
+	private final ObligationRepository obligationRepository;
 
-	@Autowired
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
 
-	@Autowired
-	private UserObligationRepository userObligationRepository;
+	private final UserObligationRepository userObligationRepository;
 
 	@Delegate
 	private PermissionChecker permissionChecker = new PermissionChecker("ROLE_OBLIGATIONS");

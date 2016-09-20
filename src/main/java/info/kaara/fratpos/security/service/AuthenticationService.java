@@ -4,8 +4,8 @@ import info.kaara.fratpos.security.model.Permission;
 import info.kaara.fratpos.security.model.Role;
 import info.kaara.fratpos.user.model.User;
 import info.kaara.fratpos.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,10 +21,10 @@ import static java.util.stream.Collectors.toSet;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class AuthenticationService implements UserDetailsService {
 
-	@Autowired
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
 
 	@Override
 	@Transactional

@@ -5,8 +5,8 @@ import info.kaara.fratpos.is.model.Income;
 import info.kaara.fratpos.is.repository.IncomeRepository;
 import info.kaara.fratpos.user.model.User;
 import info.kaara.fratpos.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.Delegate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
@@ -19,13 +19,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserIncomeController {
 
-	@Autowired
-	private IncomeRepository incomeRepository;
+	private final IncomeRepository incomeRepository;
 
-	@Autowired
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
 
 	@Delegate
 	private PermissionChecker permissionChecker = new PermissionChecker("ROLE_INCOME");

@@ -5,7 +5,7 @@ import info.kaara.fratpos.pos.model.Transaction;
 import info.kaara.fratpos.pos.repository.TransactionRepository;
 import info.kaara.fratpos.user.model.User;
 import info.kaara.fratpos.user.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,13 +18,12 @@ import java.util.Map;
 
 @Secured("ROLE_POS_VIEW")
 @RestController
+@RequiredArgsConstructor
 public class PointOfSaleController {
 
-	@Autowired
-	private TransactionRepository transactionRepository;
+	private final TransactionRepository transactionRepository;
 
-	@Autowired
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
 
 	@RequestMapping(value = "/stat/{id}", method = RequestMethod.GET)
 	public Map<String, Object> getStatistics(@PathVariable("id") Long userId) {

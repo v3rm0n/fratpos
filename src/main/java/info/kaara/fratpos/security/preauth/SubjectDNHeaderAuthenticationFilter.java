@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 public class SubjectDNHeaderAuthenticationFilter extends RequestHeaderAuthenticationFilter {
 
 	private Pattern subjectDnPattern;
-	protected MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
+	private final MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
 
 	public SubjectDNHeaderAuthenticationFilter() {
 		setSubjectDnRegex("CN=(.*?)(?:/|$)");

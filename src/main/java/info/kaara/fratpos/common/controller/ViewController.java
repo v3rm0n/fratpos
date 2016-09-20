@@ -2,7 +2,7 @@ package info.kaara.fratpos.common.controller;
 
 import info.kaara.fratpos.user.model.User;
 import info.kaara.fratpos.user.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,10 +13,10 @@ import java.security.Principal;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @Controller
+@RequiredArgsConstructor
 public class ViewController {
 
-	@Autowired
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
 
 	@RequestMapping(value = "/", method = GET)
 	public ModelAndView index(Principal principal) {

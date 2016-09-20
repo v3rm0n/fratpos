@@ -11,7 +11,6 @@ import info.kaara.fratpos.pos.repository.TransactionRepository;
 import info.kaara.fratpos.user.model.User;
 import info.kaara.fratpos.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
@@ -26,18 +25,20 @@ import java.util.List;
 @Slf4j
 public class StocktakingController extends RestBaseController<Stocktaking, Long> {
 
-	@Autowired
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
 
-	@Autowired
-	private ProductRepository productRepository;
+	private final ProductRepository productRepository;
 
-	@Autowired
-	private TransactionRepository transactionRepository;
+	private final TransactionRepository transactionRepository;
 
-	@Autowired
-	public StocktakingController(StocktakingRepository stocktakingRepository) {
+	public StocktakingController(StocktakingRepository stocktakingRepository,
+								 UserRepository userRepository,
+								 ProductRepository productRepository,
+								 TransactionRepository transactionRepository) {
 		super(stocktakingRepository);
+		this.userRepository = userRepository;
+		this.productRepository = productRepository;
+		this.transactionRepository = transactionRepository;
 	}
 
 	@RequestMapping(value = "/csv/{id}", method = RequestMethod.GET, produces = "text/csv")
@@ -47,34 +48,31 @@ public class StocktakingController extends RestBaseController<Stocktaking, Long>
 		template.append("Loomise aeg ").append(stocktaking.getFormattedTime()).append("\n\n");
 
 		template.append("Kasutajad\nStaatus,Eesnimi,Perenimi,Õllenimi,Saldo\n");
-		stocktaking.getUsers().forEach(user -> {
-			template.append(String.format("%s,%s,%s,%s,%s\n",
-					user.get("status").asText(),
-					user.get("firstName").asText(),
-					user.get("lastName").asText(),
-					user.get("beerName").asText(),
-					user.get("balance").asText()));
-		});
+		stocktaking.getUsers().forEach(user ->
+				template.append(String.format("%s,%s,%s,%s,%s\n",
+						user.get("status").asText(),
+						user.get("firstName").asText(),
+						user.get("lastName").asText(),
+						user.get("beerName").asText(),
+						user.get("balance").asText())));
 		template.append(",,,Summa,").append(stocktaking.getBalancesSum()).append("\n\n");
 
 		template.append("Tehingud\nAeg,Nimi,Summa,Makseviis,Katkestatud\n");
-		stocktaking.getTransactions().forEach(transaction -> {
-			template.append(String.format("%s,%s,%s,%s,%s\n",
-					transaction.get("formattedTime").asText(),
-					transaction.get("user").get("label").asText(),
-					transaction.get("sum").asText(),
-					transaction.get("paytype").asText(),
-					transaction.get("invalid").asBoolean() ? "Jah" : "Ei"));
-		});
+		stocktaking.getTransactions().forEach(transaction ->
+				template.append(String.format("%s,%s,%s,%s,%s\n",
+						transaction.get("formattedTime").asText(),
+						transaction.get("user").get("label").asText(),
+						transaction.get("sum").asText(),
+						transaction.get("paytype").asText(),
+						transaction.get("invalid").asBoolean() ? "Jah" : "Ei")));
 		template.append(",Summa,").append(stocktaking.getTransactionsSum()).append("\n\n");
 
 		template.append("Laoseis\nNimi,Hind,Kogus\n");
-		stocktaking.getProducts().forEach(product -> {
-			template.append(String.format("%s,%s,%s\n",
-					product.get("name").asText(),
-					product.get("price").asText(),
-					product.get("quantity").asText()));
-		});
+		stocktaking.getProducts().forEach(product ->
+				template.append(String.format("%s,%s,%s\n",
+						product.get("name").asText(),
+						product.get("price").asText(),
+						product.get("quantity").asText())));
 		template.append(",Kokku,").append(stocktaking.getProductsQuantity());
 		return template.toString();
 	}
@@ -101,7 +99,7 @@ public class StocktakingController extends RestBaseController<Stocktaking, Long>
 
 		repo.save(stocktaking);
 
-		transactions.forEach(transaction -> transactionRepository.delete(transaction));
+		transactions.forEach(transactionRepository::delete);
 
 		users.forEach(user -> {
 			user.setBalance(BigDecimal.ZERO);

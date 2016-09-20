@@ -21,20 +21,20 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/users")
 public class UserController extends RestBaseController<User, Long> {
 
-	@Autowired
-	private RoleRepository roleRepository;
+	private final RoleRepository roleRepository;
 
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
 
-	@Autowired
-	private UserProfileRepository userProfileRepository;
+	private final UserProfileRepository userProfileRepository;
 
 	private final Object UPDATE_LOCK = new Object();
 
 	@Autowired
-	public UserController(UserRepository userRepository) {
+	public UserController(UserRepository userRepository, RoleRepository roleRepository, UserProfileRepository userProfileRepository) {
 		super(userRepository, "ROLE_USERS");
 		this.userRepository = userRepository;
+		this.roleRepository = roleRepository;
+		this.userProfileRepository = userProfileRepository;
 	}
 
 	@RequestMapping(value = "/me", method = RequestMethod.GET)

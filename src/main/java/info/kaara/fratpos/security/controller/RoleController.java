@@ -6,8 +6,6 @@ import info.kaara.fratpos.security.model.Role;
 import info.kaara.fratpos.security.repository.PermissionRepository;
 import info.kaara.fratpos.security.repository.RoleRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
@@ -20,12 +18,11 @@ public class RoleController extends RestBaseController<Role, Long> {
 
 	private final Object UPDATE_LOCK = new Object();
 
-	@Autowired
-	private PermissionRepository permissionRepository;
+	private final PermissionRepository permissionRepository;
 
-	@Autowired
-	public RoleController(RoleRepository roleRepository) {
+	public RoleController(RoleRepository roleRepository, PermissionRepository permissionRepository) {
 		super(roleRepository, "ROLE_ROLES");
+		this.permissionRepository = permissionRepository;
 	}
 
 	@RequestMapping(value = "/{roleId}/permissions/{permissionId}", method = RequestMethod.POST)

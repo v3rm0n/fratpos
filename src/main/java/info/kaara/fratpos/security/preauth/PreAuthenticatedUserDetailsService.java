@@ -1,11 +1,11 @@
 package info.kaara.fratpos.security.preauth;
 
-import info.kaara.fratpos.PreauthConfig;
+import info.kaara.fratpos.PreauthProperties;
 import info.kaara.fratpos.security.model.Permission;
 import info.kaara.fratpos.security.model.Role;
 import info.kaara.fratpos.security.repository.RoleRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,16 +24,14 @@ import static java.util.stream.Collectors.toList;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class PreAuthenticatedUserDetailsService implements AuthenticationUserDetailsService<PreAuthenticatedAuthenticationToken> {
 
-	@Autowired
-	private PreauthConfig preauthConfig;
+	private final PreauthProperties preauthProperties;
 
-	@Autowired
-	private RoleRepository roleRepository;
+	private final RoleRepository roleRepository;
 
-	@Autowired
-	private MessageSource messageSource;
+	private final MessageSource messageSource;
 
 	@Override
 	@Transactional
@@ -51,7 +49,7 @@ public class PreAuthenticatedUserDetailsService implements AuthenticationUserDet
 	}
 
 	private List<GrantedAuthority> getPosPermissions() {
-		Role posRole = roleRepository.findOneByName(getRoleName(preauthConfig.getRole()));
+		Role posRole = roleRepository.findOneByName(getRoleName(preauthProperties.getRole()));
 		return posRole.getPermissions().stream().map(this::toGrantedAuthority).collect(toList());
 	}
 
@@ -64,6 +62,6 @@ public class PreAuthenticatedUserDetailsService implements AuthenticationUserDet
 	}
 
 	private boolean isPosUser(Object principal) {
-		return preauthConfig.getPrincipal().equalsIgnoreCase(principal.toString());
+		return preauthProperties.getPrincipal().equalsIgnoreCase(principal.toString());
 	}
 }

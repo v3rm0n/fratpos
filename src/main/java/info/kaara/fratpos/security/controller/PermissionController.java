@@ -3,7 +3,6 @@ package info.kaara.fratpos.security.controller;
 import info.kaara.fratpos.common.controller.RestBaseController;
 import info.kaara.fratpos.security.model.Permission;
 import info.kaara.fratpos.security.repository.PermissionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
@@ -19,13 +18,12 @@ import java.util.List;
 @RequestMapping("/permissions")
 public class PermissionController extends RestBaseController<Permission, Long> {
 
-	@Autowired
-	public PermissionController(PermissionRepository repository) {
-		super(repository, "ROLE_ROLES");
-	}
+	private final MessageSource messageSource;
 
-	@Autowired
-	private MessageSource messageSource;
+	public PermissionController(PermissionRepository repository, MessageSource messageSource) {
+		super(repository, "ROLE_ROLES");
+		this.messageSource = messageSource;
+	}
 
 	@Override
 	@RequestMapping

@@ -1,6 +1,6 @@
 package info.kaara.fratpos.security;
 
-import info.kaara.fratpos.PreauthConfig;
+import info.kaara.fratpos.PreauthProperties;
 import info.kaara.fratpos.security.model.Permission;
 import info.kaara.fratpos.security.model.Role;
 import info.kaara.fratpos.security.repository.PermissionRepository;
@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static info.kaara.fratpos.security.Permissions.*;
-import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -50,7 +49,7 @@ public class RolePermissionBootstrapListener implements ApplicationListener<Appl
 	}
 
 	private List<String> getPermissionNames() {
-		return Arrays.asList(Permissions.values()).stream().map(Permissions::name).collect(toList());
+		return Arrays.stream(Permissions.values()).map(Permissions::name).collect(toList());
 	}
 
 	private void createRolesRoleIfNotExists(ConfigurableApplicationContext context) {
@@ -77,14 +76,14 @@ public class RolePermissionBootstrapListener implements ApplicationListener<Appl
 
 	private List<Permission> getPermissions(ConfigurableApplicationContext context, Permissions... permissions) {
 		PermissionRepository permissionRepository = context.getBean(PermissionRepository.class);
-		List<String> permissionNames = asList(permissions).stream()
+		List<String> permissionNames = Arrays.stream(permissions)
 				.map(Permissions::name).collect(toList());
 		return permissionRepository.findByNameIn(permissionNames);
 	}
 
 	private String getPosRole(ConfigurableApplicationContext context) {
-		PreauthConfig preauthConfig = context.getBean(PreauthConfig.class);
-		return preauthConfig.getRole();
+		PreauthProperties preauthProperties = context.getBean(PreauthProperties.class);
+		return preauthProperties.getRole();
 	}
 
 	private String getRoleName(String role, ConfigurableApplicationContext context) {

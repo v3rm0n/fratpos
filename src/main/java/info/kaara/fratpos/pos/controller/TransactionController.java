@@ -22,15 +22,15 @@ import java.math.BigDecimal;
 @Slf4j
 public class TransactionController extends RestBaseController<Transaction, Long> {
 
-	@Autowired
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
+
+	private final ProductRepository productRepository;
 
 	@Autowired
-	private ProductRepository productRepository;
-
-	@Autowired
-	public TransactionController(TransactionRepository transactionRepository) {
+	public TransactionController(TransactionRepository transactionRepository, UserRepository userRepository, ProductRepository productRepository) {
 		super(transactionRepository);
+		this.userRepository = userRepository;
+		this.productRepository = productRepository;
 	}
 
 	@RequestMapping(value = "/{id}/invalid", method = RequestMethod.POST)
@@ -43,7 +43,7 @@ public class TransactionController extends RestBaseController<Transaction, Long>
 
 		//Increment product quantities
 		if (transaction.getPaytype().isAffectsQuantity()) {
-			transaction.getProducts().stream().forEach(product -> incrementProductQuantity(product.getProduct().getId(), product.getQuantity()));
+			transaction.getProducts().forEach(product -> incrementProductQuantity(product.getProduct().getId(), product.getQuantity()));
 		}
 
 		if (transaction.getPaytype().isAffectsBalance()) {
@@ -70,7 +70,7 @@ public class TransactionController extends RestBaseController<Transaction, Long>
 
 		//Decrement product quantities and save
 		if (transaction.getPaytype().isAffectsQuantity()) {
-			transaction.getProducts().stream().forEach(product -> incrementProductQuantity(product.getProduct().getId(), -product.getQuantity()));
+			transaction.getProducts().forEach(product -> incrementProductQuantity(product.getProduct().getId(), -product.getQuantity()));
 		}
 
 		if (transaction.getPaytype().isAffectsBalance()) {

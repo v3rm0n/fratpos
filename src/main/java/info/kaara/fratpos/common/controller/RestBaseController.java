@@ -16,7 +16,7 @@ import java.io.Serializable;
 @Slf4j
 public abstract class RestBaseController<T, ID extends Serializable> {
 
-	protected JpaRepository<T, ID> repo;
+	protected final JpaRepository<T, ID> repo;
 
 	@Delegate
 	private PermissionChecker permissionChecker = new PermissionChecker();
