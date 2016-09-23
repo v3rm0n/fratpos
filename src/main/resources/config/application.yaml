@@ -26,7 +26,7 @@ preauth:
 
 spring:
   profiles: flynn
-    datasource:
+  datasource:
     url: jdbc:mysql://${MYSQL_HOST}/${MYSQL_DATABASE}?characterEncoding=UTF-8
     username: ${MYSQL_USER}
     password: ${MYSQL_PWD}
