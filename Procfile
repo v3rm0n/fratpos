@@ -1,0 +1,1 @@
+web: java $JAVA_OPTS -jar build/libs/fratpos-1.0-SNAPSHOT.jar --server.port=$PORT --spring.profiles.active=flynn
