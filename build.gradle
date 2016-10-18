@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		springBootVersion = '1.4.0.RELEASE'
+		springBootVersion = '1.4.1.RELEASE'
 	}
 	repositories {
 		mavenCentral()
@@ -13,7 +13,6 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'spring-boot'
 apply plugin: 'groovy'
-apply plugin: 'jacoco'
 
 springBoot {
     executable = true
@@ -27,7 +26,6 @@ repositories {
 }
 
 test {
-	finalizedBy jacocoTestReport
 	test {
 		testLogging {
 			events "passed", "skipped", "failed", "standardError"
