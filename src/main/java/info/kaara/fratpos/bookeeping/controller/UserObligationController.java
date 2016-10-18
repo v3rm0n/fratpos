@@ -1,10 +1,10 @@
-package info.kaara.fratpos.is.controller;
+package info.kaara.fratpos.bookeeping.controller;
 
 import info.kaara.fratpos.helper.PermissionChecker;
-import info.kaara.fratpos.is.model.Obligation;
-import info.kaara.fratpos.is.model.UserObligation;
-import info.kaara.fratpos.is.repository.ObligationRepository;
-import info.kaara.fratpos.is.repository.UserObligationRepository;
+import info.kaara.fratpos.bookeeping.model.Obligation;
+import info.kaara.fratpos.bookeeping.model.UserObligation;
+import info.kaara.fratpos.bookeeping.repository.ObligationRepository;
+import info.kaara.fratpos.bookeeping.repository.UserObligationRepository;
 import info.kaara.fratpos.user.model.User;
 import info.kaara.fratpos.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

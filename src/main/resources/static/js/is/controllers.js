@@ -658,13 +658,7 @@
 		$scope.incomes = [];
 
 		var init = function () {
-			api.Incomes.getList().then(function (incomes) {
-				$scope.incomes = incomes;
-				$scope.totalIncomes = incomes.length;
-				$scope.totalIncome = incomes.reduce(function (sum, income) {
-					return sum + income.amount;
-				}, 0);
-			});
+
 		};
 
 		init();
@@ -696,24 +690,32 @@
 
 		vm.users = api.Users.getList().$object;
 
-		vm.incomeTypes = api.IncomeTypes.getList().$object;
+		vm.accounts = api.Accounts.getList().$object;
 
-		vm.changeType = function (income) {
-			income.newType = undefined;
+		vm.journalTypes = api.JournalTypes.getList().$object;
+
+		vm.changeType = function (journal) {
+			journal.newType = undefined;
 		};
 
-		vm.changeNewType = function (income) {
-			income.type = undefined;
+		vm.changeNewType = function (journal) {
+			journal.type = undefined;
 		};
 
-		vm.save = function (income) {
-			var createIncome = function (incomeType) {
-				var i = api.Incomes.create();
-				i.incomeType = incomeType;
-				i.user = income.user;
-				i.amount = income.amount;
-				i.date = moment(income.date, 'DD/MM/YYYY').format('YYYY-MM-DD');
-				i.save().then(function () {
+		var createPostings = function () {
+			return [
+				{account: vm.account, amount: vm.amount, credit: true},
+				{account: vm.user.account, amount: vm.amount, credit: false}
+			];
+		};
+
+		vm.save = function (journal) {
+			var createJournal = function (journalType) {
+				var j = api.Journals.create();
+				j.journalType = journalType;
+				j.postings = createPostings();
+				j.date = moment(journal.date, 'DD/MM/YYYY').format('YYYY-MM-DD');
+				j.save().then(function () {
 					notify.success('Laekumine lisatud');
 					$uibModalInstance.close();
 				}, function () {
@@ -721,12 +723,12 @@
 				});
 			};
 
-			if (income.newType) {
-				var incomeType = api.IncomeTypes.create();
-				incomeType.name = income.newType;
-				incomeType.save().then(createIncome);
+			if (journal.newType) {
+				var journalType = api.JournalTypes.create();
+				journalType.name = journal.newType;
+				journalType.save().then(createJournal);
 			} else {
-				createIncome(income.type);
+				createJournal(journal.type);
 			}
 		};
 	});
@@ -792,7 +794,7 @@
 
 		vm.users = api.Users.getList().$object;
 
-		vm.obligationTypes = api.ObligationTypes.getList().$object;
+		vm.journalTypes = api.JournalTypes.getList().$object;
 
 		vm.recurring = false;
 
@@ -931,6 +933,175 @@
 				$scope.incomes = incomes;
 			});
 		});
+	});
+
+	app.controller('AccountsController', function ($scope, api, $uibModal) {
+
+		$scope.accounts = [];
+
+		var init = function () {
+			api.Accounts.getList().then(function (accounts) {
+				$scope.accounts = accounts;
+			});
+		};
+
+		init();
+
+		$scope.currentPage = 1;
+
+		$scope.filteredAccounts = function () {
+			var accounts = $scope.accounts;
+			var currentPage = $scope.currentPage;
+			$scope.totalAccounts = accounts.length;
+			return accounts.slice((currentPage - 1) * 10, currentPage * 10);
+		};
+
+		$scope.addNew = function () {
+			var modal = $uibModal.open({
+				templateUrl: '/dialog/account',
+				controller: 'AccountsModalController',
+				controllerAs: 'vm'
+			});
+
+			modal.result.then(init);
+		};
+
+	});
+
+	app.controller('AccountsModalController', function ($uibModalInstance, api, notify) {
+
+		var vm = this;
+
+		vm.accountTypes = api.AccountTypes.getList().$object;
+
+		vm.changeType = function (account) {
+			account.newType = undefined;
+		};
+
+		vm.changeNewType = function (account) {
+			account.type = undefined;
+		};
+
+		vm.save = function (account) {
+			var createAccount = function (accountType) {
+				var a = api.Accounts.create();
+				a.accountType = accountType;
+				a.name = account.name;
+				a.save().then(function () {
+					notify.success('Konto lisatud');
+					$uibModalInstance.close();
+				}, function () {
+					notify.error('Kontot ei õnnestunud lisada, kontrolli andmeid!');
+				});
+			};
+
+			if (account.newType) {
+				var accountType = api.AccountTypes.create();
+				accountType.name = account.newType;
+				accountType.save().then(createAccount);
+			} else {
+				createAccount(account.type);
+			}
+		};
+	});
+
+	app.controller('JournalsController', function ($scope, api, $uibModal) {
+
+		$scope.journals = [];
+
+		var init = function () {
+			api.Journals.getList().then(function (journals) {
+				$scope.journals = journals;
+			});
+		};
+
+		init();
+
+		$scope.currentPage = 1;
+
+		$scope.filteredJournals = function () {
+			var journals = $scope.journals;
+			var currentPage = $scope.currentPage;
+			$scope.totalJournals = journals.length;
+			return journals.slice((currentPage - 1) * 10, currentPage * 10);
+		};
+
+		$scope.addNew = function () {
+			var modal = $uibModal.open({
+				templateUrl: '/dialog/journal',
+				controller: 'JournalsModalController',
+				controllerAs: 'vm'
+			});
+
+			modal.result.then(init);
+		};
+
+	});
+
+	app.controller('JournalsModalController', function ($uibModalInstance, api, notify, moment) {
+
+		var vm = this;
+
+		vm.journalTypes = api.JournalTypes.getList().$object;
+		vm.accounts = api.Accounts.getList().$object;
+		vm.postings = [{account: null, debit: 0, credit: 0}];
+
+		vm.changeType = function (journal) {
+			journal.newType = undefined;
+		};
+
+		vm.changeNewType = function (journal) {
+			journal.type = undefined;
+		};
+
+		vm.addAccount = function () {
+			vm.postings.push({account: null, debit: 0, credit: 0});
+		};
+
+		vm.debits = function () {
+			return vm.postings.reduce(function (sum, posting) {
+				return sum + posting.debit;
+			}, 0);
+		};
+
+		vm.credits = function () {
+			return vm.postings.reduce(function (sum, posting) {
+				return sum + posting.credit;
+			}, 0);
+		};
+
+		var createPostings = function () {
+			return vm.postings.map(function (posting) {
+				if (posting.debit) {
+					return {account: posting.account, amount: posting.debit, credit: false};
+				} else {
+					return {account: posting.account, amount: posting.credit, credit: true};
+				}
+			});
+		};
+
+		vm.save = function (journal) {
+			var createJournal = function (journalType) {
+				var a = api.Journals.create();
+				a.journalType = journalType;
+				a.date = moment(journal.date, 'DD/MM/YYYY').format('YYYY-MM-DD');
+				a.postings = createPostings();
+				a.save().then(function () {
+					notify.success('Kanne lisatud');
+					$uibModalInstance.close();
+				}, function () {
+					notify.error('Kannet ei õnnestunud lisada, kontrolli andmeid!');
+				});
+			};
+
+			if (journal.newType) {
+				var journalType = api.JournalTypes.create();
+				journalType.name = journal.newType;
+				journalType.save().then(createJournal);
+			} else {
+				createJournal(journal.type);
+			}
+		};
 	});
 
 }(window.angular));

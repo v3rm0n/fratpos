@@ -1,6 +1,6 @@
-package info.kaara.fratpos.is.repository;
+package info.kaara.fratpos.bookeeping.repository;
 
-import info.kaara.fratpos.is.model.Notification;
+import info.kaara.fratpos.bookeeping.model.Notification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

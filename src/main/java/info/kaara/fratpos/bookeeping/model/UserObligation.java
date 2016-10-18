@@ -1,4 +1,4 @@
-package info.kaara.fratpos.is.model;
+package info.kaara.fratpos.bookeeping.model;
 
 import info.kaara.fratpos.common.model.Model;
 import info.kaara.fratpos.user.model.User;
@@ -9,17 +9,16 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class Income extends Model {
-	@ManyToOne
-	private IncomeType incomeType;
-	private LocalDateTime created = LocalDateTime.now();
-	private LocalDate date;
-	private BigDecimal amount;
+public class UserObligation extends Model {
 	@ManyToOne
 	private User user;
+	@ManyToOne
+	private Obligation obligation;
+	private BigDecimal amount;
+	private LocalDate startDate;
+	private LocalDate endDate;
 }

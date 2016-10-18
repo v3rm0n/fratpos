@@ -87,21 +87,25 @@
 			<!-- Sidebar Menu -->
 			<ul class="sidebar-menu">
 				<li class="header">MENÜÜ</li>
-				<li ng-class="{active: isActive(['users', 'statuses'])}" sec:authorize="hasRole('USERS_VIEW')" class="treeview">
+				<li ng-class="{active: isActive(['users', 'statuses', 'obligations', 'income'])}" sec:authorize="hasRole('USERS_VIEW')" class="treeview">
 					<a href="#"><i class="fa fa-users"></i> <span>Liikmed</span> <i class="fa fa-angle-left pull-right"></i></a>
 					<ul class="treeview-menu">
 						<li ng-class="{active: isActive('users')}"><a href="#users"><i class="fa fa-list"></i> Nimekiri</a></li>
 						<li ng-class="{active: isActive('statuses')}"><a href="#statuses"><i class="fa fa-graduation-cap"></i> Staatused</a></li>
+						<li ng-class="{active: isActive('obligations')}"><a href="#obligations"><i class="fa fa-arrow-left"></i> <span>Kohustused</span></a></li>
+						<li ng-class="{active: isActive('income')}"><a href="#income"><i class="fa fa-arrow-right"></i> <span>Laekumised</span></a></li>
 					</ul>
 				</li>
 				<li ng-class="{active: isActive('roles')}" sec:authorize="hasRole('ROLES_VIEW')"><a href="#roles"><i class="fa fa-lock"></i> <span>Rollid ja õigused</span></a></li>
 				<li ng-class="{active: isActive('notifications')}" sec:authorize="hasRole('NOTIFICATIONS_VIEW')"><a href="#notifications"><i class="fa fa-envelope"></i> <span>Teavitused</span></a>
 				</li>
-				<li ng-class="{active: isActive('obligations')}" sec:authorize="hasRole('OBLIGATIONS_VIEW')"><a href="#obligations"><i class="fa fa-arrow-left"></i> <span>Kohustused</span></a>
-				</li>
-				<li ng-class="{active: isActive('income')}" sec:authorize="hasRole('INCOME_VIEW')"><a href="#income"><i class="fa fa-arrow-right"></i> <span>Laekumised</span></a>
-				</li>
-				<li ng-class="{active: isActive('reports')}" sec:authorize="hasRole('REPORTS_VIEW')"><a href="#reports"><i class="fa fa-pie-chart"></i> <span>Aruanded</span></a>
+				<li ng-class="{active: isActive(['accounts', 'journals', 'reports'])}" sec:authorize="hasRole('BOOKKEEPING_VIEW')" class="treeview">
+					<a href="#"><i class="fa fa-book"></i> <span>Raamatupidamine</span> <i class="fa fa-angle-left pull-right"></i></a>
+					<ul class="treeview-menu">
+						<li ng-class="{active: isActive('accounts')}"><a href="#accounts"><i class="fa fa-folder-open-o"></i> <span>Kontod</span></a></li>
+						<li ng-class="{active: isActive('journals')}"><a href="#journals"><i class="fa fa-exchange"></i> <span>Kanded</span></a></li>
+						<li ng-class="{active: isActive('reports')}" sec:authorize="hasRole('RAPORTS_VIEW')"><a href="#reports"><i class="fa fa-pie-chart"></i> <span>Aruanded</span></a></li>
+					</ul>
 				</li>
 				<li ng-class="{active: isActive(['products', 'transactions', 'paytypes', 'stocktakings', 'feedback'])}" sec:authorize="hasRole('POS_VIEW')" class="treeview">
 					<a href="#"><i class="fa fa-shopping-cart"></i> <span>Kassa</span> <i class="fa fa-angle-left pull-right"></i></a>

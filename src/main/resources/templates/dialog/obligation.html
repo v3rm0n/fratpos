@@ -7,18 +7,18 @@
 		<div class="form-group">
 			<label class="control-label col-sm-3">Tüüp</label>
 			<div class="col-sm-5">
-				<select ng-if="vm.obligationTypes.length > 0" ng-change="vm.changeType(vm)" ng-model="vm.type" class="form-control" ng-options="type as type.name for type in vm.obligationTypes">
+				<select ng-if="vm.journalTypes.length > 0" ng-change="vm.changeType(vm)" ng-model="vm.type" class="form-control" ng-options="type as type.name for type in vm.journalTypes">
 					<option value="">Vali tüüp...</option>
 				</select>
-				<input ng-if="vm.obligationTypes.length === 0" type="text" ng-change="vm.changeNewType(vm)" ng-model="vm.newType" class="form-control" placeholder="Kohustuse tüüp (Repart, Liikmemaks)"/>
+				<input ng-if="vm.journalTypes.length === 0" type="text" ng-change="vm.changeNewType(vm)" ng-model="vm.newType" class="form-control" placeholder="Kohustuse tüüp (Repart, Liikmemaks)"/>
 			</div>
 		</div>
-		<div class="form-group" ng-if="vm.obligationTypes.length > 0">
+		<div class="form-group" ng-if="vm.journalTypes.length > 0">
 			<div class="col-sm-4 col-sm-offset-3">
 				või
 			</div>
 		</div>
-		<div class="form-group" ng-if="vm.obligationTypes.length > 0">
+		<div class="form-group" ng-if="vm.journalTypes.length > 0">
 			<div class="col-sm-5 col-sm-offset-3">
 				<input type="text" ng-change="vm.changeNewType(vm)" ng-model="vm.newType" class="form-control" placeholder="lisa uus..."/>
 			</div>
@@ -53,7 +53,7 @@
 		</div>
 		<div class="form-group" ng-if="!vm.recurring">
 			<label class="control-label col-sm-3">Aeg</label>
-			<div class="col-sm-4">
+			<div class="col-sm-5">
 				<div class="input-group">
 					<input type="text" ng-model="vm.date" class="form-control" inputmaskdate=""/>
 					<div class="input-group-addon">
@@ -64,7 +64,7 @@
 		</div>
 		<div class="form-group" ng-if="vm.recurring">
 			<label class="control-label col-sm-3">Periood</label>
-			<div class="col-sm-3">
+			<div class="col-sm-4">
 				<div class="input-group">
 					<button type="button" class="btn btn-default" periodpicker="" period-start="vm.periodStart" period-end="vm.periodEnd">
 						<i class="fa fa-calendar"></i> Vali periood
@@ -80,7 +80,7 @@
 		</div>
 		<div class="form-group">
 			<label class="control-label col-sm-3">Summa kokku</label>
-			<div class="col-sm-4">
+			<div class="col-sm-5">
 				<div class="input-group">
 					<input ng-model="vm.amount" type="number" class="form-control" ng-change="vm.changeAmount(vm)" />
 					<span class="input-group-addon">€</span>
@@ -94,7 +94,7 @@
 		</div>
 		<div class="form-group">
 			<label class="control-label col-sm-3">Liikme kohta</label>
-			<div class="col-sm-4">
+			<div class="col-sm-5">
 				<div class="input-group">
 					<input ng-model="vm.amountPerUser" type="number" class="form-control"  ng-change="vm.changeAmountPerUser(vm)" />
 					<span class="input-group-addon">€</span>

@@ -1,6 +1,7 @@
 package info.kaara.fratpos.user.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import info.kaara.fratpos.bookeeping.model.Account;
 import info.kaara.fratpos.common.model.Model;
 import info.kaara.fratpos.security.model.Role;
 import lombok.Data;
@@ -40,6 +41,15 @@ public class User extends Model {
 	private String password;
 
 	private BigDecimal balance = BigDecimal.ZERO;
+
+	@OneToOne
+	@JoinTable(
+			name = "user_account",
+			joinColumns =
+			@JoinColumn(name = "user_id", referencedColumnName = "id"),
+			inverseJoinColumns =
+			@JoinColumn(name = "account_id", referencedColumnName = "id"))
+	private Account account;
 
 	public String getLabel() {
 		return this.status.getName() + ' ' + this.firstName + ' ' + this.lastName +

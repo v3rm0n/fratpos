@@ -1,0 +1,88 @@
+<div class="modal-header">
+	<button type="button" ng-click="$dismiss()" class="close">&times;</button>
+	<h4 class="modal-title">Lisa kanne</h4>
+</div>
+<div class="modal-body">
+	<form role="form" class="form-horizontal">
+		<div class="form-group">
+			<label class="control-label col-sm-2">Tüüp</label>
+			<div class="col-sm-5">
+				<select ng-if="vm.journalTypes.length > 0" ng-change="vm.changeType(vm)" ng-model="vm.type" class="form-control" ng-options="type as type.name for type in vm.journalTypes">
+					<option value="">Vali tüüp...</option>
+				</select>
+				<input ng-if="vm.journalTypes.length === 0" type="text" ng-change="vm.changeNewType(vm)" ng-model="vm.newType" class="form-control" placeholder="Kande tüüp"/>
+			</div>
+		</div>
+		<div class="form-group" ng-if="vm.journalTypes.length > 0">
+			<div class="col-sm-5 col-sm-offset-2">
+				<input type="text" ng-change="vm.changeNewType(vm)" ng-model="vm.newType" class="form-control" placeholder="või lisa uus..."/>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-sm-2">Aeg</label>
+			<div class="col-sm-5">
+				<div class="input-group">
+					<input type="text" ng-model="vm.date" class="form-control" inputmaskdate=""/>
+					<div class="input-group-addon">
+						<i class="fa fa-calendar"></i>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-sm-2">Kirjeldus</label>
+			<div class="col-sm-5">
+				<textarea ng-model="vm.description" class="form-control"></textarea>
+			</div>
+		</div>
+		<hr/>
+		<h5>Seotud kontod</h5>
+		<table class="table table-hover">
+			<thead>
+			<tr>
+				<th>Konto</th>
+				<th>Deebet</th>
+				<th>Kreedit</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr ng-repeat="posting in vm.postings">
+				<td>
+					<select ng-model="posting.account" class="form-control" ng-options="account as account.name for account in vm.accounts">
+						<option value="">Vali konto...</option>
+					</select>
+				</td>
+				<td>
+					<div class="input-group">
+						<input type="number" ng-model="posting.debit" class="form-control text-right"/>
+						<div class="input-group-addon">
+							<i class="fa fa-euro"></i>
+						</div>
+					</div>
+				</td>
+				<td>
+					<div class="input-group">
+						<input type="number" ng-model="posting.credit" class="form-control text-right"/>
+						<div class="input-group-addon">
+							<i class="fa fa-euro"></i>
+						</div>
+					</div>
+				</td>
+			</tr>
+			</tbody>
+			<tfoot>
+				<tr>
+					<th class="text-right">Kokku</th>
+					<th class="text-right" ng-bind-template="{{vm.debits()}} €"></th>
+					<th class="text-right" ng-bind-template="{{vm.credits()}} €"></th>
+				</tr>
+			</tfoot>
+		</table>
+	</form>
+	<p class="text-green text-right" ng-if="vm.debits() == vm.credits()">Saldo OK</p>
+	<p class="text-red text-right" ng-if="vm.debits() != vm.credits()">Saldo ei ole korras</p>
+</div>
+<div class="modal-footer">
+	<button ng-click="vm.addAccount()" class="btn btn-info"><i class="fa fa-edit"></i> Lisa konto</button>
+	<button ng-click="vm.save(vm)" class="btn btn-success"><i class="fa fa-plus"></i> Lisa kanne</button>
+</div>

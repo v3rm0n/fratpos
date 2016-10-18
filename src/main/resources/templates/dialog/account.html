@@ -1,0 +1,31 @@
+<div class="modal-header">
+	<button type="button" ng-click="$dismiss()" class="close">&times;</button>
+	<h4 class="modal-title">Lisa konto</h4>
+</div>
+<div class="modal-body">
+	<form role="form" class="form-horizontal">
+		<div class="form-group">
+			<label class="control-label col-sm-2">Tüüp</label>
+			<div class="col-sm-5">
+				<select ng-if="vm.accountTypes.length > 0" ng-change="vm.changeType(vm)" ng-model="vm.type" class="form-control" ng-options="type as type.name for type in vm.accountTypes">
+					<option value="">Vali tüüp...</option>
+				</select>
+				<input ng-if="vm.accountTypes.length === 0" type="text" ng-change="vm.changeNewType(vm)" ng-model="vm.newType" class="form-control" placeholder="Konto tüüp"/>
+			</div>
+		</div>
+		<div class="form-group" ng-if="vm.accountTypes.length > 0">
+			<div class="col-sm-5 col-sm-offset-2">
+				<input type="text" ng-change="vm.changeNewType(vm)" ng-model="vm.newType" class="form-control" placeholder="või lisa uus..."/>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-sm-2">Nimi</label>
+			<div class="col-sm-5">
+				<input ng-model="vm.name" type="text" class="form-control" />
+			</div>
+		</div>
+	</form>
+</div>
+<div class="modal-footer">
+	<button ng-click="vm.save(vm)" class="btn btn-success"><i class="fa fa-plus"></i> Lisa</button>
+</div>

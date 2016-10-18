@@ -11,7 +11,7 @@ public class Application extends WebMvcConfigurerAdapter {
 
 	public static void main(String... args) {
 		SpringApplicationBuilder app = new SpringApplicationBuilder(Application.class);
-		app.listeners(new RolePermissionBootstrapListener());
+		app.listeners(new RolePermissionBootstrapListener(), new DevelopmentBootstrapListener());
 		app.run(args);
 	}
 

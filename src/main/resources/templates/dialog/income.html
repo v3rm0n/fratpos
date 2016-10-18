@@ -7,13 +7,13 @@
 		<div class="form-group">
 			<label class="control-label col-sm-2">Tüüp</label>
 			<div class="col-sm-5">
-				<select ng-if="vm.incomeTypes.length > 0" ng-change="vm.changeType(vm)" ng-model="vm.type" class="form-control" ng-options="type as type.name for type in vm.incomeTypes">
+				<select ng-if="vm.journalTypes.length > 0" ng-change="vm.changeType(vm)" ng-model="vm.type" class="form-control" ng-options="type as type.name for type in vm.journalTypes">
 					<option value="">Vali tüüp...</option>
 				</select>
-				<input ng-if="vm.incomeTypes.length === 0" type="text" ng-change="vm.changeNewType(vm)" ng-model="vm.newType" class="form-control" placeholder="Laekumise tüüp (Sulas, Ülekanne)"/>
+				<input ng-if="vm.journalTypes.length === 0" type="text" ng-change="vm.changeNewType(vm)" ng-model="vm.newType" class="form-control" placeholder="Laekumise tüüp"/>
 			</div>
 		</div>
-		<div class="form-group" ng-if="vm.incomeTypes.length > 0">
+		<div class="form-group" ng-if="vm.journalTypes.length > 0">
 			<div class="col-sm-5 col-sm-offset-2">
 				<input type="text" ng-change="vm.changeNewType(vm)" ng-model="vm.newType" class="form-control" placeholder="või lisa uus..."/>
 			</div>
@@ -32,8 +32,21 @@
 			</div>
 		</div>
 		<div class="form-group">
+			<label class="control-label col-sm-2">Konto</label>
+			<div class="col-sm-5">
+				<ui-select ng-model="vm.account">
+					<ui-select-match placeholder="Vali konto...">
+						<span ng-bind="$select.selected.name"></span>
+					</ui-select-match>
+					<ui-select-choices repeat="account in (vm.accounts | filter: $select.search) track by account.id">
+						<span ng-bind-html="account.name | highlight: $select.search"></span>
+					</ui-select-choices>
+				</ui-select>
+			</div>
+		</div>
+		<div class="form-group">
 			<label class="control-label col-sm-2">Aeg</label>
-			<div class="col-sm-4">
+			<div class="col-sm-5">
 				<div class="input-group">
 					<input type="text" ng-model="vm.date" class="form-control" inputmaskdate=""/>
 					<div class="input-group-addon">
@@ -43,8 +56,14 @@
 			</div>
 		</div>
 		<div class="form-group">
+			<label class="control-label col-sm-2">Kirjeldus</label>
+			<div class="col-sm-5">
+				<textarea class="form-control" rows="5" ng-model="vm.description"></textarea>
+			</div>
+		</div>
+		<div class="form-group">
 			<label class="control-label col-sm-2">Summa</label>
-			<div class="col-sm-4">
+			<div class="col-sm-5">
 				<div class="input-group">
 					<input ng-model="vm.amount" type="number" class="form-control" />
 					<span class="input-group-addon">€</span>

@@ -1,4 +1,4 @@
-package info.kaara.fratpos.is.model;
+package info.kaara.fratpos.bookeeping.model;
 
 import info.kaara.fratpos.common.model.Model;
 import lombok.Data;
@@ -9,6 +9,6 @@ import javax.persistence.Entity;
 @Entity
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ObligationType extends Model {
+public class JournalType extends Model {
 	private String name;
 }

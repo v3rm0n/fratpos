@@ -67,10 +67,11 @@
 			Stocktakings: createResource(Restangular, 'stocktakings'),
 			Roles: createResource(Restangular, 'roles'),
 			Permissions: createResource(Restangular, 'permissions'),
-			Incomes: createResource(Restangular, 'incomes'),
-			IncomeTypes: createResource(Restangular, 'incometypes'),
 			Obligations: createResource(Restangular, 'obligations'),
-			ObligationTypes: createResource(Restangular, 'obligationtypes')
+			Accounts: createResource(Restangular, 'accounts'),
+			AccountTypes: createResource(Restangular, 'accounttypes'),
+			Journals: createResource(Restangular, 'journals'),
+			JournalTypes: createResource(Restangular, 'journaltypes')
 		};
 		Restangular.extendModel('users', function (user) {
 			user.addRole = function (role) {
