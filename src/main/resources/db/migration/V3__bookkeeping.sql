@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `obligation` (
 	`description`     VARCHAR(80)    NOT NULL,
 	`date`            DATE           NOT NULL,
 	`amount`          DECIMAL(10, 2) NOT NULL,
-	`date_created`    DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`date_created`    TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`account_id`      BIGINT(20)     NOT NULL,
 	`created_by_id`   BIGINT(20)     NOT NULL,
 	PRIMARY KEY (`id`),
@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS `notification` (
 	`id`           BIGINT(20)  NOT NULL,
 	`user_id`      BIGINT(20)  NOT NULL,
 	`type`         VARCHAR(45) NOT NULL,
-	`date_created` DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`date_created` TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`created_by`   BIGINT(20)  NOT NULL,
 	PRIMARY KEY (`id`),
 	INDEX `fk_notification_user_idx` (`user_id` ASC),
@@ -98,7 +98,7 @@ CREATE TABLE IF NOT EXISTS `notification` (
 CREATE TABLE IF NOT EXISTS `account` (
 	`id`              BIGINT(20)  NOT NULL AUTO_INCREMENT,
 	`name`            VARCHAR(45) NOT NULL,
-	`date_created`    DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`date_created`    TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`account_type_id` BIGINT(20)  NOT NULL,
 	`created_by_id`   BIGINT(20)  NOT NULL,
 	PRIMARY KEY (`id`),
@@ -121,7 +121,7 @@ CREATE TABLE IF NOT EXISTS `account` (
 CREATE TABLE IF NOT EXISTS `journal` (
 	`id`              BIGINT(20)    NOT NULL AUTO_INCREMENT,
 	`journal_type_id` BIGINT(20)    NOT NULL,
-	`date_created`    DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`date_created`    TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`date`            DATE          NOT NULL,
 	`created_by_id`   BIGINT(20)    NOT NULL,
 	`description`     VARCHAR(1024) NULL     DEFAULT NULL,
@@ -166,7 +166,7 @@ CREATE TABLE IF NOT EXISTS `posting` (
 	`account_id`   BIGINT(20)     NOT NULL,
 	`journal_id`   BIGINT(20)     NOT NULL,
 	`amount`       DECIMAL(10, 2) NOT NULL,
-	`date_created` DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`date_created` TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`credit`       TINYINT(1)     NOT NULL DEFAULT 0,
 	PRIMARY KEY (`id`),
 	INDEX `fk_posting_journal_idx` (`journal_id` ASC),
@@ -195,7 +195,7 @@ CREATE TABLE IF NOT EXISTS `account_type` (
 
 CREATE TABLE IF NOT EXISTS `raport` (
 	`id`            BIGINT(20)  NOT NULL AUTO_INCREMENT,
-	`date_created`  DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`date_created`  TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`created_by_id` BIGINT(20)  NOT NULL,
 	`name`          VARCHAR(45) NOT NULL,
 	PRIMARY KEY (`id`),
