@@ -22,6 +22,9 @@ import java.util.Collections;
 
 @Slf4j
 public class DevelopmentBootstrapListener implements ApplicationListener<ApplicationReadyEvent> {
+
+	public static final String DEV_EMAIL = "test@mailinator.com";
+
 	@Override
 	public void onApplicationEvent(ApplicationReadyEvent event) {
 		if (event.getApplicationContext().getEnvironment().acceptsProfiles("development")) {
@@ -34,14 +37,14 @@ public class DevelopmentBootstrapListener implements ApplicationListener<Applica
 		UserRepository userRepository = applicationContext.getBean(UserRepository.class);
 		if (userRepository.count() == 0) {
 			User user = new User();
-			user.setFirstName("Test");
-			user.setLastName("User");
+			user.setFirstName("Peeter");
+			user.setLastName("Meeter");
 			user.setStatus(createTestStatus(applicationContext));
 			user.setPassword("$2a$04$lC5W.f0p5AG1kKezgNKlxeBTO97eBGTeMqO0F6q7mKI0nxZQtI2XO");//q1w2e3r4
 			user.setRoles(Collections.singletonList(createAdminRole(applicationContext)));
-			user.setAccount(createTestUserAccount(user, applicationContext));
 			userRepository.save(user);
 			createUserProfile(applicationContext, user);
+			createTestUserAccount(applicationContext, user);
 		}
 	}
 
@@ -49,18 +52,18 @@ public class DevelopmentBootstrapListener implements ApplicationListener<Applica
 		UserProfileRepository userProfileRepository = applicationContext.getBean(UserProfileRepository.class);
 		UserProfile userProfile = new UserProfile();
 		userProfile.setUser(user);
-		userProfile.setEmail("test@mailinator.com");
+		userProfile.setEmail(DEV_EMAIL);
 		userProfileRepository.save(userProfile);
 	}
 
 	private Status createTestStatus(ConfigurableApplicationContext applicationContext) {
 		StatusRepository statusRepository = applicationContext.getBean(StatusRepository.class);
 		Status status = new Status();
-		status.setName("TestStatus");
+		status.setName("ksv!");
 		return statusRepository.save(status);
 	}
 
-	private Account createTestUserAccount(User user, ConfigurableApplicationContext applicationContext) {
+	private Account createTestUserAccount(ConfigurableApplicationContext applicationContext, User user) {
 		AccountRepository accountRepository = applicationContext.getBean(AccountRepository.class);
 		AccountTypeRepository accountTypeRepository = applicationContext.getBean(AccountTypeRepository.class);
 		AccountType accountType = new AccountType();

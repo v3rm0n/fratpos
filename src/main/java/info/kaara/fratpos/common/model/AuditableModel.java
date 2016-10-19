@@ -11,7 +11,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.EntityListeners;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @EntityListeners(AuditingEntityListener.class)
 @Data
@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 public abstract class AuditableModel extends Model {
 
 	@CreatedDate
-	private LocalDateTime dateCreated = LocalDateTime.now();
+	private Instant dateCreated = Instant.now();
 	@CreatedBy
 	@ManyToOne
 	@JsonIgnore
