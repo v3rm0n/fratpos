@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/accounts")
 public class AccountController extends RestBaseController<Account, Long> {
 
-	public AccountController(AccountRepository accountRepository) {
-		super(accountRepository);
-	}
+  public AccountController(AccountRepository accountRepository) {
+    super(accountRepository);
+  }
 }

@@ -1,0 +1,17 @@
+export const FETCH_USERS = 'users/FETCH';
+export const FETCH_USER_ME = 'users/FETCH/me';
+export const SWITCH_USER = 'users/FETCH/user';
+export const SAVE_USER = 'users/SAVE';
+export const FETCH_PRODUCTS = 'products/FETCH';
+export const FETCH_STATUSES = 'statuses/FETCH';
+export const FETCH_PAYTYPES = 'paytypes/FETCH';
+export const SAVE_PAYTYPE = 'paytypes/SAVE';
+export const REMOVE_PAYTYPE = 'paytypes/REMOVE';
+export const FETCH_TRANSACTIONS = 'transactions/FETCH';
+export const FETCH_ROLES = 'roles/FETCH';
+export const SAVE_ROLE = 'roles/SAVE';
+export const FETCH_PERMISSIONS = 'permissions/FETCH';
+export const SAVE_ROLE_PERMISSION = 'permissions/SAVE';
+export const REMOVE_ROLE_PERMISSION = 'permissions/REMOVE';
+export const LOGIN = 'login';
+export const LOGOUT = 'logout';

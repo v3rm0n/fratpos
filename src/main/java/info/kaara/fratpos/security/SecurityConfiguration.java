@@ -15,6 +15,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 import org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
@@ -22,42 +26,53 @@ import org.springframework.security.web.authentication.preauth.RequestHeaderAuth
 @RequiredArgsConstructor
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-	private final AuthenticationService authenticationService;
+  private final AuthenticationService authenticationService;
 
-	private final PreAuthenticatedUserDetailsService preAuthenticatedUserDetailsService;
+  private final PreAuthenticatedUserDetailsService preAuthenticatedUserDetailsService;
 
-	private final PreauthProperties preauthProperties;
+  private final PreauthProperties preauthProperties;
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http.addFilter(preauthFilter())
-				.authorizeRequests()
-				.antMatchers("/webjars/**", "/css/**").permitAll()
-				.anyRequest().authenticated()
-				.and().formLogin().loginPage("/login").permitAll()
-				.and().logout().permitAll();
-	}
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    http.addFilter(preauthFilter())
+      .authorizeRequests()
+      .antMatchers("/webjars/**", "/css/**").permitAll()
+      .anyRequest().authenticated()
+      .and().httpBasic().and().logout().deleteCookies("XSRF-TOKEN").and()
+      .csrf()
+      .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+  }
 
-	@Bean
-	public RequestHeaderAuthenticationFilter preauthFilter() throws Exception {
-		SubjectDNHeaderAuthenticationFilter requestHeaderAuthenticationFilter = new SubjectDNHeaderAuthenticationFilter();
-		requestHeaderAuthenticationFilter.setSubjectDnRegex("emailAddress=(.*?)(?:/|$)");
-		requestHeaderAuthenticationFilter.setPrincipalRequestHeader(preauthProperties.getHeader());
-		requestHeaderAuthenticationFilter.setExceptionIfHeaderMissing(false);
-		requestHeaderAuthenticationFilter.setAuthenticationManager(authenticationManager());
-		return requestHeaderAuthenticationFilter;
-	}
+  @Bean
+  public WebMvcConfigurer corsConfigurer() {
+    return new WebMvcConfigurerAdapter() {
+      @Override
+      public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/api/**");
+      }
+    };
+  }
 
-	@Bean
-	public PreAuthenticatedAuthenticationProvider preauthAuthProvider() {
-		PreAuthenticatedAuthenticationProvider preauthAuthProvider = new PreAuthenticatedAuthenticationProvider();
-		preauthAuthProvider.setPreAuthenticatedUserDetailsService(preAuthenticatedUserDetailsService);
-		return preauthAuthProvider;
-	}
+  @Bean
+  public RequestHeaderAuthenticationFilter preauthFilter() throws Exception {
+    SubjectDNHeaderAuthenticationFilter requestHeaderAuthenticationFilter = new SubjectDNHeaderAuthenticationFilter();
+    requestHeaderAuthenticationFilter.setSubjectDnRegex("emailAddress=(.*?)(?:/|$)");
+    requestHeaderAuthenticationFilter.setPrincipalRequestHeader(preauthProperties.getHeader());
+    requestHeaderAuthenticationFilter.setExceptionIfHeaderMissing(false);
+    requestHeaderAuthenticationFilter.setAuthenticationManager(authenticationManager());
+    return requestHeaderAuthenticationFilter;
+  }
 
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.authenticationProvider(preauthAuthProvider())
-				.userDetailsService(authenticationService).passwordEncoder(new BCryptPasswordEncoder());
-	}
+  @Bean
+  public PreAuthenticatedAuthenticationProvider preauthAuthProvider() {
+    PreAuthenticatedAuthenticationProvider preauthAuthProvider = new PreAuthenticatedAuthenticationProvider();
+    preauthAuthProvider.setPreAuthenticatedUserDetailsService(preAuthenticatedUserDetailsService);
+    return preauthAuthProvider;
+  }
+
+  @Override
+  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    auth.authenticationProvider(preauthAuthProvider())
+      .userDetailsService(authenticationService).passwordEncoder(new BCryptPasswordEncoder());
+  }
 }
