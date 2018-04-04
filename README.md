@@ -1,6 +1,7 @@
 # Fraternity Point of Sale system
 [![Build Status](https://travis-ci.org/v3rm0n/fratpos.png)](https://travis-ci.org/v3rm0n/fratpos)
 [![Stories in Ready](https://badge.waffle.io/v3rm0n/fratpos.png?label=ready&title=Ready)](https://waffle.io/v3rm0n/fratpos)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fv3rm0n%2Ffratpos.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fv3rm0n%2Ffratpos?ref=badge_shield)
 
 ## Description
 
@@ -54,3 +55,7 @@ This project contains the following technologies.
 ### Frontend
 * Bootstrap <http://twitter.github.io/bootstrap/>
 * AngularJS <http://angularjs.org/>
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fv3rm0n%2Ffratpos.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fv3rm0n%2Ffratpos?ref=badge_large)
