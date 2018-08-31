@@ -77,7 +77,7 @@ block content
                             th= t.message('pos.transactions.table.type')
                     tbody
                         tr(ng-repeat='transaction in filteredTransactions()', ng-click='openTransactionDialog(transaction)')
-                            td(ng-bind='transaction.formattedTime')
+                            td(ng-bind="transaction.formattedTime | date: 'HH:mm dd.MM.yyyy'")
                             td(ng-bind='transaction.user.label')
                             td {{transaction.sum}} #{t.message('common.currency')}
                             td(ng-bind='transaction.paytype')

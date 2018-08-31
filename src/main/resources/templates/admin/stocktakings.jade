@@ -12,7 +12,7 @@
                     th Laoseis
             tbody
                 tr(ng-repeat='stocktaking in stocktakings', ng-click='view(stocktaking)')
-                    td(ng-bind='stocktaking.formattedTime')
+                    td(ng-bind="stocktaking.formattedTime | date: 'HH:mm dd.MM.yyyy'")
                     td {{stocktaking.balancesSum}} €
                     td {{stocktaking.transactionsSum}} €
                     td {{stocktaking.productsQuantity}}

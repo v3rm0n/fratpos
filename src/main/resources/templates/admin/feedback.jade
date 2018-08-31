@@ -10,6 +10,6 @@
                     th
             tbody
                 tr(ng-repeat='feedback in feedbacks')
-                    td(ng-bind='feedback.formattedTime')
+                    td(ng-bind="feedback.formattedTime | date: 'HH:mm dd.MM.yyyy'")
                     td(ng-bind='feedback.content')
                     td: a.btn.btn-danger(ng-click='deleteFeedback(feedback)')= t.message('common.delete')

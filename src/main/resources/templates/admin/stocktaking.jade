@@ -3,7 +3,7 @@
         h3 Inventuur
 .row
     .col-md-12
-        p Loomise aeg:  {{stocktaking.formattedTime}}
+        p Loomise aeg:  {{stocktaking.formattedTime | date: 'HH:mm dd.MM.yyyy'}}
 .row
     .col-md-12
         button.btn.btn-success(ng-click='download(stocktaking)') Laadi alla
@@ -44,7 +44,7 @@
                     th Makseviis
             tbody
                 tr(ng-repeat='transaction in stocktaking.transactions', class='{{transaction.invalid ? "danger" : ""}}')
-                    td {{transaction.formattedTime}}
+                    td {{transaction.formattedTime | date: 'HH:mm dd.MM.yyyy'}}
                     td {{transaction.user.label}}
                     td {{transaction.sum}} €
                     td {{transaction.paytype}}
@@ -85,7 +85,7 @@
 .row(ng-show='previous')
     .col-md-12
         h3 Võrdlus eelmise inventuuriga
-        p Loomise aeg:  {{previous.formattedTime}}
+        p Loomise aeg:  {{previous.formattedTime | date: 'HH:mm dd.MM.yyyy'}}
         p Laoseisu muutus: {{stocktaking.productsQuantity - previous.productsQuantity}} (Laoseis eelmine inventuur: {{previous.productsQuantity}})
         p
             a(ng-href='#stocktaking/{{previous.id}}') Vaata eelmist
