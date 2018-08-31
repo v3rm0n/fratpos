@@ -4,9 +4,11 @@
 
     //Main module
     var app = angular.module('fratpos', ['ngRoute', 'mgcrea.ngStrap', 'ngResource'])
-        .config(['$routeProvider', function ($routeProvider) {
+        .config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
+            $locationProvider.hashPrefix('');
             $routeProvider
                 .when('/users', {templateUrl: "/admin/users"})
+                .when('/transactions', {templateUrl: "/admin/transactions"})
                 .when('/transactions', {templateUrl: "/admin/transactions"})
                 .when('/products', {templateUrl: "/admin/products"})
                 .when('/paytypes', {templateUrl: "/admin/paytypes"})

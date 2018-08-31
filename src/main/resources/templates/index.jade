@@ -16,11 +16,11 @@ block content
                 .form-search.userform.has-feedback.search-only.has-error(ng-hide='isUserSelected()')
                     i.search-icon.glyphicon.glyphicon-search
                     input.form-control.search-query#usernotselected(type='text', placeholder=t.message('pos.client'),
-                        ng-model='user', data-animation="am-flip-x", ng-options='user as user.label for user in users | filter:$viewValue', bs-typeahead, focus-me)
+                        ng-model='user', data-animation="am-flip-x", bs-options='user as user.label for user in users | filter:$viewValue', bs-typeahead, focus-me)
                     span.glyphicon.glyphicon-remove.form-control-feedback
                 .form-search.userform.has-feedback.input-group.has-success(ng-show='isUserSelected()', ng-cloak)
                     input.form-control.search-query(type='text', placeholder=t.message('pos.client'),
-                        ng-model='user', data-animation="am-flip-x", ng-options='user as user.label for user in users | filter:$viewValue', bs-typeahead, ng-click='clear()')
+                        ng-model='user', data-animation="am-flip-x", bs-options='user as user.label for user in users | filter:$viewValue', bs-typeahead, ng-click='clear()')
                     span.input-group-btn
                         button.btn.btn-primary(data-type='last', ng-click='openInfoDialog(user)') Info
             .col-md-6

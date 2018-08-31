@@ -7,11 +7,11 @@
     app.controller('PosController', function ($scope, api, $timeout, $modal) {
 
         var getData = function () {
-            api.posdata().success(function (data) {
-                $scope.users = data.users;
-                $scope.transactions = data.transactions;
-                $scope.products = data.products;
-                $scope.paytypes = data.paytypes;
+            api.posdata().then(function (response) {
+                $scope.users = response.data.users;
+                $scope.transactions = response.data.transactions;
+                $scope.products = response.data.products;
+                $scope.paytypes = response.data.paytypes;
             });
         };
 
@@ -21,6 +21,7 @@
         $scope.$on('online', getData);
 
         $scope.isUserSelected = function () {
+            console.dir($scope.user);
             return angular.isObject($scope.user);
         };
 
@@ -166,7 +167,7 @@
             modalScope.feedback = new api.Feedback();
 
             var d = $modal({
-                template: '/dialog/feedback',
+                templateUrl: '/dialog/feedback',
                 scope: modalScope
             });
 
@@ -187,11 +188,12 @@
             modalScope.user = user;
 
             var d = $modal({
-                template: '/dialog/info',
+                templateUrl: '/dialog/info',
                 scope: modalScope
             });
 
-            api.stat(user).success(function (stat) {
+            api.stat(user).then(function (response) {
+                var stat = response.data;
                 modalScope.stat = stat;
                 var colors = ['#4A89DC', '#37BC9B', '#3BAFDA', '#DA4453', '#8CC152', '#434A54', '#E9573F', '#D770AD', '#967ADC', '#F6BB42'];
                 modalScope.colors = colors;
@@ -213,12 +215,12 @@
             modalScope.transaction = transaction;
 
             var d = $modal({
-                template: '/dialog/transaction',
+                templateUrl: '/dialog/transaction',
                 scope: modalScope
             });
 
             modalScope.invalidate = function (transaction) {
-                api.invalidate(transaction).success(function () {
+                api.invalidate(transaction).then(function () {
                     getData();
                     d.hide();
                 });
@@ -288,7 +290,7 @@
                 }
 
                 var d = $modal({
-                    template: '/dialog/user',
+                    templateUrl: '/dialog/user',
                     scope: modalScope
                 });
 
@@ -343,7 +345,7 @@
             modalScope.transaction = transaction;
 
             var d = $modal({
-                template: '/dialog/transaction',
+                templateUrl: '/dialog/transaction',
                 scope: modalScope
             });
 
@@ -397,7 +399,7 @@
             modalScope.product = angular.copy(product) || new api.Product();
 
             var d = $modal({
-                template: '/dialog/product',
+                templateUrl: '/dialog/product',
                 scope: modalScope
             });
 
@@ -446,7 +448,7 @@
                 }
 
                 var d = $modal({
-                    template: '/dialog/paytype',
+                    templateUrl: '/dialog/paytype',
                     scope: modalScope
                 });
 
@@ -508,7 +510,7 @@
             modalScope.status = angular.copy(status) || new api.Status();
 
             var d = $modal({
-                template: '/dialog/status',
+                templateUrl: '/dialog/status',
                 scope: modalScope
             });
             modalScope.save = function (s) {
