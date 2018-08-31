@@ -1,5 +1,5 @@
 # Fraternity Point of Sale system
-[![Build Status](https://travis-ci.org/v3rm0n/fratpos.png)](https://travis-ci.org/v3rm0n/fratpos)
+[![Build Status](https://travis-ci.org/v3rm0n/fratpos.svg?branch=master)](https://travis-ci.org/v3rm0n/fratpos)
 
 ## Description
 
