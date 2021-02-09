@@ -1,0 +1,192 @@
+- hosts: all
+  pre_tasks:
+    - name: Generate Diffie-Hellman parameters with the default size (4096 bits)
+      community.crypto.openssl_dhparam:
+        path: /etc/nginx/dhparams.pem
+    - name: Copy ca.crt
+      copy:
+        src: ca/ca.crt
+        dest: /etc/nginx/ca.crt
+        mode: u+rw,g-wx,o-rwx
+    - name: Ensure timesyncd is running
+      service:
+        name: systemd-timesyncd
+        state: started
+    - name: Add the user 'fratpos'
+      user:
+        name: fratpos
+        group: sudo
+  tasks:
+    - name: Install git
+      package:
+        name: git
+    - name: Checkout fratpos
+      become_user: fratpos
+      git:
+        repo: 'https://github.com/v3rm0n/fratpos.git'
+        dest: /home/fratpos/app
+        version: master
+    - name: Build app
+      become_user: fratpos
+      command: ./gradlew assemble
+      args:
+        chdir: /home/fratpos/app
+    - name: Make app executable
+      become_user: fratpos
+      file:
+        path: /home/fratpos/app/build/libs/kassa-1.0-SNAPSHOT.jar
+        state: touch
+        owner: fratpos
+        mode: u+rwx,g-wx,o-rwx
+    - name: Link as service
+      file:
+        src: /home/fratpos/app/build/libs/kassa-1.0-SNAPSHOT.jar
+        dest: /etc/init.d/kassa
+        owner: fratpos
+        state: link
+    - name: Create config directory
+      file:
+        path: /home/fratpos/app/build/libs/config
+        state: directory
+        owner: fratpos
+    - name: Copy properties
+      template:
+        src: templates/application.properties.j2
+        dest: /home/fratpos/app/build/libs/config/application.properties
+        owner: fratpos
+        mode: u+rw,g-wx,o-rwx
+    - name: Copy backup script
+      template:
+        src: templates/backup.sh.j2
+        dest: /home/fratpos/backup.sh
+        owner: fratpos
+        mode: u+rwx,g-wx,o-rwx
+    - name: Create aws config directory
+      file:
+        path: /home/fratpos/.aws
+        state: directory
+        owner: fratpos
+    - name: Copy aws config
+      template:
+        src: templates/config.j2
+        dest: /home/fratpos/.aws/config
+        owner: fratpos
+        mode: u+rw,g-wx,o-rwx
+    - name: Copy aws credentials
+      template:
+        src: templates/credentials.j2
+        dest: /home/fratpos/.aws/credentials
+        owner: fratpos
+        mode: u+rw,g-wx,o-rwx
+    - name: Check if aws exists
+      command: which /usr/local/bin/aws
+      register: aws
+      ignore_errors: true
+    - name: Install unzip
+      package:
+        name: unzip
+    - name: Download aws client
+      uri:
+        url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+        dest: /home/fratpos/awscliv2.zip
+        creates: /home/fratpos/awscliv2.zip
+      when: aws is failed
+    - name: Extract awscli
+      unarchive:
+        src: /home/fratpos/awscliv2.zip
+        dest: /home/fratpos
+        remote_src: yes
+      when: aws is failed
+    - name: Install aws
+      command: /home/fratpos/aws/install
+      when: aws is failed
+    - name: Ensure backup job runs
+      cron:
+        user: fratpos
+        name: "database backup"
+        minute: "0"
+        hour: "5"
+        job: "/bin/bash /home/fratpos/backup.sh"
+    - name: Start service kassa
+      sysvinit:
+        name: kassa
+        state: started
+    - name: Enable firewall
+      community.general.ufw:
+        state: enabled
+        policy: deny
+    - name: Allow SSH
+      community.general.ufw:
+       rule: allow
+       name: OpenSSH
+    - name: Allow http
+      community.general.ufw:
+        rule: allow
+        port: '80'
+        proto: tcp
+    - name: Allow https
+      community.general.ufw:
+        rule: allow
+        port: '443'
+        proto: tcp
+  vars:
+    nginx_upstreams:
+      - name: app
+        strategy: "least_conn"
+        servers:
+          - "localhost:8080"
+    nginx_vhosts:
+      - listen: "80"
+        server_name: "{{ app_host }}"
+        extra_parameters: |
+          return 301 https://$host$request_uri;
+      - listen: "443 ssl http2"
+        server_name: "{{ app_host }}"
+        filename: "{{ app_host }}_ssl.conf"
+        extra_parameters: |
+          ssl_certificate     /etc/letsencrypt/live/{{ app_host }}/fullchain.pem;
+          ssl_certificate_key /etc/letsencrypt/live/{{ app_host }}/privkey.pem;
+          ssl_protocols       TLSv1.1 TLSv1.2;
+          ssl_ciphers         HIGH:!aNULL:!MD5;
+
+          # OCSP Stapling ---
+          # fetch OCSP records from URL in ssl_certificate and cache them
+          ssl_stapling on;
+          ssl_stapling_verify on;
+
+          # Diffie-Hellman parameter for DHE ciphersuites, recommended 2048 bits
+          ssl_dhparam /etc/nginx/dhparams.pem;
+
+          ssl_client_certificate /etc/nginx/ca.crt;
+          ssl_verify_client on;
+
+          ## verify chain of trust of OCSP response using Root CA and Intermediate certs
+          ssl_trusted_certificate /etc/letsencrypt/live/{{ app_host }}/chain.pem;
+
+          resolver 8.8.8.8 8.8.4.4 valid=86400;
+          resolver_timeout 10;
+
+          location / {
+            proxy_pass http://app;
+          }
+    mysql_databases:
+      - name: fratpos
+    mysql_users:
+      - name: "{{ mysql_user }}"
+        password: "{{ mysql_password }}"
+        priv: "fratpos.*:ALL"
+    mysql_sql_mode: "STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION"
+    java_packages:
+      - default-jdk
+    certbot_admin_email: "{{ certbot_email }}"
+    certbot_create_if_missing: true
+    certbot_create_standalone_stop_services:
+      - nginx
+    certbot_certs:
+      - domains:
+          - "{{ app_host }}"
+  roles:
+    - geerlingguy.mysql
+    - geerlingguy.nginx
+    - geerlingguy.java
+    - geerlingguy.certbot

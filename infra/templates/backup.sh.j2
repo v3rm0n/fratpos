@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# 1 to 7
+DAY_OF_WEEK=$(date +%u)
+
+# database username
+USER="{{ mysql_user }}"
+
+# database user's password
+PASSWORD="{{ mysql_password }}"
+
+# the directory to save the dumped .sql files
+DUMP_DIR="/home/fratpos/backups"
+
+# list of databases to dump
+DATABASES="fratpos" 
+
+# where to sync in S3
+S3_SYNC_URL="s3://fratpos-backup"
+
+# loop through each database and dump
+for db in $DATABASES; do
+    echo "Dumping database: $db"
+    # dump the database
+    # filename ~= /var/local/backups/database_1.1.sql
+    mysqldump -u $USER -p$PASSWORD --databases $db > $DUMP_DIR/$db.$DAY_OF_WEEK.sql
+done
+
+# sync the dumb directory with the directory in the s3 bucket
+aws s3 sync $DUMP_DIR $S3_SYNC_URL

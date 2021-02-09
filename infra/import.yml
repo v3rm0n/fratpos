@@ -1,0 +1,15 @@
+- hosts: all
+  tasks:
+    - name: Copy database dump file
+      copy:
+        src: fratpos.sql
+        dest: /tmp
+    - name: Delete database with name 'fratpos'
+      community.mysql.mysql_db:
+        name: fratpos
+        state: absent
+    - name: Restore database
+      community.mysql.mysql_db:
+        name: fratpos
+        state: import
+        target: /tmp/fratpos.sql

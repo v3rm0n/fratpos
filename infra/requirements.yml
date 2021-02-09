@@ -1,0 +1,11 @@
+roles:
+- src: geerlingguy.nginx
+- src: geerlingguy.java
+- src: geerlingguy.mysql
+- src: geerlingguy.certbot
+collections:
+  - name: ansible.posix
+  - name: community.mysql
+  - name: community.general
+    version: 1.3.5
+

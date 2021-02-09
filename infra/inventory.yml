@@ -1,0 +1,9 @@
+all:
+  vars:
+    ansible_user: root
+    app_host:
+    certbot_email:
+    mysql_user: fratpos
+    mysql_password:
+    aws_access_key_id:
+    aws_secret_access_key:
