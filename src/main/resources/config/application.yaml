@@ -2,11 +2,6 @@ spring:
   application:
     name: fratpos
   datasource:
-    url: jdbc:mysql://localhost:3306/fratpos?characterEncoding=UTF-8
-    driver-class-name: com.mysql.jdbc.Driver
-    username: root
+    url: jdbc:mysql://localhost:3306/fratpos?characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true
+    username: fratpos
     password: fratpos
-    initial-size: 1
-    validation-query: SELECT 1
-    test-on-borrow: true
-    test-while-idle: true
