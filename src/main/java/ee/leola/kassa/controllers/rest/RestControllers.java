@@ -8,54 +8,53 @@ import org.springframework.web.bind.annotation.RestController;
 
 public class RestControllers {
 
-	@RestController
-	@RequestMapping(value = "/feedback")
-	public static class Feedbacks extends RestBaseController<Feedback, Long> {
+  @RestController
+  @RequestMapping(value = "/feedback")
+  public static class Feedbacks extends RestBaseController<Feedback, Long> {
 
-		@Autowired
-		public Feedbacks(FeedbackRepository feedbackRepository) {
-			super(feedbackRepository);
-		}
-	}
+    @Autowired
+    public Feedbacks(FeedbackRepository feedbackRepository) {
+      super(feedbackRepository);
+    }
+  }
 
-	@RestController
-	@RequestMapping(value = "/paytype")
-	public static class Paytypes extends RestBaseController<Paytype, Long> {
+  @RestController
+  @RequestMapping(value = "/paytype")
+  public static class Paytypes extends RestBaseController<Paytype, Long> {
 
-		@Autowired
-		public Paytypes(PaytypeRepository paytypeRepository) {
-			super(paytypeRepository);
-		}
-	}
+    @Autowired
+    public Paytypes(PaytypeRepository paytypeRepository) {
+      super(paytypeRepository);
+    }
+  }
 
-	@RestController
-	@RequestMapping(value = "/product")
-	public static class Products extends RestBaseController<Product, Long> {
+  @RestController
+  @RequestMapping(value = "/product")
+  public static class Products extends RestBaseController<Product, Long> {
 
-		@Autowired
-		public Products(ProductRepository productRepository) {
-			super(productRepository);
-		}
-	}
+    @Autowired
+    public Products(ProductRepository productRepository) {
+      super(productRepository);
+    }
+  }
 
-	@RestController
-	@RequestMapping(value = "/status")
-	public static class Statuses extends RestBaseController<Status, Long> {
+  @RestController
+  @RequestMapping(value = "/status")
+  public static class Statuses extends RestBaseController<Status, Long> {
 
-		@Autowired
-		public Statuses(StatusRepository statusRepository) {
-			super(statusRepository);
-		}
-	}
+    @Autowired
+    public Statuses(StatusRepository statusRepository) {
+      super(statusRepository);
+    }
+  }
 
-	@RestController
-	@RequestMapping(value = "/user")
-	public static class Users extends RestBaseController<User, Long> {
+  @RestController
+  @RequestMapping(value = "/user")
+  public static class Users extends RestBaseController<User, Long> {
 
-		@Autowired
-		public Users(UserRepository userRepository) {
-			super(userRepository);
-		}
-	}
-
+    @Autowired
+    public Users(UserRepository userRepository) {
+      super(userRepository);
+    }
+  }
 }
