@@ -27,11 +27,20 @@ tasks {
         launchScript()
     }
 
-    withType<Test> {
-        finalizedBy("jacocoTestReport")
+    test {
+        finalizedBy(jacocoTestReport)
         useJUnitPlatform()
         testLogging {
             events = setOf(STARTED, PASSED, FAILED, SKIPPED, STANDARD_OUT, STANDARD_ERROR)
+        }
+    }
+
+    jacocoTestReport {
+        dependsOn(test) // tests are required to run before generating the report
+        reports {
+            xml.required.set(false)
+            csv.required.set(false)
+            html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
         }
     }
 }
@@ -69,6 +78,8 @@ dependencies {
     implementation("org.webjars:angularjs:1.7.2")
     implementation("org.webjars:jquery:1.12.4")
     implementation("org.webjars.npm:angular-strap:2.3.12")
+
+    testCompileOnly("org.projectlombok:lombok")
 
     testImplementation("com.h2database:h2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")

@@ -19,7 +19,7 @@ public class Json {
   }
 
   public static JsonNode toJson(Object obj) {
-    return mapper.convertValue(obj, JsonNode.class);
+    return mapper.valueToTree(obj);
   }
 
   public static JsonNode toJson(String str) {
