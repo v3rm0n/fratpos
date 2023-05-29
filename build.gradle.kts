@@ -11,7 +11,7 @@ plugins {
     java
     jacoco
     id("org.springframework.boot") version "3.0.6"
-    id("com.diffplug.spotless") version "6.18.0"
+    id("com.diffplug.spotless") version "6.19.0"
     id("io.spring.dependency-management") version "1.1.0"
 }
 
