@@ -74,7 +74,7 @@ dependencies {
 
     implementation("com.fasterxml.jackson.core:jackson-databind")
 
-    implementation("org.webjars:bootstrap:3.3.7-1")
+    implementation("org.webjars:bootstrap:5.3.0")
     implementation("org.webjars:angularjs:1.7.2")
     implementation("org.webjars:jquery:1.12.4")
     implementation("org.webjars.npm:angular-strap:2.3.12")
