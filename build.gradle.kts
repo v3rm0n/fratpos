@@ -10,7 +10,7 @@ import org.springframework.boot.gradle.plugin.SpringBootPlugin
 plugins {
     java
     jacoco
-    id("org.springframework.boot") version "3.0.6"
+    id("org.springframework.boot") version "3.1.2"
     id("com.diffplug.spotless") version "6.20.0"
     id("io.spring.dependency-management") version "1.1.0"
 }
