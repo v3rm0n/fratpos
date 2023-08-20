@@ -48,8 +48,8 @@ This project contains the following technologies.
 
 ### Backend
 * Spring Boot <http://projects.spring.io/spring-boot/>
-* Jade <http://jade-lang.com/>
+* Pug4J <https://pugjs.org/api/getting-started.html>
 
 ### Frontend
-* Bootstrap <http://twitter.github.io/bootstrap/>
-* AngularJS <http://angularjs.org/>
+* Bootstrap 3 <http://twitter.github.io/bootstrap/>
+* AngularJS 1 <http://angularjs.org/>

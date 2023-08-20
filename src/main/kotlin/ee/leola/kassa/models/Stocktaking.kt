@@ -20,7 +20,7 @@ class Stocktaking(
     var products: ArrayNode = JsonMapper.builder().build().createArrayNode(),
 
     @Type(JsonType::class)
-    var transactions: ArrayNode = JsonMapper.builder().build().createArrayNode(),
+    var transactions: ArrayNode = JsonMapper.builder().build().createArrayNode()
 ) : Model() {
 
     @get:Transient

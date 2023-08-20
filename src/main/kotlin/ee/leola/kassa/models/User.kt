@@ -2,7 +2,6 @@ package ee.leola.kassa.models
 
 import jakarta.persistence.Entity
 import jakarta.persistence.ManyToOne
-import jakarta.persistence.PostLoad
 import jakarta.persistence.Transient
 import jakarta.validation.constraints.NotNull
 import java.math.BigDecimal

@@ -8,3 +8,4 @@ build
 *.ipr
 *.ids
 phantomjsdriver.log
+.mysql-data

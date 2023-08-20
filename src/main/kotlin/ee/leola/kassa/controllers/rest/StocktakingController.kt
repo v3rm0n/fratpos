@@ -22,7 +22,7 @@ class StocktakingController(
     private val productRepository: ProductRepository,
     private val transactionRepository: TransactionRepository,
     private val objectMapper: ObjectMapper,
-    private val transactionTemplate: TransactionTemplate,
+    private val transactionTemplate: TransactionTemplate
 ) : RestBaseController<Stocktaking, Long>(stocktakingRepository) {
 
     private val logger by LoggerDelegate()

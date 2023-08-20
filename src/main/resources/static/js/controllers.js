@@ -187,7 +187,7 @@
         };
 
         $scope.openInfoDialog = function (user) {
-            
+
             const modalScope = $scope.$new();
             modalScope.user = user;
 

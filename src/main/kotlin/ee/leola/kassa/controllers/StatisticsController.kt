@@ -18,7 +18,7 @@ class StatisticsController(
         val user = userRepository.findById(userId).orElseThrow()
         return mapOf(
             "popularProducts" to transactionRepository.findPopularProductsByUser(user),
-            "transactions" to  transactionRepository.findByUser(user),
+            "transactions" to transactionRepository.findByUser(user)
         )
     }
 }

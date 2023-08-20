@@ -1,4 +1,3 @@
-import org.springframework.boot.gradle.tasks.bundling.BootJar
 import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
@@ -7,6 +6,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_OUT
 import org.gradle.api.tasks.testing.logging.TestLogEvent.STARTED
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.plugin.SpringBootPlugin
+import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
     java
@@ -15,8 +15,8 @@ plugins {
     kotlin("plugin.spring") version "1.9.0"
     kotlin("plugin.jpa") version "1.9.0"
     id("org.springframework.boot") version "3.1.2"
-    id("com.diffplug.spotless") version "6.20.0"
     id("io.spring.dependency-management") version "1.1.3"
+    id("org.jlleitschuh.gradle.ktlint") version "11.5.1"
 }
 
 java {
@@ -59,11 +59,8 @@ tasks {
     }
 }
 
-spotless {
-    java {
-        removeUnusedImports()
-        googleJavaFormat()
-    }
+ktlint {
+    disabledRules.set(setOf("no-wildcard-imports"))
 }
 
 dependencyManagement {
