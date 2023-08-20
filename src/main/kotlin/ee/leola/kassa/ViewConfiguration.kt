@@ -41,7 +41,7 @@ class ViewConfiguration(
         templateLoader.setResourceLoader(resourceLoader)
         templateLoader.setTemplateLoaderPath("classpath:/templates/")
         templateLoader.encoding = "UTF-8"
-        templateLoader.setSuffix(".jade")
+        templateLoader.setSuffix(".pug")
         return templateLoader
     }
 
