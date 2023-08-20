@@ -2,12 +2,12 @@
 (function (angular) {
     "use strict";
 
-    var app = angular.module('fratpos');
+    const app = angular.module('fratpos');
 
     app.controller('PosController', function ($scope, api, $timeout, $modal) {
 
-        var getData = function () {
-            api.posdata().then(function (response) {
+        const getData = function () {
+            return api.posdata().then(function (response) {
                 $scope.users = response.data.users;
                 $scope.transactions = response.data.transactions;
                 $scope.products = response.data.products;
@@ -55,13 +55,13 @@
         };
 
         $scope.changeQuantity = function (product, quantity) {
-            var selectedProduct = $scope.selectedProducts[product.id];
+            let selectedProduct = $scope.selectedProducts[product.id];
             if (selectedProduct === undefined) {
                 selectedProduct = angular.copy(product);
                 selectedProduct.quantity = 0;
                 $scope.selectedProducts[product.id] = selectedProduct;
             }
-            var newQuantity = selectedProduct.quantity + quantity;
+            const newQuantity = selectedProduct.quantity + quantity;
             if (newQuantity > 0) {
                 selectedProduct.quantity = newQuantity;
             } else {
@@ -70,8 +70,8 @@
         };
 
         $scope.quantity = function (product) {
-            var qty = 0;
-            var selectedProduct = $scope.selectedProducts[product.id];
+            let qty = 0;
+            const selectedProduct = $scope.selectedProducts[product.id];
             if (selectedProduct) {
                 qty = selectedProduct.quantity;
             }
@@ -79,9 +79,9 @@
         };
 
         $scope.sum = function () {
-            var sum = 0, id;
+            let sum = 0, id;
             for (id in $scope.selectedProducts) {
-                var product = $scope.selectedProducts[id];
+                const product = $scope.selectedProducts[id];
                 sum += product.price * product.quantity;
             }
             return sum;
@@ -89,7 +89,7 @@
 
         $scope.isDisabled = function (paytype) {
             if ($scope.user) {
-                var i, status;
+                let i, status;
                 for (i = 0; i < paytype.allowedForStatus.length; i += 1) {
                     status = paytype.allowedForStatus[i];
                     if ($scope.user.status !== undefined && status.name === $scope.user.status.name) {
@@ -100,7 +100,7 @@
             return true;
         };
 
-        var updateStatus = function (message, error) {
+        const updateStatus = function (message, error) {
             $scope.statusMessage = message;
             $scope.status = error ? 'Viga!' : 'Korras!';
             $scope.statusError = error;
@@ -109,8 +109,8 @@
             }, 1000);
         };
 
-        var productsArray = function (products) {
-            var arr = [], p;
+        const productsArray = function (products) {
+            let arr = [], p;
             for (p in products) {
                 var product = products[p];
                 var transactionProduct = angular.copy(product);
@@ -122,8 +122,8 @@
         };
 
         $scope.pay = function (paytype) {
-            var isEmpty = function (o) {
-                var i;
+            const isEmpty = function (o) {
+                let i;
                 for (i in o) {
                     if (Object.prototype.hasOwnProperty.call(o, i)) {
                         return false;
@@ -132,7 +132,11 @@
                 return true;
             };
             if (!isEmpty($scope.selectedProducts) && $scope.user !== undefined) {
-                var transaction = new api.Transaction({products: productsArray($scope.selectedProducts), paytype: paytype, user: $scope.user});
+                const transaction = new api.Transaction({
+                    products: productsArray($scope.selectedProducts),
+                    paytype: paytype,
+                    user: $scope.user
+                });
                 transaction.$save(function () {
                     updateStatus('Tooted läksid edukalt kirja!', false);
                     $scope.user = null;
@@ -153,7 +157,7 @@
         };
 
         $scope.filteredTransactions = function () {
-            var transactions = $scope.transactions || [];
+            const transactions = $scope.transactions || [];
             if ($scope.showAllTransactions || transactions.length <= 5) {
                 return transactions;
             } else {
@@ -163,10 +167,10 @@
 
         $scope.openFeedbackDialog = function () {
 
-            var modalScope = $scope.$new();
+            const modalScope = $scope.$new();
             modalScope.feedback = new api.Feedback();
 
-            var d = $modal({
+            const d = $modal({
                 templateUrl: '/dialog/feedback',
                 scope: modalScope
             });
@@ -183,22 +187,22 @@
         };
 
         $scope.openInfoDialog = function (user) {
-
-            var modalScope = $scope.$new();
+            
+            const modalScope = $scope.$new();
             modalScope.user = user;
 
-            var d = $modal({
+            const d = $modal({
                 templateUrl: '/dialog/info',
                 scope: modalScope
             });
 
             api.stat(user).then(function (response) {
-                var stat = response.data;
+                const stat = response.data;
                 modalScope.stat = stat;
-                var colors = ['#4A89DC', '#37BC9B', '#3BAFDA', '#DA4453', '#8CC152', '#434A54', '#E9573F', '#D770AD', '#967ADC', '#F6BB42'];
+                const colors = ['#4A89DC', '#37BC9B', '#3BAFDA', '#DA4453', '#8CC152', '#434A54', '#E9573F', '#D770AD', '#967ADC', '#F6BB42'];
                 modalScope.colors = colors;
 
-                var data = [], i;
+                let data = [], i;
 
                 for (i = 0; (i < 10) && (i < stat.popularProducts.length); i += 1) {
                     data.push({value: stat.popularProducts[i].count, color: colors[i]});
@@ -211,10 +215,10 @@
 
         $scope.openTransactionDialog = function (transaction) {
 
-            var modalScope = $scope.$new();
+            const modalScope = $scope.$new();
             modalScope.transaction = transaction;
 
-            var d = $modal({
+            const d = $modal({
                 templateUrl: '/dialog/transaction',
                 scope: modalScope
             });
@@ -222,6 +226,8 @@
             modalScope.invalidate = function (transaction) {
                 api.invalidate(transaction).then(function () {
                     getData();
+                    $scope.user = null;
+                    $scope.selectedProducts = {};
                     d.hide();
                 });
             };
@@ -239,12 +245,12 @@
         $scope.users = api.User.query();
 
         $scope.filteredUsers = function () {
-            var users = $scope.users;
+            let users = $scope.users;
             if ($scope.filter !== undefined && $scope.filter.length > 0) {
                 users = users.filter(function (user) {return user.label.toLowerCase().indexOf($scope.filter.toLowerCase()) !== -1; });
             }
             if ($scope.sortfield !== undefined) {
-                var sort = function (a, b) {
+                const sort = function (a, b) {
                     if ($scope.asc) {
                         return String(a[$scope.sortfield]).localeCompare(b[$scope.sortfield]);
                     } else {
@@ -266,7 +272,7 @@
         };
 
         $scope.totalBalance = function () {
-            var users = $scope.filteredUsers();
+            const users = $scope.filteredUsers();
             if (users !== undefined) {
                 return users.reduce(function (sum, user) { return sum + user.balance; }, 0);
             }
@@ -277,11 +283,11 @@
 
             api.Status.query(function (statuses) {
 
-                var modalScope = $scope.$new();
+                const modalScope = $scope.$new();
                 modalScope.user = angular.copy(user) || new api.User();
                 modalScope.statuses = statuses;
 
-                var i;
+                let i;
                 for (i = 0; i < statuses.length; i += 1) {
                     if (modalScope.user.status === undefined || (user && statuses[i].id === user.status.id)) {
                         modalScope.user.status = statuses[i];
@@ -289,7 +295,7 @@
                     }
                 }
 
-                var d = $modal({
+                const d = $modal({
                     templateUrl: '/dialog/user',
                     scope: modalScope
                 });
@@ -307,7 +313,7 @@
                 };
 
                 modalScope.delete = function (user) {
-                    var confirmed = $window.confirm('Oled kindel, et tahad kasutaja kustutada?');
+                    const confirmed = $window.confirm('Oled kindel, et tahad kasutaja kustutada?');
                     if (confirmed) {
                         user.$remove(function () {
                             $scope.users = $scope.users.filter(function (u) {return user.id !== u.id; });
@@ -327,7 +333,7 @@
         $scope.transactions = api.Transaction.query();
 
         $scope.totalSum = function () {
-            var transactions = $scope.transactions;
+            const transactions = $scope.transactions;
             if (transactions !== undefined) {
                 return transactions.reduce(function (sum, transaction) {
                     if (!transaction.invalid) {
@@ -341,10 +347,10 @@
 
         $scope.openDialog = function (transaction) {
 
-            var modalScope = $scope.$new();
+            const modalScope = $scope.$new();
             modalScope.transaction = transaction;
 
-            var d = $modal({
+            const d = $modal({
                 templateUrl: '/dialog/transaction',
                 scope: modalScope
             });
@@ -370,9 +376,9 @@
         };
 
         $scope.sortedProducts = function () {
-            var products = $scope.products;
+            let products = $scope.products;
             if ($scope.sortfield !== undefined) {
-                var sort = function (a, b) {
+                const sort = function (a, b) {
                     if ($scope.asc) {
                         return String(a[$scope.sortfield]).localeCompare(b[$scope.sortfield]);
                     } else {
@@ -395,10 +401,10 @@
 
         $scope.openProductDialog = function (product) {
 
-            var modalScope = $scope.$new();
+            const modalScope = $scope.$new();
             modalScope.product = angular.copy(product) || new api.Product();
 
-            var d = $modal({
+            const d = $modal({
                 templateUrl: '/dialog/product',
                 scope: modalScope
             });
@@ -414,7 +420,7 @@
             };
 
             modalScope.delete = function (product) {
-                var confirmed = $window.confirm('Oled kindel, et tahad toote kustutada?');
+                const confirmed = $window.confirm('Oled kindel, et tahad toote kustutada?');
                 if (confirmed) {
                     product.$remove(function () {
                         $scope.products = $scope.products.filter(function (u) {return product.id !== u.id; });
@@ -435,7 +441,7 @@
         $scope.openPaytypeDialog = function (paytype) {
             api.Status.query(function (statuses) {
 
-                var modalScope = $scope.$new();
+                const modalScope = $scope.$new();
                 modalScope.paytype = angular.copy(paytype) || new api.Paytype();
                 modalScope.statuses = statuses;
                 modalScope.checked = {};
@@ -447,7 +453,7 @@
                     });
                 }
 
-                var d = $modal({
+                const d = $modal({
                     templateUrl: '/dialog/paytype',
                     scope: modalScope
                 });
@@ -506,10 +512,10 @@
 
             console.log(status);
 
-            var modalScope = $scope.$new();
+            const modalScope = $scope.$new();
             modalScope.status = angular.copy(status) || new api.Status();
 
-            var d = $modal({
+            const d = $modal({
                 templateUrl: '/dialog/status',
                 scope: modalScope
             });
@@ -523,7 +529,7 @@
                 });
             };
             modalScope.delete = function (status) {
-                var confirmed = $window.confirm('Oled kindel, et tahad staatuse kustutada?');
+                const confirmed = $window.confirm('Oled kindel, et tahad staatuse kustutada?');
                 if (confirmed) {
                     status.$remove(function () {
                         $scope.statuses = $scope.statuses.filter(function (u) {return status.id !== u.id; });
@@ -545,7 +551,7 @@
         };
 
         $scope.stocktaking = function () {
-            var confirmed = $window.confirm('Oled kindel, et tahad teha inventuuri? Kasutajate saldod nullitakse ja tehingud eemaldatakse.');
+            const confirmed = $window.confirm('Oled kindel, et tahad teha inventuuri? Kasutajate saldod nullitakse ja tehingud eemaldatakse.');
             if (confirmed) {
                 var stocktaking = new api.Stocktaking();
                 stocktaking.$save(function (data) {
@@ -559,7 +565,7 @@
 
         $scope.stocktaking = api.Stocktaking.get({id: $routeParams.id});
 
-        var previous = api.Stocktaking.get({id: $routeParams.id - 1}, function () {
+        const previous = api.Stocktaking.get({id: $routeParams.id - 1}, function () {
             $scope.previous = previous;
         });
 

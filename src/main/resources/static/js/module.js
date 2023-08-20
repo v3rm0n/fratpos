@@ -3,7 +3,7 @@
     "use strict";
 
     //Main module
-    var app = angular.module('fratpos', ['ngRoute', 'mgcrea.ngStrap', 'ngResource'])
+    const app = angular.module('fratpos', ['ngRoute', 'mgcrea.ngStrap', 'ngResource'])
         .config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
             $locationProvider.hashPrefix('');
             $routeProvider
@@ -18,39 +18,6 @@
                 .when('/feedback', {templateUrl: "/admin/feedback"})
                 .otherwise({redirectTo: "/users"});
         }]);
-
-    //Nice looking checkboxes and radio buttons
-    app.directive('icheck', ['$timeout', function ($timeout) {
-        return {
-            require: 'ngModel',
-            link: function ($scope, element, $attrs, ngModel) {
-                return $timeout(function () {
-                    var value;
-                    value = $attrs.value;
-
-                    $scope.$watch($attrs.ngModel, function (newValue) {
-                        $(element).iCheck('update');
-                    });
-
-                    return $(element).iCheck({
-                        checkboxClass: 'icheckbox_flat',
-                        radioClass: 'iradio_flat'
-                    }).on('ifChanged', function (event) {
-                        if ($(element).attr('type') === 'checkbox' && $attrs.ngModel) {
-                            $scope.$apply(function () {
-                                return ngModel.$setViewValue(event.target.checked);
-                            });
-                        }
-                        if ($(element).attr('type') === 'radio' && $attrs.ngModel) {
-                            return $scope.$apply(function () {
-                                return ngModel.$setViewValue(value);
-                            });
-                        }
-                    });
-                });
-            }
-        };
-    }]);
 
     //Focuses an input element after rendering
     app.directive('focusMe', function ($timeout) {
