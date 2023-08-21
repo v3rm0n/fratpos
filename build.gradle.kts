@@ -14,15 +14,23 @@ plugins {
     kotlin("jvm") version "1.9.0"
     kotlin("plugin.spring") version "1.9.0"
     kotlin("plugin.jpa") version "1.9.0"
+    id("org.hibernate.orm") version "6.2.6.Final"
     id("org.springframework.boot") version "3.1.2"
     id("io.spring.dependency-management") version "1.1.3"
     id("org.jlleitschuh.gradle.ktlint") version "11.5.1"
+    id("org.graalvm.buildtools.native") version "0.9.24"
 }
 
+
 java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
-        vendor.set(JvmVendorSpec.ADOPTIUM)
+    sourceCompatibility = JavaVersion.VERSION_17
+}
+
+configurations.all {
+    resolutionStrategy.eachDependency {
+        if (requested.group.startsWith("org.graalvm")) {
+            this.useVersion("22.3.0")
+        }
     }
 }
 
@@ -30,14 +38,28 @@ repositories {
     mavenCentral()
 }
 
-tasks {
-    named<BootJar>("bootJar") {
-        launchScript()
+hibernate {
+    enhancement {
+        enableAssociationManagement.set(true)
     }
+}
+
+graalvmNative {
+    binaries {
+        named("main") {
+            debug = true
+            verbose = true
+        }
+    }
+    toolchainDetection.set(false)
+}
+
+tasks {
 
     withType<KotlinCompile> {
         kotlinOptions {
             freeCompilerArgs += "-Xjsr305=strict"
+            jvmTarget = "17"
         }
     }
 
@@ -77,10 +99,10 @@ dependencies {
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
 
     runtimeOnly("com.mysql:mysql-connector-j")
     implementation("org.flywaydb:flyway-mysql")
+
     implementation("io.hypersistence:hypersistence-utils-hibernate-62:3.5.0")
 
     implementation("de.neuland-bfi:spring-pug4j:3.0.0")

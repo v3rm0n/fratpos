@@ -1,10 +1,10 @@
 package ee.leola.kassa.controllers.rest
 
-import ee.leola.kassa.helpers.LoggerDelegate
 import ee.leola.kassa.models.Transaction
 import ee.leola.kassa.repository.ProductRepository
 import ee.leola.kassa.repository.TransactionRepository
 import ee.leola.kassa.repository.UserRepository
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -18,7 +18,7 @@ class TransactionController(
     private val productRepository: ProductRepository
 ) : RestBaseController<Transaction, Long>(transactionRepository) {
 
-    private val logger by LoggerDelegate()
+    private val logger = LoggerFactory.getLogger(TransactionController::class.java)
 
     @PostMapping("/invalid/{id}")
     fun invalidate(@PathVariable("id") id: Long) = invalidateTransaction(id)

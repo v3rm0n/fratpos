@@ -2,13 +2,12 @@ package ee.leola.kassa.models
 
 import jakarta.persistence.Entity
 import jakarta.persistence.Transient
-import jakarta.validation.constraints.NotNull
 import java.time.Instant
 import java.time.format.DateTimeFormatter
 
 @Entity
 class Feedback(
-    val content: @NotNull String,
+    val content:  String,
     val created: Instant = Instant.now()
 ) : Model() {
 

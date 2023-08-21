@@ -2,12 +2,12 @@ package ee.leola.kassa.controllers.rest
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import ee.leola.kassa.helpers.LoggerDelegate
 import ee.leola.kassa.models.Stocktaking
 import ee.leola.kassa.repository.ProductRepository
 import ee.leola.kassa.repository.StocktakingRepository
 import ee.leola.kassa.repository.TransactionRepository
 import ee.leola.kassa.repository.UserRepository
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.transaction.support.TransactionTemplate
@@ -25,7 +25,7 @@ class StocktakingController(
     private val transactionTemplate: TransactionTemplate
 ) : RestBaseController<Stocktaking, Long>(stocktakingRepository) {
 
-    private val logger by LoggerDelegate()
+    private val logger = LoggerFactory.getLogger(StocktakingController::class.java)
 
     @GetMapping("/csv/{id}", produces = ["text/csv"])
     fun getCSV(@PathVariable("id") id: Long): String {

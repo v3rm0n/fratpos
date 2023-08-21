@@ -3,16 +3,15 @@ package ee.leola.kassa.models
 import jakarta.persistence.Entity
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Transient
-import jakarta.validation.constraints.NotNull
 import java.math.BigDecimal
 
 @Entity
 class User(
-    var firstName: @NotNull String,
-    var lastName: @NotNull String,
+    var firstName:  String,
+    var lastName:  String,
     var beerName: String?,
     @ManyToOne
-    var status: @NotNull Status,
+    var status:  Status,
     var balance: BigDecimal = BigDecimal.ZERO
 ) : Model() {
 

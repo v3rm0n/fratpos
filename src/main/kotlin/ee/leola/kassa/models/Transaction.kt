@@ -2,7 +2,6 @@ package ee.leola.kassa.models
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.persistence.*
-import jakarta.validation.constraints.NotNull
 import java.time.Instant
 import java.time.format.DateTimeFormatter
 
@@ -11,7 +10,7 @@ class Transaction(
     var invalid: Boolean = false,
     val created: Instant = Instant.now(),
     @ManyToOne
-    val user: @NotNull User,
+    val user:  User,
     @OneToMany(cascade = [CascadeType.ALL])
     @JoinTable(
         name = "transaction_transaction_product",
@@ -20,7 +19,7 @@ class Transaction(
     )
     val products: Set<TransactionProduct>,
     @ManyToOne
-    private val paytype: @NotNull Paytype
+    private val paytype:  Paytype
 ) : Model() {
     fun invalidate(): Transaction {
         invalid = true

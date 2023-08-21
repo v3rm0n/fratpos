@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 class ViewConfiguration(
     private val resourceLoader: ResourceLoader,
     private val messageSource: MessageSource

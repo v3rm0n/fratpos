@@ -77,36 +77,6 @@ CREATE TABLE paytype_status (
 	CONSTRAINT pk_paytype_status PRIMARY KEY (paytype_id, status_id)
 );
 
-ALTER TABLE transaction ADD CONSTRAINT fk_transaction_user_1 FOREIGN KEY (user_id) REFERENCES user (id)
-	ON DELETE RESTRICT
-	ON UPDATE RESTRICT;
 CREATE INDEX ix_transaction_user_1 ON transaction (user_id);
-ALTER TABLE transaction ADD CONSTRAINT fk_transaction_paytype_2 FOREIGN KEY (paytype_id) REFERENCES paytype (id)
-	ON DELETE RESTRICT
-	ON UPDATE RESTRICT;
 CREATE INDEX ix_transaction_paytype_2 ON transaction (paytype_id);
-ALTER TABLE user ADD CONSTRAINT fk_user_status_4 FOREIGN KEY (status_id) REFERENCES status (id)
-	ON DELETE RESTRICT
-	ON UPDATE RESTRICT;
 CREATE INDEX ix_user_status_4 ON user (status_id);
-
-
-ALTER TABLE paytype_status ADD CONSTRAINT fk_paytype_status_paytype_01 FOREIGN KEY (paytype_id) REFERENCES paytype (id)
-	ON DELETE RESTRICT
-	ON UPDATE RESTRICT;
-
-ALTER TABLE paytype_status ADD CONSTRAINT fk_paytype_status_status_02 FOREIGN KEY (status_id) REFERENCES status (id)
-	ON DELETE RESTRICT
-	ON UPDATE RESTRICT;
-
-ALTER TABLE transaction_product ADD CONSTRAINT fk_transaction_product_product FOREIGN KEY (product_id) REFERENCES product (id)
-	ON DELETE RESTRICT
-	ON UPDATE RESTRICT;
-
-ALTER TABLE transaction_transaction_product ADD CONSTRAINT fk_transaction_transaction_product_01 FOREIGN KEY (transaction_id) REFERENCES transaction (id)
-	ON DELETE RESTRICT
-	ON UPDATE RESTRICT;
-
-ALTER TABLE transaction_transaction_product ADD CONSTRAINT fk_transaction_transaction_product_02 FOREIGN KEY (transaction_product_id) REFERENCES transaction_product (id)
-	ON DELETE RESTRICT
-	ON UPDATE RESTRICT;

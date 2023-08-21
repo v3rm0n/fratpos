@@ -4,11 +4,10 @@ import jakarta.persistence.Entity
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.JoinTable
 import jakarta.persistence.ManyToMany
-import jakarta.validation.constraints.NotNull
 
 @Entity
 class Paytype(
-    var name: @NotNull String,
+    var name:  String,
     var affectsBalance: Boolean = false,
     var affectsQuantity: Boolean = false,
     @ManyToMany

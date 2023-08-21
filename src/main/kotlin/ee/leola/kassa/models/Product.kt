@@ -1,13 +1,12 @@
 package ee.leola.kassa.models
 
 import jakarta.persistence.Entity
-import jakarta.validation.constraints.NotNull
 import java.math.BigDecimal
 
 @Entity
 class Product(
-    var name: @NotNull String,
-    var price: @NotNull BigDecimal = BigDecimal.ZERO,
+    var name:  String,
+    var price:  BigDecimal = BigDecimal.ZERO,
     var quantity: Int
 ) : Model() {
 

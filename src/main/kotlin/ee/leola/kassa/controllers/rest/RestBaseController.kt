@@ -1,6 +1,6 @@
 package ee.leola.kassa.controllers.rest
 
-import ee.leola.kassa.helpers.LoggerDelegate
+import org.slf4j.LoggerFactory
 import org.springframework.beans.BeanUtils
 import org.springframework.data.repository.CrudRepository
 import org.springframework.http.HttpStatus
@@ -11,7 +11,7 @@ import java.io.Serializable
 
 abstract class RestBaseController<T : Any, ID : Serializable>(protected val repo: CrudRepository<T, ID>) {
 
-    private val logger by LoggerDelegate()
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
     @RequestMapping
     @ResponseBody
