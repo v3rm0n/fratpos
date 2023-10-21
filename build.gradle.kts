@@ -10,16 +10,39 @@ import org.springframework.boot.gradle.plugin.SpringBootPlugin
 plugins {
     java
     jacoco
-    id("org.springframework.boot") version "3.0.6"
+    id("org.hibernate.orm") version "6.2.6.Final"
+    id("org.springframework.boot") version "3.2.0-RC1"
     id("com.diffplug.spotless") version "6.20.0"
-    id("io.spring.dependency-management") version "1.1.0"
-}
+    id("io.spring.dependency-management") version "1.1.3"
+    id("org.graalvm.buildtools.native") version "0.9.28"
 
-java.sourceCompatibility = JavaVersion.VERSION_17
-java.targetCompatibility = JavaVersion.VERSION_17
+}
 
 repositories {
     mavenCentral()
+    maven("https://repo.spring.io/snapshot")
+    maven("https://repo.spring.io/milestone")
+}
+
+configurations.all {
+    resolutionStrategy {
+        //Pug4j uses older GraalVM version
+        force("org.graalvm.sdk:graal-sdk:23.1.0")
+        force("org.graalvm.compiler:compiler:23.1.0")
+        force("org.graalvm.js:js:23.0.2")
+        force("org.graalvm.js:js-scriptengine:23.0.2")
+        force("org.graalvm.tools:profiler:23.0.2")
+        force("org.graalvm.tools:chromeinspector:23.0.2")
+    }
+}
+
+
+graalvmNative {
+    binaries {
+        named("main") {
+            buildArgs.add("--enable-preview")
+        }
+    }
 }
 
 tasks {
@@ -64,20 +87,22 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
+    implementation("io.hypersistence:hypersistence-utils-hibernate-62:3.6.0")
+
+
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
 
     runtimeOnly("com.mysql:mysql-connector-j")
     implementation("org.flywaydb:flyway-mysql")
 
-    implementation("de.neuland-bfi:spring-pug4j:3.0.0")
+    implementation("de.neuland-bfi:spring-pug4j:3.1.0") {
+        exclude(group = "org.graalvm.sdk")
+        exclude(group = "org.graalvm.compiler")
+    }
 
     implementation("com.fasterxml.jackson.core:jackson-databind")
-
-    implementation("org.webjars:bootstrap:3.3.7-1")
-    implementation("org.webjars:angularjs:1.7.2")
-    implementation("org.webjars:jquery:1.12.4")
-    implementation("org.webjars.npm:angular-strap:2.3.12")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 
     testCompileOnly("org.projectlombok:lombok")
 
