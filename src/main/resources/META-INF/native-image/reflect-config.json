@@ -228,7 +228,7 @@
 {
   "name":"com.fasterxml.jackson.core.ObjectCodec",
   "queryAllDeclaredMethods":true,
-  "methods":[{"name":"getJsonFactory","parameterTypes":[] }, {"name":"readValues","parameterTypes":["com.fasterxml.jackson.core.JsonParser","com.fasterxml.jackson.core.type.ResolvedType"] }, {"name":"readValues","parameterTypes":["com.fasterxml.jackson.core.JsonParser","java.lang.Class"] }]
+  "methods":[{"name":"getJsonFactory","parameterTypes":[] }, {"name":"readValues","parameterTypes":["com.fasterxml.jackson.core.JsonParser","com.fasterxml.jackson.core.type.ResolvedType"] }, {"name":"readValues","parameterTypes":["com.fasterxml.jackson.core.JsonParser","com.fasterxml.jackson.core.type.TypeReference"] }, {"name":"readValues","parameterTypes":["com.fasterxml.jackson.core.JsonParser","java.lang.Class"] }]
 },
 {
   "name":"com.fasterxml.jackson.core.TreeCodec",
@@ -500,7 +500,7 @@
   "name":"ee.leola.kassa.controllers.rest.TransactionController",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
-  "methods":[{"name":"<init>","parameterTypes":["ee.leola.kassa.repository.TransactionRepository"] }, {"name":"create","parameterTypes":["java.lang.Object"] }, {"name":"invalidate","parameterTypes":["java.lang.Long"] }, {"name":"update","parameterTypes":["java.io.Serializable","java.lang.Object"] }]
+  "methods":[{"name":"<init>","parameterTypes":["ee.leola.kassa.repository.TransactionRepository"] }, {"name":"create","parameterTypes":["ee.leola.kassa.models.Transaction"] }, {"name":"create","parameterTypes":["java.lang.Object"] }, {"name":"invalidate","parameterTypes":["java.lang.Long"] }, {"name":"update","parameterTypes":["java.io.Serializable","java.lang.Object"] }]
 },
 {
   "name":"ee.leola.kassa.models.Feedback",
@@ -529,14 +529,17 @@
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"equals","parameterTypes":["java.lang.Object"] }, {"name":"getAllowedForStatus","parameterTypes":[] }, {"name":"getName","parameterTypes":[] }, {"name":"isAffectsBalance","parameterTypes":[] }, {"name":"isAffectsQuantity","parameterTypes":[] }, {"name":"setAffectsBalance","parameterTypes":["boolean"] }, {"name":"setAllowedForStatus","parameterTypes":["java.util.Set"] }, {"name":"setName","parameterTypes":["java.lang.String"] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"equals","parameterTypes":["java.lang.Object"] }, {"name":"getAllowedForStatus","parameterTypes":[] }, {"name":"getName","parameterTypes":[] }, {"name":"isAffectsBalance","parameterTypes":[] }, {"name":"isAffectsQuantity","parameterTypes":[] }, {"name":"setAffectsBalance","parameterTypes":["boolean"] }, {"name":"setAffectsQuantity","parameterTypes":["boolean"] }, {"name":"setAllowedForStatus","parameterTypes":["java.util.Set"] }, {"name":"setName","parameterTypes":["java.lang.String"] }]
 },
 {
   "name":"ee.leola.kassa.models.Paytype_"
 },
 {
   "name":"ee.leola.kassa.models.PopularProduct",
-  "queryAllDeclaredConstructors":true
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":["ee.leola.kassa.models.TransactionProduct","java.lang.Long"] }, {"name":"getCount","parameterTypes":[] }, {"name":"getProduct","parameterTypes":[] }]
 },
 {
   "name":"ee.leola.kassa.models.Product",
@@ -544,7 +547,7 @@
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"equals","parameterTypes":["java.lang.Object"] }, {"name":"getName","parameterTypes":[] }, {"name":"getPrice","parameterTypes":[] }, {"name":"getQuantity","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"equals","parameterTypes":["java.lang.Object"] }, {"name":"getName","parameterTypes":[] }, {"name":"getPrice","parameterTypes":[] }, {"name":"getQuantity","parameterTypes":[] }, {"name":"setName","parameterTypes":["java.lang.String"] }, {"name":"setPrice","parameterTypes":["java.math.BigDecimal"] }, {"name":"setQuantity","parameterTypes":["java.lang.Integer"] }]
 },
 {
   "name":"ee.leola.kassa.models.Product_"
@@ -578,7 +581,7 @@
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"equals","parameterTypes":["java.lang.Object"] }, {"name":"getCreated","parameterTypes":[] }, {"name":"getFormattedTime","parameterTypes":[] }, {"name":"getPaytypeName","parameterTypes":[] }, {"name":"getProducts","parameterTypes":[] }, {"name":"getSum","parameterTypes":[] }, {"name":"getUser","parameterTypes":[] }, {"name":"isInvalid","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"equals","parameterTypes":["java.lang.Object"] }, {"name":"getCreated","parameterTypes":[] }, {"name":"getFormattedTime","parameterTypes":[] }, {"name":"getPaytypeName","parameterTypes":[] }, {"name":"getProducts","parameterTypes":[] }, {"name":"getSum","parameterTypes":[] }, {"name":"getUser","parameterTypes":[] }, {"name":"isInvalid","parameterTypes":[] }, {"name":"setPaytype","parameterTypes":["ee.leola.kassa.models.Paytype"] }, {"name":"setProducts","parameterTypes":["java.util.Set"] }, {"name":"setUser","parameterTypes":["ee.leola.kassa.models.User"] }]
 },
 {
   "name":"ee.leola.kassa.models.TransactionProduct",
@@ -586,7 +589,7 @@
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"equals","parameterTypes":["java.lang.Object"] }, {"name":"getName","parameterTypes":[] }, {"name":"getPrice","parameterTypes":[] }, {"name":"getProduct","parameterTypes":[] }, {"name":"getQuantity","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"equals","parameterTypes":["java.lang.Object"] }, {"name":"getName","parameterTypes":[] }, {"name":"getPrice","parameterTypes":[] }, {"name":"getProduct","parameterTypes":[] }, {"name":"getQuantity","parameterTypes":[] }, {"name":"setName","parameterTypes":["java.lang.String"] }, {"name":"setPrice","parameterTypes":["java.math.BigDecimal"] }, {"name":"setProduct","parameterTypes":["ee.leola.kassa.models.Product"] }, {"name":"setQuantity","parameterTypes":["java.lang.Integer"] }]
 },
 {
   "name":"ee.leola.kassa.models.TransactionProduct_"
@@ -3721,7 +3724,7 @@
   "name":"org.springframework.data.mapping.context.MappingContext",
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
-  "methods":[{"name":"<init>","parameterTypes":["org.springframework.data.jpa.mapping.JpaMetamodelMappingContext"] }, {"name":"from","parameterTypes":["org.springframework.data.jpa.mapping.JpaMetamodelMappingContext"] }, {"name":"getPersistentEntity","parameterTypes":["org.springframework.data.mapping.PersistentProperty"] }, {"name":"getPersistentEntity","parameterTypes":["org.springframework.data.util.TypeInformation"] }, {"name":"getRequiredPersistentEntity","parameterTypes":["java.lang.Class"] }, {"name":"getRequiredPersistentEntity","parameterTypes":["org.springframework.data.mapping.PersistentProperty"] }, {"name":"getRequiredPersistentEntity","parameterTypes":["org.springframework.data.util.TypeInformation"] }, {"name":"of","parameterTypes":["org.springframework.data.jpa.mapping.JpaMetamodelMappingContext"] }, {"name":"valueOf","parameterTypes":["org.springframework.data.jpa.mapping.JpaMetamodelMappingContext"] }]
+  "methods":[{"name":"<init>","parameterTypes":["org.springframework.data.jpa.mapping.JpaMetamodelMappingContext"] }, {"name":"from","parameterTypes":["org.springframework.data.jpa.mapping.JpaMetamodelMappingContext"] }, {"name":"getPersistentEntity","parameterTypes":["java.lang.Class"] }, {"name":"getPersistentEntity","parameterTypes":["org.springframework.data.mapping.PersistentProperty"] }, {"name":"getRequiredPersistentEntity","parameterTypes":["java.lang.Class"] }, {"name":"getRequiredPersistentEntity","parameterTypes":["org.springframework.data.mapping.PersistentProperty"] }, {"name":"getRequiredPersistentEntity","parameterTypes":["org.springframework.data.util.TypeInformation"] }, {"name":"of","parameterTypes":["org.springframework.data.jpa.mapping.JpaMetamodelMappingContext"] }, {"name":"valueOf","parameterTypes":["org.springframework.data.jpa.mapping.JpaMetamodelMappingContext"] }]
 },
 {
   "name":"org.springframework.data.querydsl.QuerydslPredicateExecutor"

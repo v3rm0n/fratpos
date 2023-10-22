@@ -51,7 +51,7 @@ public class ViewConfiguration implements WebMvcConfigurer {
     templateLoader.setResourceLoader(resourceLoader);
     templateLoader.setTemplateLoaderPath("classpath:/templates/");
     templateLoader.setEncoding("UTF-8");
-    templateLoader.setSuffix(".jade");
+    templateLoader.setSuffix(".pug");
     return templateLoader;
   }
 

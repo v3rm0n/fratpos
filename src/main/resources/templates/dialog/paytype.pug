@@ -15,20 +15,20 @@
                         .col-sm-2
                         .col-sm-5
                             .checkbox
-                                input#affectsBalance(type='checkbox', ng-model='paytype.affectsBalance', icheck)
+                                input#affectsBalance(type='checkbox', ng-model='paytype.affectsBalance')
                                 label(for='affectsBalance') Mõjutab saldot
                     .form-group
                         .col-sm-2
                         .col-sm-5
                             .checkbox
-                                input#affectsQuantity(type='checkbox', ng-model='paytype.affectsQuantity', icheck)
+                                input#affectsQuantity(type='checkbox', ng-model='paytype.affectsQuantity')
                                 label(for='affectsQuantity') Mõjutab laoseisu
                     br
                     .form-group
                         label.control-label.col-sm-2 Lubatud staatustele
                         .col-sm-5
                             .checkbox(ng-repeat='status in statuses')
-                                input(type='checkbox', id='status_{{status.id}}', ng-model='allowedForStatus[status.id]', icheck)
+                                input(type='checkbox', id='status_{{status.id}}', ng-model='allowedForStatus[status.id]')
                                 label(for='status_{{status.id}}') {{status.name}}
             .modal-footer
                 button.btn.btn-danger(ng-show='paytype.id !== undefined', ng-click='delete(paytype)') Kustuta

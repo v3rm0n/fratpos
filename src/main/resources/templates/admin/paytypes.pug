@@ -12,7 +12,7 @@
             tbody
                 tr(ng-repeat='paytype in paytypes', ng-click='openPaytypeDialog(paytype)')
                     td(ng-bind='paytype.name')
-                    td(ng-bind-template="{{ paytype.affectsBalance ? '#{t.message('common.yes')}' : '#{t.message('common.no')}' }}")
-                    td(ng-bind-template="{{ paytype.affectsQuantity ? '#{t.message('common.yes')}' : '#{t.message('common.no')}' }}")
+                    td(ng-bind-template=`{{ paytype.affectsBalance ? '${t.message('common.yes')}' : '${t.message('common.no')}' }}`)
+                    td(ng-bind-template=`{{ paytype.affectsQuantity ? '${t.message('common.yes')}' : '${t.message('common.no')}' }}`)
                     td(ng-bind='statuses(paytype)')
         button.btn.btn-primary(ng-click='openPaytypeDialog()')= t.message('admin.paytypes.add')

@@ -261,63 +261,63 @@
   }, {
     "pattern":"\\Qstatic/js/module.js\\E"
   }, {
-    "pattern":"\\Qtemplates/admin.jade\\E"
+    "pattern":"\\Qtemplates/admin.pug\\E"
   }, {
-    "pattern":"\\Qtemplates/admin/feedback.jade\\E"
+    "pattern":"\\Qtemplates/admin/feedback.pug\\E"
   }, {
     "pattern":"\\Qtemplates/admin/feedback.json\\E"
   }, {
-    "pattern":"\\Qtemplates/admin/paytypes.jade\\E"
+    "pattern":"\\Qtemplates/admin/paytypes.pug\\E"
   }, {
     "pattern":"\\Qtemplates/admin/paytypes.json\\E"
   }, {
-    "pattern":"\\Qtemplates/admin/products.jade\\E"
+    "pattern":"\\Qtemplates/admin/products.pug\\E"
   }, {
     "pattern":"\\Qtemplates/admin/products.json\\E"
   }, {
-    "pattern":"\\Qtemplates/admin/stocktaking.jade\\E"
+    "pattern":"\\Qtemplates/admin/stocktaking.pug\\E"
   }, {
     "pattern":"\\Qtemplates/admin/stocktaking.json\\E"
   }, {
-    "pattern":"\\Qtemplates/admin/stocktakings.jade\\E"
+    "pattern":"\\Qtemplates/admin/stocktakings.pug\\E"
   }, {
     "pattern":"\\Qtemplates/admin/stocktakings.json\\E"
   }, {
-    "pattern":"\\Qtemplates/admin/transactions.jade\\E"
+    "pattern":"\\Qtemplates/admin/transactions.pug\\E"
   }, {
     "pattern":"\\Qtemplates/admin/transactions.json\\E"
   }, {
-    "pattern":"\\Qtemplates/admin/users.jade\\E"
+    "pattern":"\\Qtemplates/admin/users.pug\\E"
   }, {
     "pattern":"\\Qtemplates/admin/users.json\\E"
   }, {
-    "pattern":"\\Qtemplates/dialog/feedback.jade\\E"
+    "pattern":"\\Qtemplates/dialog/feedback.pug\\E"
   }, {
     "pattern":"\\Qtemplates/dialog/feedback.json\\E"
   }, {
-    "pattern":"\\Qtemplates/dialog/info.jade\\E"
+    "pattern":"\\Qtemplates/dialog/info.pug\\E"
   }, {
     "pattern":"\\Qtemplates/dialog/info.json\\E"
   }, {
-    "pattern":"\\Qtemplates/dialog/paytype.jade\\E"
+    "pattern":"\\Qtemplates/dialog/paytype.pug\\E"
   }, {
     "pattern":"\\Qtemplates/dialog/paytype.json\\E"
   }, {
-    "pattern":"\\Qtemplates/dialog/product.jade\\E"
+    "pattern":"\\Qtemplates/dialog/product.pug\\E"
   }, {
     "pattern":"\\Qtemplates/dialog/product.json\\E"
   }, {
-    "pattern":"\\Qtemplates/dialog/transaction.jade\\E"
+    "pattern":"\\Qtemplates/dialog/transaction.pug\\E"
   }, {
     "pattern":"\\Qtemplates/dialog/transaction.json\\E"
   }, {
-    "pattern":"\\Qtemplates/dialog/user.jade\\E"
+    "pattern":"\\Qtemplates/dialog/user.pug\\E"
   }, {
     "pattern":"\\Qtemplates/dialog/user.json\\E"
   }, {
-    "pattern":"\\Qtemplates/index.jade\\E"
+    "pattern":"\\Qtemplates/index.pug\\E"
   }, {
-    "pattern":"\\Qtemplates/layout.jade\\E"
+    "pattern":"\\Qtemplates/layout.pug\\E"
   }, {
     "pattern":"java.base:\\Qjdk/internal/icu/impl/data/icudt72b/nfc.nrm\\E"
   }, {
