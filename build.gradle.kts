@@ -84,7 +84,7 @@ dependencies {
 
     runtimeOnly("com.mysql:mysql-connector-j")
     implementation("org.flywaydb:flyway-mysql")
-    implementation("io.hypersistence:hypersistence-utils-hibernate-62:3.7.0")
+    implementation("io.hypersistence:hypersistence-utils-hibernate-62:3.7.3")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
