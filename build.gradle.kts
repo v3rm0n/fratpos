@@ -16,7 +16,7 @@ plugins {
     kotlin("plugin.jpa") version "1.9.22"
     id("org.springframework.boot") version "3.2.1"
     id("io.spring.dependency-management") version "1.1.3"
-    id("org.jlleitschuh.gradle.ktlint") version "11.5.1"
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
 }
 
 java {
