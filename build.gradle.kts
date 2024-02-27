@@ -83,7 +83,7 @@ dependencies {
     implementation("org.flywaydb:flyway-mysql")
     implementation("io.hypersistence:hypersistence-utils-hibernate-62:3.7.0")
 
-    implementation("de.neuland-bfi:spring-pug4j:3.0.0")
+    implementation("de.neuland-bfi:spring-pug4j:3.2.0")
 
     implementation("com.fasterxml.jackson.core:jackson-databind")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
