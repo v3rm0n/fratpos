@@ -15,7 +15,7 @@ class Paytype(
     @JoinTable(
         name = "paytype_status",
         joinColumns = [JoinColumn(name = "paytype_id", referencedColumnName = "id")],
-        inverseJoinColumns = [JoinColumn(name = "status_id", referencedColumnName = "id")]
+        inverseJoinColumns = [JoinColumn(name = "status_id", referencedColumnName = "id")],
     )
-    var allowedForStatus: Set<Status>
+    var allowedForStatus: Set<Status>,
 ) : Model()

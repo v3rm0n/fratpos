@@ -13,9 +13,8 @@ class User(
     var beerName: String?,
     @ManyToOne
     var status: @NotNull Status,
-    var balance: BigDecimal = BigDecimal.ZERO
+    var balance: BigDecimal = BigDecimal.ZERO,
 ) : Model() {
-
     @get:Transient
     val label get() = "${status.name} $firstName $lastName ${if (!beerName.isNullOrEmpty()) " ($beerName)" else ""}"
 

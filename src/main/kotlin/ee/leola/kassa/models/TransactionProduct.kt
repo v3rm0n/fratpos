@@ -11,5 +11,5 @@ class TransactionProduct(
     val price: @NotNull BigDecimal = BigDecimal.ZERO,
     val quantity: Int,
     @OneToOne
-    val product: Product
+    val product: Product,
 ) : Model()

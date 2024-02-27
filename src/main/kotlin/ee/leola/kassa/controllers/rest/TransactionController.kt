@@ -15,16 +15,19 @@ import java.math.BigDecimal
 class TransactionController(
     transactionRepository: TransactionRepository,
     private val userRepository: UserRepository,
-    private val productRepository: ProductRepository
+    private val productRepository: ProductRepository,
 ) : RestBaseController<Transaction, Long>(transactionRepository) {
-
     private val logger by LoggerDelegate()
 
     @PostMapping("/invalid/{id}")
-    fun invalidate(@PathVariable("id") id: Long) = invalidateTransaction(id)
+    fun invalidate(
+        @PathVariable("id") id: Long,
+    ) = invalidateTransaction(id)
 
     @PostMapping("/invalid/admin/{id}")
-    fun invalidateAdmin(@PathVariable("id") id: Long) = invalidateTransaction(id)
+    fun invalidateAdmin(
+        @PathVariable("id") id: Long,
+    ) = invalidateTransaction(id)
 
     private fun invalidateTransaction(id: Long) {
         val transaction = repo.findById(id).orElseThrow()
@@ -44,12 +47,17 @@ class TransactionController(
     }
 
     @PostMapping("/{id}")
-    override fun update(@PathVariable id: Long, @RequestBody json: Transaction): ResponseEntity<Transaction> {
+    override fun update(
+        @PathVariable id: Long,
+        @RequestBody json: Transaction,
+    ): ResponseEntity<Transaction> {
         return ResponseEntity(HttpStatus.METHOD_NOT_ALLOWED)
     }
 
     @PostMapping
-    override fun create(@RequestBody json: Transaction): Transaction {
+    override fun create(
+        @RequestBody json: Transaction,
+    ): Transaction {
         logger.info("Saving new transaction {}", json)
         // Decrement product quantities and save
         if (json.affectsQuantity()) {
@@ -66,12 +74,18 @@ class TransactionController(
         return json
     }
 
-    private fun incrementProductQuantity(id: Long, quantity: Int) {
+    private fun incrementProductQuantity(
+        id: Long,
+        quantity: Int,
+    ) {
         val product = productRepository.findById(id).orElseThrow()
         productRepository.save(product.incrementQuantity(quantity))
     }
 
-    private fun changeUserBalance(id: Long, balance: BigDecimal) {
+    private fun changeUserBalance(
+        id: Long,
+        balance: BigDecimal,
+    ) {
         val user = userRepository.findById(id).orElseThrow()
         userRepository.save(user.incrementBalance(balance))
     }

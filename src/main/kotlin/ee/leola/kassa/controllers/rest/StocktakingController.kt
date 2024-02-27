@@ -22,13 +22,14 @@ class StocktakingController(
     private val productRepository: ProductRepository,
     private val transactionRepository: TransactionRepository,
     private val objectMapper: ObjectMapper,
-    private val transactionTemplate: TransactionTemplate
+    private val transactionTemplate: TransactionTemplate,
 ) : RestBaseController<Stocktaking, Long>(stocktakingRepository) {
-
     private val logger by LoggerDelegate()
 
     @GetMapping("/csv/{id}", produces = ["text/csv"])
-    fun getCSV(@PathVariable("id") id: Long): String {
+    fun getCSV(
+        @PathVariable("id") id: Long,
+    ): String {
         val stocktaking = repo.findById(id).orElseThrow()
         val template = StringBuilder("Inventuur\n")
         template.append("Loomise aeg ").append(stocktaking.formattedTime).append("\n\n")
@@ -41,8 +42,8 @@ class StocktakingController(
                     user["firstName"].asText(),
                     user["lastName"].asText(),
                     user["beerName"].asText(),
-                    user["balance"].asText()
-                )
+                    user["balance"].asText(),
+                ),
             )
         }
         template.append(",,,Summa,").append(stocktaking.balancesSum).append("\n\n")
@@ -55,8 +56,8 @@ class StocktakingController(
                     transaction["user"]["label"].asText(),
                     transaction["sum"].asText(),
                     transaction["paytype"].asText(),
-                    if (transaction["invalid"].asBoolean()) "Jah" else "Ei"
-                )
+                    if (transaction["invalid"].asBoolean()) "Jah" else "Ei",
+                ),
             )
         }
         template.append(",Summa,").append(stocktaking.transactionsSum).append("\n\n")
@@ -67,8 +68,8 @@ class StocktakingController(
                     "%s,%s,%s\n",
                     product["name"].asText(),
                     product["price"].asText(),
-                    product["quantity"].asText()
-                )
+                    product["quantity"].asText(),
+                ),
             )
         }
         template.append(",Kokku,").append(stocktaking.productsQuantity)
@@ -76,7 +77,10 @@ class StocktakingController(
     }
 
     @PostMapping("/{id}")
-    override fun update(@PathVariable id: Long, @RequestBody json: Stocktaking): ResponseEntity<Stocktaking> {
+    override fun update(
+        @PathVariable id: Long,
+        @RequestBody json: Stocktaking,
+    ): ResponseEntity<Stocktaking> {
         return ResponseEntity(HttpStatus.METHOD_NOT_ALLOWED)
     }
 
@@ -85,11 +89,12 @@ class StocktakingController(
         logger.info("Creating stocktaking")
         val users = userRepository.findByBalanceNot(ZERO)
         val transactions = transactionRepository.findAll()
-        val stocktaking = Stocktaking(
-            users = objectMapper.valueToTree(users),
-            transactions = objectMapper.valueToTree(transactions),
-            products = objectMapper.valueToTree(productRepository.findAll())
-        )
+        val stocktaking =
+            Stocktaking(
+                users = objectMapper.valueToTree(users),
+                transactions = objectMapper.valueToTree(transactions),
+                products = objectMapper.valueToTree(productRepository.findAll()),
+            )
         transactionTemplate.execute {
             repo.save(stocktaking)
             transactions.forEach { transaction -> transactionRepository.delete(transaction) }

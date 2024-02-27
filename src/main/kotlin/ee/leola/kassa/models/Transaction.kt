@@ -16,11 +16,11 @@ class Transaction(
     @JoinTable(
         name = "transaction_transaction_product",
         joinColumns = [JoinColumn(name = "transaction_id", referencedColumnName = "id")],
-        inverseJoinColumns = [JoinColumn(name = "transaction_product_id", referencedColumnName = "id")]
+        inverseJoinColumns = [JoinColumn(name = "transaction_product_id", referencedColumnName = "id")],
     )
     val products: Set<TransactionProduct>,
     @ManyToOne
-    private val paytype: @NotNull Paytype
+    private val paytype: @NotNull Paytype,
 ) : Model() {
     fun invalidate(): Transaction {
         invalid = true
@@ -38,5 +38,6 @@ class Transaction(
     val paytypeName get() = paytype.name
 
     fun affectsQuantity() = paytype.affectsQuantity
+
     fun affectsBalance() = paytype.affectsBalance
 }

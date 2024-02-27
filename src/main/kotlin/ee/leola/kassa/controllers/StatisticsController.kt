@@ -11,14 +11,16 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/stat")
 class StatisticsController(
     private val transactionRepository: TransactionRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
 ) {
     @GetMapping("/{id}")
-    fun getStatistics(@PathVariable("id") userId: Long): Map<String, *> {
+    fun getStatistics(
+        @PathVariable("id") userId: Long,
+    ): Map<String, *> {
         val user = userRepository.findById(userId).orElseThrow()
         return mapOf(
             "popularProducts" to transactionRepository.findPopularProductsByUser(user),
-            "transactions" to transactionRepository.findByUser(user)
+            "transactions" to transactionRepository.findByUser(user),
         )
     }
 }

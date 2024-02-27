@@ -14,11 +14,12 @@ class ViewController(
     private val userRepository: UserRepository,
     private val productRepository: ProductRepository,
     private val transactionRepository: TransactionRepository,
-    private val paytypeRepository: PaytypeRepository
+    private val paytypeRepository: PaytypeRepository,
 ) {
-
     @GetMapping("/dialog/{modal}")
-    fun modal(@PathVariable("modal") modal: String): String {
+    fun modal(
+        @PathVariable("modal") modal: String,
+    ): String {
         return "dialog/$modal"
     }
 
@@ -29,12 +30,14 @@ class ViewController(
             "users" to userRepository.findAll(),
             "paytypes" to paytypeRepository.findAll(),
             "products" to productRepository.findAll().sortedBy { it.name },
-            "transactions" to transactionRepository.findByInvalidFalse().sortedByDescending { it.created }
+            "transactions" to transactionRepository.findByInvalidFalse().sortedByDescending { it.created },
         )
     }
 
     @GetMapping("/admin/{page}")
-    fun page(@PathVariable("page") page: String): String {
+    fun page(
+        @PathVariable("page") page: String,
+    ): String {
         return "admin/$page"
     }
 }

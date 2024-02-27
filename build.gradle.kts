@@ -88,7 +88,6 @@ dependencies {
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
-
     implementation("de.neuland-bfi:spring-pug4j:3.2.0")
 
     implementation("com.fasterxml.jackson.core:jackson-databind")

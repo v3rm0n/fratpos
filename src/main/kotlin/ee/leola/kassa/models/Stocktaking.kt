@@ -12,17 +12,13 @@ import java.time.format.DateTimeFormatter
 @Entity
 class Stocktaking(
     var created: Instant = Instant.now(),
-
     @Type(JsonType::class)
     var users: ArrayNode = JsonMapper.builder().build().createArrayNode(),
-
     @Type(JsonType::class)
     var products: ArrayNode = JsonMapper.builder().build().createArrayNode(),
-
     @Type(JsonType::class)
-    var transactions: ArrayNode = JsonMapper.builder().build().createArrayNode()
+    var transactions: ArrayNode = JsonMapper.builder().build().createArrayNode(),
 ) : Model() {
-
     @get:Transient
     val formattedTime get() = DateTimeFormatter.ISO_INSTANT.format(created)
 
@@ -31,18 +27,20 @@ class Stocktaking(
 
     @get:Transient
     val transactionsSum
-        get() = transactions
-            .filter { !it["invalid"].asBoolean() }
-            .sumOf { it.findValue("sum").asDouble().toBigDecimal() }
+        get() =
+            transactions
+                .filter { !it["invalid"].asBoolean() }
+                .sumOf { it.findValue("sum").asDouble().toBigDecimal() }
 
     @get:Transient
     val productsQuantity get() = products.sumOf { it.findValue("quantity").asInt() }
 
     @get:Transient
     val sums
-        get() = transactions
-            .filter { it["invalid"].asBoolean() }
-            .groupBy { it["paytype"].asText() }
-            .map { (k, v) -> k to v.sumOf { it["sum"].asDouble().toBigDecimal() } }
-            .toMap()
+        get() =
+            transactions
+                .filter { it["invalid"].asBoolean() }
+                .groupBy { it["paytype"].asText() }
+                .map { (k, v) -> k to v.sumOf { it["sum"].asDouble().toBigDecimal() } }
+                .toMap()
 }

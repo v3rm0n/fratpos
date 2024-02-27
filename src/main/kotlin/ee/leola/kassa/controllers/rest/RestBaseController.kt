@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*
 import java.io.Serializable
 
 abstract class RestBaseController<T : Any, ID : Serializable>(protected val repo: CrudRepository<T, ID>) {
-
     private val logger by LoggerDelegate()
 
     @RequestMapping
@@ -19,17 +18,25 @@ abstract class RestBaseController<T : Any, ID : Serializable>(protected val repo
 
     @ResponseBody
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
-    open fun create(@RequestBody json: T): T = repo.save(json).also {
-        logger.info("create() with body {} of type {}", json, json::class)
-    }
+    open fun create(
+        @RequestBody json: T,
+    ): T =
+        repo.save(json).also {
+            logger.info("create() with body {} of type {}", json, json::class)
+        }
 
     @ResponseBody
     @GetMapping("/{id}")
-    fun get(@PathVariable id: ID): T = repo.findById(id).orElseThrow()
+    fun get(
+        @PathVariable id: ID,
+    ): T = repo.findById(id).orElseThrow()
 
     @ResponseBody
     @PostMapping("/{id}", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    open fun update(@PathVariable id: ID, @RequestBody json: T): ResponseEntity<T> {
+    open fun update(
+        @PathVariable id: ID,
+        @RequestBody json: T,
+    ): ResponseEntity<T> {
         logger.info("update() of id {} with body {}", id, json)
         logger.info("T json is of type {}", json::class)
         val entity = repo.findById(id).orElseThrow()
@@ -41,5 +48,7 @@ abstract class RestBaseController<T : Any, ID : Serializable>(protected val repo
 
     @ResponseBody
     @DeleteMapping("/{id}")
-    fun delete(@PathVariable id: ID) = repo.deleteById(id)
+    fun delete(
+        @PathVariable id: ID,
+    ) = repo.deleteById(id)
 }

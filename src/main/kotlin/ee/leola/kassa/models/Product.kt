@@ -8,9 +8,8 @@ import java.math.BigDecimal
 class Product(
     var name: @NotNull String,
     var price: @NotNull BigDecimal = BigDecimal.ZERO,
-    var quantity: Int
+    var quantity: Int,
 ) : Model() {
-
     fun incrementQuantity(increment: Int): Product {
         quantity += increment
         return this

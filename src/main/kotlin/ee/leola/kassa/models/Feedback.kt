@@ -9,9 +9,8 @@ import java.time.format.DateTimeFormatter
 @Entity
 class Feedback(
     val content: @NotNull String,
-    val created: Instant = Instant.now()
+    val created: Instant = Instant.now(),
 ) : Model() {
-
     @get:Transient
     val formattedTime get() = DateTimeFormatter.ISO_INSTANT.format(created)
 }
